@@ -1,0 +1,7 @@
+{
+    "board": "SparkFun:avr:promicro",
+    "configuration": "cpu=16MHzatmega32U4",
+    "sketch": "src/ufc.ino",
+    "output": "../build-ufc",
+    "port": "/dev/ttyACM0"
+}
