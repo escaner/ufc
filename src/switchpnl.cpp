@@ -91,7 +91,11 @@ const int16_t (* const SwitchPnl::_KP_KEY_RNG[NUM_KP])[2] =
 SwitchPnl::SwitchPnl(const uint8_t KpPin[NUM_KP],
     const uint8_t EncPin[NUM_ENC][ENC_NUM_PINS]):
   _KpPin(KpPin),
-  _EncPin(EncPin)
+  _EncPin(EncPin),
+  _Encoder{REncoderAsync(DX_DELAY_PR, DX_DELAY_RP),
+    REncoderAsync(DX_DELAY_PR, DX_DELAY_RP),
+    REncoderAsync(DX_DELAY_PR, DX_DELAY_RP),
+    REncoderAsync(DX_DELAY_PR, DX_DELAY_RP)}
 {
 }
 

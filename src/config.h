@@ -1,9 +1,6 @@
 #ifndef _CONFIG_H_
 #define _CONFIG_H_
 
-#define NDEBUG
-#define __ASSERT_USE_STDERR
-
 #include <stdint.h>
 
 
@@ -31,6 +28,10 @@ constexpr uint8_t NUM_LED = 3;
 // Dimensions of LCD
 constexpr uint8_t LCD_ROWS =  4U;
 constexpr uint8_t LCD_COLS = 20U;
+
+// Delay between DirectX events
+constexpr uint8_t DX_DELAY_PR = 15U;  // Delay press -> release (ms)
+constexpr uint8_t DX_DELAY_RP = 5U;   // Delay release -> press (ms)
 
 
 #endif  // _CONFIG_H_

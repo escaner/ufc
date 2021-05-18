@@ -1,6 +1,3 @@
-//#define NDEBUG
-//#define DEBUG_SERIAL
-
 #include <stdint.h>
 #include <Joystick.h>
 #include "config.h"
@@ -30,7 +27,7 @@ constexpr uint8_t PIN_LCD_BL = 3U;
 static const uint8_t PIN_ENCODER[NUM_ENC][ENC_NUM_PINS] =
 {
   {  8,  9 }, // COM1
-  {  6,  7 }, // COM2
+  {  6,  0 }, // COM2 for some reason pin 7 does not work, using 0 (RXI) instead
   { 16, 10 }, // HDG
   { 15, 14 }, // CRS
 };
@@ -95,7 +92,6 @@ static Joystick_ Joy(JOYSTICK_DEFAULT_REPORT_ID, JOYSTICK_TYPE_GAMEPAD,
     Lcd.print("E 135:12.4  55   D03");
     Lcd.print("ALN  MIP  N.DEG  SEC");
     break;
-  }
 */
 
 

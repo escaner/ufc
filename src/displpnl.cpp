@@ -17,9 +17,6 @@ DisplPnl::DisplPnl(const LcdData_t &LcdData, const uint8_t LedPin[NUM_LED]):
     LcdData.PinBl,LcdData.Pol),
   _LedPin{ LedPin[0], LedPin[1], LedPin[2] }
 {
-/*
-_Lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);  // Set the LCD I2C address
-*/
 }
 
 
