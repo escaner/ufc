@@ -123,7 +123,7 @@ void ProcessInput()
     switch (WorkMode.get())
     {
     case Mode::M_DEBUG:
-      DiPnl.defaultShowEvent(Ev, EvDx);
+      DiPnl.debugShowEvent(Ev, EvDx);
       break;
     }
 
@@ -152,7 +152,7 @@ void setup()
 
   // Wait for the release of the keypad mode button
   SwPnl.wait(KP_MODE);
-  DiPnl.defaultStart();
+  DiPnl.debugStart();
 }
 
 

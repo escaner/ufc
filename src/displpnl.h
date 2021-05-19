@@ -51,8 +51,8 @@ public:
   void init();
   void showMode(const __FlashStringHelper *pmMode);
   void error(const __FlashStringHelper *pmMsg);
-  void defaultStart();
-  void defaultShowEvent(const Event &Ev, const Directx::Event_t &EvDx);
+  void debugStart();
+  void debugShowEvent(const Event &Ev, const Directx::Event_t &EvDx);
 
 protected:
 

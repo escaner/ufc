@@ -49,7 +49,7 @@ void DisplPnl::showMode(const __FlashStringHelper *pmMode)
 /*
  *   Initializes display panel for default mode.
  */
-void DisplPnl::defaultStart()
+void DisplPnl::debugStart()
 {
   _Lcd.clear();
   _defaultLine = 0U;
@@ -62,7 +62,7 @@ void DisplPnl::defaultStart()
  *   * Ev: descriptor of the keypad or encoder event. EvNone is not valid.
  *   * Dx: descriptor of the DirectX event.
  */
-void DisplPnl::defaultShowEvent(const Event &Ev, const Directx::Event_t &Dx)
+void DisplPnl::debugShowEvent(const Event &Ev, const Directx::Event_t &Dx)
 {
   static const char PRESS = 'P';
   static const char RELEASE = 'R';
