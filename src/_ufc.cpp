@@ -1,5 +1,8 @@
+#define DCSBIOS_DEFAULT_SERIAL
+
 #include <stdint.h>
 #include <Joystick.h>
+#include <DcsBios.h>
 #include "config.h"
 #include "mode.h"
 #include "switchpnl.h"
@@ -62,6 +65,31 @@ static const DisplPnl::LcdData_t LcdData =
 };
 
 
+/* DCS-BIOS */
+
+// F/A-18C
+constexpr uint8_t FA18C_UFCSPSTR_SZ = 2U;
+constexpr uint8_t FA18C_UFCSPNUM_SZ = 8U;
+constexpr int FA18C_UFCSPSTR1_ADDR = 0x744e;
+constexpr int FA18C_UFCSPSTR2_ADDR = 0x7450;
+constexpr int FA18C_UFCSPNUM_ADDR = 0x7446;
+constexpr int FA18C_UFCOPCUE_SZ = 1U;
+constexpr int FA18C_UFCOPCUE1_ADDR = 0x7428;
+constexpr int FA18C_UFCOPCUE2_ADDR = 0x742a;
+constexpr int FA18C_UFCOPCUE3_ADDR = 0x742c;
+constexpr int FA18C_UFCOPCUE4_ADDR = 0x742e;
+constexpr int FA18C_UFCOPCUE5_ADDR = 0x7430;
+constexpr int FA18C_UFCOPSTR_SZ = 4U;
+constexpr int FA18C_UFCOPSTR1_ADDR = 0x7432;
+constexpr int FA18C_UFCOPSTR2_ADDR = 0x7436;
+constexpr int FA18C_UFCOPSTR3_ADDR = 0x743a;
+constexpr int FA18C_UFCOPSTR4_ADDR = 0x743e;
+constexpr int FA18C_UFCOPSTR5_ADDR = 0x7442;
+constexpr uint8_t FA18C_UFCCOM_SZ = 2U;
+constexpr int FA18C_UFCCOM1_ADDR = 0x7424;
+constexpr int FA18C_UFCCOM2_ADDR = 0x7426;
+
+
 /*************/
 /* Variables */
 /*************/
@@ -79,6 +107,7 @@ static Joystick_ Joy(JOYSTICK_DEFAULT_REPORT_ID, JOYSTICK_TYPE_GAMEPAD,
   KP0_NUM_KEYS + KP1_NUM_KEYS + KP2_NUM_KEYS + NUM_ENC*2, 0,
   false, false, false, false, false, false, false, false, false, false, false);
 
+DcsBios::LED mcLed(0x1012, 0x0800, 13);
 
 /***********/
 /* Methods */
@@ -95,7 +124,205 @@ static Joystick_ Joy(JOYSTICK_DEFAULT_REPORT_ID, JOYSTICK_TYPE_GAMEPAD,
 */
 
 
-void ProcessInput()
+/* DCS-BIOS callbacks for F/A-18C */
+
+/*
+ *   Callback to update F/A-18C scratchpad's string 1.
+ */
+static void cbFa18cUfcScrpadStr1(char *szValue)
+{
+  DiPnl.fa18cScrpadStr1(szValue);
+}
+
+/*
+ *   Callback to update F/A-18C scratchpad's string 2.
+ */
+static void cbFa18cUfcScrpadStr2(char *szValue)
+{
+  DiPnl.fa18cScrpadStr2(szValue);
+}
+
+/*
+ *   Callback to update F/A-18C scratchpad's number.
+ */
+static void cbFa18cUfcScrpadNumber(char *szValue)
+{
+  DiPnl.fa18cScrpadNumber(szValue);
+}
+
+/*
+ *   Callback to update F/A-18C option cueing 1.
+ */
+static void cbFa18cUfcOptionCue1(char *szValue)
+{
+  DiPnl.fa18cOptionCue(0U, szValue);
+}
+
+/*
+ *   Callback to update F/A-18C option cueing 2.
+ */
+static void cbFa18cUfcOptionCue2(char *szValue)
+{
+  DiPnl.fa18cOptionCue(1U, szValue);
+}
+
+/*
+ *   Callback to update F/A-18C option cueing 3.
+ */
+static void cbFa18cUfcOptionCue3(char *szValue)
+{
+  DiPnl.fa18cOptionCue(2U, szValue);
+}
+
+/*
+ *   Callback to update F/A-18C option cueing 4.
+ */
+static void cbFa18cUfcOptionCue4(char *szValue)
+{
+  DiPnl.fa18cOptionCue(3U, szValue);
+}
+
+/*
+ *   Callback to update F/A-18C option cueing 5.
+ */
+static void cbFa18cUfcOptionCue5(char *szValue)
+{
+  DiPnl.fa18cOptionCue(4U, szValue);
+}
+
+/*
+ *   Callback to update F/A-18C option string 1.
+ */
+static void cbFa18cUfcOptionStr1(char *szValue)
+{
+  DiPnl.fa18cOptionStr(0U, szValue);
+}
+
+/*
+ *   Callback to update F/A-18C option string 2.
+ */
+static void cbFa18cUfcOptionStr2(char *szValue)
+{
+  DiPnl.fa18cOptionStr(1U, szValue);
+}
+
+/*
+ *   Callback to update F/A-18C option string 3.
+ */
+static void cbFa18cUfcOptionStr3(char *szValue)
+{
+  DiPnl.fa18cOptionStr(2U, szValue);
+}
+
+/*
+ *   Callback to update F/A-18C option string 4.
+ */
+static void cbFa18cUfcOptionStr4(char *szValue)
+{
+  DiPnl.fa18cOptionStr(3U, szValue);
+}
+
+/*
+ *   Callback to update F/A-18C option string 5.
+ */
+static void cbFa18cUfcOptionStr5(char *szValue)
+{
+  DiPnl.fa18cOptionStr(4U, szValue);
+}
+
+/*
+ *   Callback to update F/A-18 COM1 display.
+ */
+static void cbFa18cUfcCom1(char *szValue)
+{
+  DiPnl.fa18cCom1(szValue);
+}
+
+/*
+ *   Callback to update F/A-18C COM2 display.
+ */
+static void cbFa18cUfcCom2(char *szValue)
+{
+  DiPnl.fa18cCom2(szValue);
+}
+
+/*
+ *   Callback to update F/A-18C heading display.
+ */
+/*
+static void cbFa18cHdg(char *szValue)
+{
+  DiPnl.fa18cHdg(szValue);
+}
+*/
+/*
+ *   Callback to update F/A-18C course display.
+ */
+/*
+static void cbFa18cCrs(char *szValue)
+{
+  DiPnl.fa18cCrs(szValue);
+}
+*/
+/*
+ *   Initializes F/A-18C mode.
+ */
+static void modeFa18cInit()
+{
+  // Initializes display
+  DiPnl.fa18cStart();
+
+  // Register callbacks creating DCS-BIOS handlers in heap memory
+  // Scratchpad
+  new DcsBios::StringBuffer<FA18C_UFCSPSTR_SZ>(
+      FA18C_UFCSPSTR1_ADDR, cbFa18cUfcScrpadStr1);
+  new DcsBios::StringBuffer<FA18C_UFCSPSTR_SZ>(
+      FA18C_UFCSPSTR2_ADDR, cbFa18cUfcScrpadStr2);
+  new DcsBios::StringBuffer<FA18C_UFCSPNUM_SZ>(
+      FA18C_UFCSPNUM_ADDR, cbFa18cUfcScrpadNumber);
+  // Option cueing
+  new DcsBios::StringBuffer<FA18C_UFCOPCUE_SZ>(
+      FA18C_UFCOPCUE1_ADDR, cbFa18cUfcOptionCue1);
+  new DcsBios::StringBuffer<FA18C_UFCOPCUE_SZ>(
+      FA18C_UFCOPCUE2_ADDR, cbFa18cUfcOptionCue2);
+  new DcsBios::StringBuffer<FA18C_UFCOPCUE_SZ>(
+      FA18C_UFCOPCUE3_ADDR, cbFa18cUfcOptionCue3);
+  new DcsBios::StringBuffer<FA18C_UFCOPCUE_SZ>(
+      FA18C_UFCOPCUE4_ADDR, cbFa18cUfcOptionCue4);
+  new DcsBios::StringBuffer<FA18C_UFCOPCUE_SZ>(
+      FA18C_UFCOPCUE5_ADDR, cbFa18cUfcOptionCue5);
+  // Option string
+  new DcsBios::StringBuffer<FA18C_UFCOPSTR_SZ>(
+      FA18C_UFCOPSTR1_ADDR, cbFa18cUfcOptionStr1);
+  new DcsBios::StringBuffer<FA18C_UFCOPSTR_SZ>(
+      FA18C_UFCOPSTR2_ADDR, cbFa18cUfcOptionStr2);
+  new DcsBios::StringBuffer<FA18C_UFCOPSTR_SZ>(
+      FA18C_UFCOPSTR3_ADDR, cbFa18cUfcOptionStr3);
+  new DcsBios::StringBuffer<FA18C_UFCOPSTR_SZ>(
+      FA18C_UFCOPSTR4_ADDR, cbFa18cUfcOptionStr4);
+  new DcsBios::StringBuffer<FA18C_UFCOPSTR_SZ>(
+      FA18C_UFCOPSTR5_ADDR, cbFa18cUfcOptionStr5);
+  // COMM
+  new DcsBios::StringBuffer<FA18C_UFCCOM_SZ>(
+      FA18C_UFCCOM1_ADDR, cbFa18cUfcCom1);
+  new DcsBios::StringBuffer<FA18C_UFCCOM_SZ>(
+      FA18C_UFCCOM2_ADDR, cbFa18cUfcCom2);
+}
+
+
+/*
+ *   Initializes debug mode
+ */
+static void modeDebugInit()
+{
+  DiPnl.debugStart();
+}
+
+
+/*
+ *   Checks for input events and handles them.
+ */
+static void processInput()
 {
   Event Ev;
   Directx::Event_t EvDx;
@@ -115,20 +342,9 @@ void ProcessInput()
     else
       Joy.pressButton(EvDx.Button);
 
-#pragma GCC diagnostic push
-  // Disable: warning: enumeration value '' not handled in switch
-#pragma GCC diagnostic ignored "-Wswitch"
-
-    // Do more stuff depending on mode
-    switch (WorkMode.get())
-    {
-    case Mode::M_DEBUG:
+    // Show stuff in debug mode
+    if (WorkMode.get() == Mode::M_DEBUG)
       DiPnl.debugShowEvent(Ev, EvDx);
-      break;
-    }
-
-#pragma GCC diagnostic pop
-
   }
 }
 
@@ -152,11 +368,34 @@ void setup()
 
   // Wait for the release of the keypad mode button
   SwPnl.wait(KP_MODE);
-  DiPnl.debugStart();
+
+#pragma GCC diagnostic push
+  // Disable: warning: enumeration value '' not handled in switch
+#pragma GCC diagnostic ignored "-Wswitch"
+
+  // Initialize mode stuff
+  switch (WorkMode.get())
+  {
+  case Mode::M_DEBUG:
+    modeDebugInit();
+    break;
+  case Mode::M_FA18C:
+    modeFa18cInit();
+    break;
+  }
+
+#pragma GCC diagnostic pop
+
+  // Prepare DCS-BIOS stuff
+  DcsBios::setup();
 }
 
 
 void loop()
 {
-  ProcessInput();
+  // Check buttons
+  processInput();
+
+  // Process DCS-BIOS
+  DcsBios::loop();
 }

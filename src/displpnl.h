@@ -50,9 +50,21 @@ public:
   DisplPnl(const LcdData_t &LcdData, const uint8_t LedPin[NUM_LED]);
   void init();
   void showMode(const __FlashStringHelper *pmMode);
-  void error(const __FlashStringHelper *pmMsg);
+//  void error(const __FlashStringHelper *pmMsg);
+
   void debugStart();
   void debugShowEvent(const Event &Ev, const Directx::Event_t &EvDx);
+
+  void fa18cStart();
+  void fa18cScrpadStr1(const char *szValue);
+  void fa18cScrpadStr2(const char *szValue);
+  void fa18cScrpadNumber(const char *szValue);
+  void fa18cOptionCue(uint8_t Id, const char *szValue);
+  void fa18cOptionStr(uint8_t Id, const char *szValue);
+  void fa18cCom1(const char *szValue);
+  void fa18cCom2(const char *szValue);
+// void fa18cHdg(const char *szValue);
+// void fa18cCrs(const char *szValue);
 
 protected:
 
@@ -60,8 +72,8 @@ protected:
   /* Protected methods */
   /*********************/
 
- void _error();
- inline void _setLed(LedId_t Led, uint8_t Value) const;
+//  void _error();
+  inline void _setLed(LedId_t Led, uint8_t Value) const;
 
 
   /***************/
