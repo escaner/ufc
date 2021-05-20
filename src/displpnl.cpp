@@ -80,69 +80,36 @@ void DisplPnl::showMode(const __FlashStringHelper *pmMode)
   _Lcd.print(Line);
 }
 
-
 /*
- *   Initializes display panel for debug mode.
+ *   Initializes display panel for A-10C mode.
  */
-void DisplPnl::debugStart()
+void DisplPnl::a10cStart()
 {
+  // Clear the display
   _Lcd.clear();
-  _debugLine = 0U;
 }
 
 
 /*
- *   Displays a key or encoder event and its DirectX conversion.
- *   Parameters:
- *   * Ev: descriptor of the keypad or encoder event. EvNone is not valid.
- *   * Dx: descriptor of the DirectX event.
+ *   Updates A-10C scratchpad string in LCD. It may exand through two lines.
+ *  Parameters:
+ *  * szValue: string with the new value to display.
  */
-void DisplPnl::debugShowEvent(const Event &Ev, const Directx::Event_t &Dx)
+void DisplPnl::a10cScrpad(const char *szValue)
 {
-  static const char PRESS = 'P';
-  static const char RELEASE = 'R';
-  static const char CCW[] = "CCW";
-  static const char CW[] = "CW";
-  char Buffer[LCD_COLS+1];
+  _Lcd.home();
+  _Lcd.print(szValue);
+}
 
-#pragma GCC diagnostic push
-  // Disable: warning: enumeration value 'EvNone' not handled in switch
-#pragma GCC diagnostic ignored "-Wswitch"
 
-  switch (Ev.Id)
-  {
-  case Event::EvKpPress:
-    sprintf_P(Buffer, _LINE_KEY, _debugLine, PRESS, Ev.Kp.KpId, Ev.Kp.KeyId,
-      Dx.Action == Directx::AcRelease? RELEASE: PRESS, Dx.Button);
-    break;
-  case Event::EvKpRelease:
-    sprintf_P(Buffer, _LINE_KEY, _debugLine, RELEASE, Ev.Kp.KpId, Ev.Kp.KeyId,
-      Dx.Action == Directx::AcRelease? RELEASE: PRESS, Dx.Button);
-    break;
-  case Event::EvEncCcwPress:
-    sprintf_P(Buffer, _LINE_ENC, _debugLine, PRESS, Ev.EncId, CCW,
-      Dx.Action == Directx::AcRelease? RELEASE: PRESS, Dx.Button);
-    break;
-  case Event::EvEncCcwRelease:
-    sprintf_P(Buffer, _LINE_ENC, _debugLine, RELEASE, Ev.EncId, CCW,
-      Dx.Action == Directx::AcRelease? RELEASE: PRESS, Dx.Button);
-    break;
-  case Event::EvEncCwPress:
-    sprintf_P(Buffer, _LINE_ENC, _debugLine, PRESS, Ev.EncId, CW,
-      Dx.Action == Directx::AcRelease? RELEASE: PRESS, Dx.Button);
-    break;
-  case Event::EvEncCwRelease:
-    sprintf_P(Buffer, _LINE_ENC, _debugLine, RELEASE, Ev.EncId, CW,
-      Dx.Action == Directx::AcRelease? RELEASE: PRESS, Dx.Button);
-    break;
-  }
-
-#pragma GCC diagnostic pop
-
-  _Lcd.setCursor(0, _debugLine % LCD_ROWS);
-  _Lcd.print(Buffer);
-
-  _debugLine++;
+/*
+ *   Updates A-10C master caution light LED.
+ *  Parameters:
+ *  * Value (HIGH, LOW): new state value: HIGH = on; LOW = off
+ */
+void DisplPnl::a10cMasterCaut(uint8_t Value)
+{
+  _setLed(LedWrn, Value);
 }
 
 
@@ -156,7 +123,7 @@ void DisplPnl::fa18cStart()
   uint8_t Idx;
   char Separator = (char) pgm_read_byte(&_LCD_SEPARATOR_CHAR);
 
-  // Cllear the display
+  // Clear the display
   _Lcd.clear();
 
   // Print the field separators
@@ -275,6 +242,71 @@ void DisplPnl::fa18cMasterCaut(uint8_t Value)
 void DisplPnl::fa18cApuReady(uint8_t Value)
 {
   _setLed(LedClr, Value);
+}
+
+
+/*
+ *   Initializes display panel for debug mode.
+ */
+void DisplPnl::debugStart()
+{
+  _Lcd.clear();
+  _debugLine = 0U;
+}
+
+
+/*
+ *   Displays a key or encoder event and its DirectX conversion.
+ *   Parameters:
+ *   * Ev: descriptor of the keypad or encoder event. EvNone is not valid.
+ *   * Dx: descriptor of the DirectX event.
+ */
+void DisplPnl::debugShowEvent(const Event &Ev, const Directx::Event_t &Dx)
+{
+  static const char PRESS = 'P';
+  static const char RELEASE = 'R';
+  static const char CCW[] = "CCW";
+  static const char CW[] = "CW";
+  char Buffer[LCD_COLS+1];
+
+#pragma GCC diagnostic push
+  // Disable: warning: enumeration value 'EvNone' not handled in switch
+#pragma GCC diagnostic ignored "-Wswitch"
+
+  switch (Ev.Id)
+  {
+  case Event::EvKpPress:
+    sprintf_P(Buffer, _LINE_KEY, _debugLine, PRESS, Ev.Kp.KpId, Ev.Kp.KeyId,
+      Dx.Action == Directx::AcRelease? RELEASE: PRESS, Dx.Button);
+    break;
+  case Event::EvKpRelease:
+    sprintf_P(Buffer, _LINE_KEY, _debugLine, RELEASE, Ev.Kp.KpId, Ev.Kp.KeyId,
+      Dx.Action == Directx::AcRelease? RELEASE: PRESS, Dx.Button);
+    break;
+  case Event::EvEncCcwPress:
+    sprintf_P(Buffer, _LINE_ENC, _debugLine, PRESS, Ev.EncId, CCW,
+      Dx.Action == Directx::AcRelease? RELEASE: PRESS, Dx.Button);
+    break;
+  case Event::EvEncCcwRelease:
+    sprintf_P(Buffer, _LINE_ENC, _debugLine, RELEASE, Ev.EncId, CCW,
+      Dx.Action == Directx::AcRelease? RELEASE: PRESS, Dx.Button);
+    break;
+  case Event::EvEncCwPress:
+    sprintf_P(Buffer, _LINE_ENC, _debugLine, PRESS, Ev.EncId, CW,
+      Dx.Action == Directx::AcRelease? RELEASE: PRESS, Dx.Button);
+    break;
+  case Event::EvEncCwRelease:
+    sprintf_P(Buffer, _LINE_ENC, _debugLine, RELEASE, Ev.EncId, CW,
+      Dx.Action == Directx::AcRelease? RELEASE: PRESS, Dx.Button);
+    break;
+  }
+
+#pragma GCC diagnostic pop
+
+  _Lcd.setCursor(0, _debugLine % LCD_ROWS);
+  _Lcd.print(Buffer);
+
+  _debugLine++;
 }
 
 

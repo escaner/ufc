@@ -52,8 +52,9 @@ public:
   void showMode(const __FlashStringHelper *pmMode);
 //  void error(const __FlashStringHelper *pmMsg);
 
-  void debugStart();
-  void debugShowEvent(const Event &Ev, const Directx::Event_t &EvDx);
+  void a10cStart();
+  void a10cScrpad(const char *szValue);
+  void a10cMasterCaut(uint8_t Value);
 
   void fa18cStart();
   void fa18cScrpadStr1(const char *szValue);
@@ -65,6 +66,9 @@ public:
   void fa18cCom2(const char *szValue);
   void fa18cMasterCaut(uint8_t Value);
   void fa18cApuReady(uint8_t Value);
+
+  void debugStart();
+  void debugShowEvent(const Event &Ev, const Directx::Event_t &EvDx);
 
 //  void m2000cStart();
 

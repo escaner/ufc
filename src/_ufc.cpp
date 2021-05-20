@@ -73,6 +73,13 @@ static const DisplPnl::LcdData_t LcdData =
 
 /* DCS-BIOS */
 
+// A-10C
+constexpr uint8_t A10C_CDUSP_SZ = 24U;
+constexpr unsigned int A10C_CDUSP_ADDR = 0x1298;
+constexpr unsigned int A10C_MASTERCAUTLT_ADDR = 0x1012;
+constexpr unsigned int A10C_MASTERCAUTLT_MASK = 0x0800;
+constexpr unsigned char A10C_MASTERCAUTLT_SHIFT = 11U;
+
 // F/A-18C
 constexpr uint8_t FA18C_UFCSPSTR_SZ = 2U;
 constexpr uint8_t FA18C_UFCSPNUM_SZ = 8U;
@@ -123,6 +130,49 @@ static Joystick_ Joy(JOYSTICK_DEFAULT_REPORT_ID, JOYSTICK_TYPE_GAMEPAD,
 /***********/
 /* Methods */
 /***********/
+
+/* DCS-BIOS callbacks for A-10C */
+
+/*
+ *   Callback to update A-10C scratchpad.
+ */
+static void cbA10cCduScrpad(char *szValue)
+{
+  DiPnl.a10cScrpad(szValue);
+}
+
+/*
+ *   Callback to update A-10C Master Caution light.
+ */
+static void cbA10cMasterCautLt(unsigned int Value)
+{
+  DiPnl.a10cMasterCaut((uint8_t) Value);
+}
+
+/*
+ *   Initializes A-10C mode.
+ */
+static void modeA10cInit()
+{
+  // Initializes display
+  DiPnl.a10cStart();
+
+  // Register callbacks creating DCS-BIOS handlers in heap memory
+
+  // CDU Scratchpad
+  new DcsBios::StringBuffer<A10C_CDUSP_SZ>(
+      A10C_CDUSP_ADDR, cbA10cCduScrpad);
+/*
+  // COMM
+  new DcsBios::StringBuffer<FA18C_UFCCOM_SZ>(
+      FA18C_UFCCOM1_ADDR, cbFa18cUfcCom1);
+  new DcsBios::StringBuffer<FA18C_UFCCOM_SZ>(
+      FA18C_UFCCOM2_ADDR, cbFa18cUfcCom2);
+*/
+  // Master warning light
+  new DcsBios::IntegerBuffer(A10C_MASTERCAUTLT_ADDR, A10C_MASTERCAUTLT_MASK,
+      A10C_MASTERCAUTLT_SHIFT, cbA10cMasterCautLt);
+}
 
 /* DCS-BIOS callbacks for F/A-18C */
 
@@ -420,6 +470,9 @@ void setup()
   // Initialize mode stuff
   switch (WorkMode.get())
   {
+  case Mode::M_A10C:
+    modeA10cInit();
+    break;
   case Mode::M_FA18C:
     modeFa18cInit();
     break;
