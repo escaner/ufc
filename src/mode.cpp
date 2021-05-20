@@ -9,7 +9,7 @@
 // For each Mode_t (index), which key (value) selects it
 const int8_t Mode::_KEY[M_NUM_MODES] PROGMEM =
 {
-  15, // M_DEFAULT -> CLR
+  15, // M_DIRECTX -> CLR
   11, // M_A10C -> 0
    5, // M_F16C -> 6
   10, // M_FA18C -> 8
@@ -18,7 +18,7 @@ const int8_t Mode::_KEY[M_NUM_MODES] PROGMEM =
 };
 
 // Strings with the names of the modes
-const char Mode::_TXT_DEFAULT[] PROGMEM = "DEFAULT";
+const char Mode::_TXT_DIRECTX[] PROGMEM = "DIRECTX";
 const char Mode::_TXT_A10C[] PROGMEM = "A-10C";
 const char Mode::_TXT_F16C[] PROGMEM = "F-16C";
 const char Mode::_TXT_FA18C[] PROGMEM = "F/A-18C";
@@ -26,7 +26,7 @@ const char Mode::_TXT_M2000C[] PROGMEM = "MIRAGE 2000C";
 const char Mode::_TXT_DEBUG[] PROGMEM = "DEBUG";
 const char * const Mode::_MODE_TXT[M_NUM_MODES] PROGMEM =
 {
-  _TXT_DEFAULT,
+  _TXT_DIRECTX,
   _TXT_A10C,
   _TXT_F16C,
   _TXT_FA18C,
@@ -41,10 +41,10 @@ const char * const Mode::_MODE_TXT[M_NUM_MODES] PROGMEM =
 
 
 /*
- *   Constructor. Detaults to M_DEFAULT mode.
+ *   Constructor. Detaults to M_DIRECTX mode.
  */
 Mode::Mode():
-  _Id(M_DEFAULT)
+  _Id(M_DIRECTX)
 {
 }
 
@@ -78,6 +78,23 @@ Mode &Mode::operator=(const Mode &M)
   return *this;
 }
 
+/*
+ *   Sets the mode of operation to Id. If it is not valid, the M_DEFAULT mode
+ *  is set instead.
+ *   Parameters:
+ *   * Id: the new mode of operation
+ */
+void Mode::set(Id_t Id)
+{
+  // Is Id a valid mode?
+  if (Id < M_NUM_MODES)
+    // Yes
+    _Id = Id;
+  else
+    // No: use default mode
+    _Id = M_DEFAULT;
+}
+
 
 /*
  *   Returns a string in program memory with the mode name.
@@ -95,11 +112,11 @@ const __FlashStringHelper *Mode::P_str() const
 
 /*
  *   Looks for which mode corresponds to the given key identifier. When none
- *  found, reverts to M_DEFAULT mode.
+ *  found, reverts to M_DIRECTX mode.
  *   Parameters:
  *   * KeyId: key identifier that possibly corresponds to a mode. It can be
  *            SWITCH_NONE
- *   Returns: the mode that corresponds to KeyId, or M_DEFAULT when none defined
+ *   Returns: the mode that corresponds to KeyId, or M_DIRECTX when none defined
  */
 Mode::Id_t Mode::_keyToMode(uint8_t KeyId)
 {

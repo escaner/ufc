@@ -1,6 +1,7 @@
 #define DCSBIOS_DEFAULT_SERIAL
 
 #include <stdint.h>
+#include <EEPROM.h>
 #include <Joystick.h>
 #include <DcsBios.h>
 #include "config.h"
@@ -14,7 +15,12 @@
 /* Local constants */
 /*******************/
 
+// Number of iterations processing switches per loop() call
 static const uint16_t SWITCH_LOOP_CNT = 500U;
+
+// EEPROM address where the default mode is stored
+static const int EEPROM_MODE_ADDR PROGMEM = 0;
+
 
 /** PRO MICRO pin connections **/
 
@@ -30,12 +36,12 @@ constexpr uint8_t PIN_LCD_BL = 3U;
 static const uint8_t PIN_ENCODER[NUM_ENC][ENC_NUM_PINS] =
 {
   {  8,  9 }, // COM1
-  {  6,  0 }, // COM2 for some reason pin 7 does not work, using 0 (RXI) instead
+  {  6,  0 }, // COM2 pin 7 does not work in my Pro Micro, using 0 (RXI) instead
   { 16, 10 }, // HDG
   { 15, 14 }, // CRS
 };
 static const uint8_t PIN_KP[NUM_KP] = { A1, A2, A3 };
-static const uint8_t PIN_LED[NUM_LED] = { 5, 4, A0 };
+static const uint8_t PIN_LED[NUM_LED] = { 4, 5, A0 };
 // SDA: D2
 // MCL: D3
 
@@ -70,24 +76,30 @@ static const DisplPnl::LcdData_t LcdData =
 // F/A-18C
 constexpr uint8_t FA18C_UFCSPSTR_SZ = 2U;
 constexpr uint8_t FA18C_UFCSPNUM_SZ = 8U;
-constexpr int FA18C_UFCSPSTR1_ADDR = 0x744e;
-constexpr int FA18C_UFCSPSTR2_ADDR = 0x7450;
-constexpr int FA18C_UFCSPNUM_ADDR = 0x7446;
-constexpr int FA18C_UFCOPCUE_SZ = 1U;
-constexpr int FA18C_UFCOPCUE1_ADDR = 0x7428;
-constexpr int FA18C_UFCOPCUE2_ADDR = 0x742a;
-constexpr int FA18C_UFCOPCUE3_ADDR = 0x742c;
-constexpr int FA18C_UFCOPCUE4_ADDR = 0x742e;
-constexpr int FA18C_UFCOPCUE5_ADDR = 0x7430;
-constexpr int FA18C_UFCOPSTR_SZ = 4U;
-constexpr int FA18C_UFCOPSTR1_ADDR = 0x7432;
-constexpr int FA18C_UFCOPSTR2_ADDR = 0x7436;
-constexpr int FA18C_UFCOPSTR3_ADDR = 0x743a;
-constexpr int FA18C_UFCOPSTR4_ADDR = 0x743e;
-constexpr int FA18C_UFCOPSTR5_ADDR = 0x7442;
+constexpr unsigned int FA18C_UFCSPSTR1_ADDR = 0x744e;
+constexpr unsigned int FA18C_UFCSPSTR2_ADDR = 0x7450;
+constexpr unsigned int FA18C_UFCSPNUM_ADDR = 0x7446;
+constexpr uint8_t FA18C_UFCOPCUE_SZ = 1U;
+constexpr unsigned int FA18C_UFCOPCUE1_ADDR = 0x7428;
+constexpr unsigned int FA18C_UFCOPCUE2_ADDR = 0x742a;
+constexpr unsigned int FA18C_UFCOPCUE3_ADDR = 0x742c;
+constexpr unsigned int FA18C_UFCOPCUE4_ADDR = 0x742e;
+constexpr unsigned int FA18C_UFCOPCUE5_ADDR = 0x7430;
+constexpr uint8_t FA18C_UFCOPSTR_SZ = 4U;
+constexpr unsigned int FA18C_UFCOPSTR1_ADDR = 0x7432;
+constexpr unsigned int FA18C_UFCOPSTR2_ADDR = 0x7436;
+constexpr unsigned int FA18C_UFCOPSTR3_ADDR = 0x743a;
+constexpr unsigned int FA18C_UFCOPSTR4_ADDR = 0x743e;
+constexpr unsigned int FA18C_UFCOPSTR5_ADDR = 0x7442;
 constexpr uint8_t FA18C_UFCCOM_SZ = 2U;
-constexpr int FA18C_UFCCOM1_ADDR = 0x7424;
-constexpr int FA18C_UFCCOM2_ADDR = 0x7426;
+constexpr unsigned int FA18C_UFCCOM1_ADDR = 0x7424;
+constexpr unsigned int FA18C_UFCCOM2_ADDR = 0x7426;
+constexpr unsigned int FA18C_MASTERCAUTLT_ADDR = 0x7408;
+constexpr unsigned int FA18C_MASTERCAUTLT_MASK = 0x0200;
+constexpr unsigned char FA18C_MASTERCAUTLT_SHIFT = 9U;
+constexpr unsigned int FA18C_APURDYLT_ADDR = 0x74bc;
+constexpr unsigned int FA18C_APURDYLT_MASK = 0x0400;
+constexpr unsigned char FA18C_APURDYLT_SHIFT = 10U;
 
 
 /*************/
@@ -107,22 +119,10 @@ static Joystick_ Joy(JOYSTICK_DEFAULT_REPORT_ID, JOYSTICK_TYPE_GAMEPAD,
   KP0_NUM_KEYS + KP1_NUM_KEYS + KP2_NUM_KEYS + NUM_ENC*2, 0,
   false, false, false, false, false, false, false, false, false, false, false);
 
-DcsBios::LED mcLed(0x1012, 0x0800, 13);
 
 /***********/
 /* Methods */
 /***********/
-
-
-/*
-  case MODE_M2000C:
-    Lcd.print("N  45:37.8       P07");
-    Lcd.print("PRET   M91  M92  M93");
-    Lcd.print("E 135:12.4  55   D03");
-    Lcd.print("ALN  MIP  N.DEG  SEC");
-    break;
-*/
-
 
 /* DCS-BIOS callbacks for F/A-18C */
 
@@ -247,23 +247,21 @@ static void cbFa18cUfcCom2(char *szValue)
 }
 
 /*
- *   Callback to update F/A-18C heading display.
+ *   Callback to update F/A-18C Master Caution light.
  */
-/*
-static void cbFa18cHdg(char *szValue)
+static void cbFa18cMasterCautLt(unsigned int Value)
 {
-  DiPnl.fa18cHdg(szValue);
+  DiPnl.fa18cMasterCaut((uint8_t) Value);
 }
-*/
+
 /*
- *   Callback to update F/A-18C course display.
+ *   Callback to update F/A-18C APU Ready light.
  */
-/*
-static void cbFa18cCrs(char *szValue)
+static void cbFa18cApuReadyLt(unsigned int Value)
 {
-  DiPnl.fa18cCrs(szValue);
+  DiPnl.fa18cApuReady((uint8_t) Value);
 }
-*/
+
 /*
  *   Initializes F/A-18C mode.
  */
@@ -273,6 +271,7 @@ static void modeFa18cInit()
   DiPnl.fa18cStart();
 
   // Register callbacks creating DCS-BIOS handlers in heap memory
+
   // Scratchpad
   new DcsBios::StringBuffer<FA18C_UFCSPSTR_SZ>(
       FA18C_UFCSPSTR1_ADDR, cbFa18cUfcScrpadStr1);
@@ -280,6 +279,7 @@ static void modeFa18cInit()
       FA18C_UFCSPSTR2_ADDR, cbFa18cUfcScrpadStr2);
   new DcsBios::StringBuffer<FA18C_UFCSPNUM_SZ>(
       FA18C_UFCSPNUM_ADDR, cbFa18cUfcScrpadNumber);
+
   // Option cueing
   new DcsBios::StringBuffer<FA18C_UFCOPCUE_SZ>(
       FA18C_UFCOPCUE1_ADDR, cbFa18cUfcOptionCue1);
@@ -291,6 +291,7 @@ static void modeFa18cInit()
       FA18C_UFCOPCUE4_ADDR, cbFa18cUfcOptionCue4);
   new DcsBios::StringBuffer<FA18C_UFCOPCUE_SZ>(
       FA18C_UFCOPCUE5_ADDR, cbFa18cUfcOptionCue5);
+
   // Option string
   new DcsBios::StringBuffer<FA18C_UFCOPSTR_SZ>(
       FA18C_UFCOPSTR1_ADDR, cbFa18cUfcOptionStr1);
@@ -302,11 +303,20 @@ static void modeFa18cInit()
       FA18C_UFCOPSTR4_ADDR, cbFa18cUfcOptionStr4);
   new DcsBios::StringBuffer<FA18C_UFCOPSTR_SZ>(
       FA18C_UFCOPSTR5_ADDR, cbFa18cUfcOptionStr5);
+
   // COMM
   new DcsBios::StringBuffer<FA18C_UFCCOM_SZ>(
       FA18C_UFCCOM1_ADDR, cbFa18cUfcCom1);
   new DcsBios::StringBuffer<FA18C_UFCCOM_SZ>(
       FA18C_UFCCOM2_ADDR, cbFa18cUfcCom2);
+
+  // Master warning light
+  new DcsBios::IntegerBuffer(FA18C_MASTERCAUTLT_ADDR, FA18C_MASTERCAUTLT_MASK,
+      FA18C_MASTERCAUTLT_SHIFT, cbFa18cMasterCautLt);
+
+  // APU Ready light
+  new DcsBios::IntegerBuffer(FA18C_APURDYLT_ADDR, FA18C_APURDYLT_MASK,
+      FA18C_APURDYLT_SHIFT, cbFa18cApuReadyLt);
 }
 
 
@@ -349,6 +359,40 @@ static void processInput()
 }
 
 
+/*
+ *   Given a pressed key during boot, initializes WorkMode as the mode of
+ *  operation. If no key was pressed, the previous mode is used (stored in
+ *  EEPROM). When a key is pressed, the mode is stored in EEPROM for future
+ *  use.
+ *   Parameters:
+ *   * KeyId: key pressed during boot (can also be SwitchKp::SWITCH_NONE) when
+ *     no key was pressed.
+ */
+static void setupWorkMode(uint8_t KeyId)
+{
+  const int EepromAddr = pgm_read_word(&EEPROM_MODE_ADDR);
+
+  // Did the user manually selected a mode?
+  if (KeyId == SwitchKp::SWITCH_NONE)
+  {
+    // No key pressed, default to previous mode used (stored in EEPROM)
+    // Note that if the EEPROM is not initialized and an invalid mode is
+    // read, the default mode will be selected and the EEPROM will remain
+    // not initialized
+    WorkMode.set((Mode::Id_t) EEPROM.read(EepromAddr));
+  }
+  else
+  {
+    // User selected a mode, get it and store it in EEPROM
+    WorkMode = Mode(KeyId);
+    EEPROM.update(EepromAddr, WorkMode.get());
+  }
+}
+
+
+/*
+ *   Code entry point: initializes all the stuff.
+ */
 void setup()
 {
   uint8_t ModeKeyId;
@@ -356,9 +400,9 @@ void setup()
   // Initialize display panel
   DiPnl.init();
 
-  // Initialize all input stuff and get mode of operation
+  // Initialize all input stuff and setup mode of operation selected
   ModeKeyId = SwPnl.init(KP_MODE);
-  WorkMode = Mode(ModeKeyId);
+  setupWorkMode(ModeKeyId);
 
   // Display mode of operation
   DiPnl.showMode(WorkMode.P_str());
@@ -376,11 +420,11 @@ void setup()
   // Initialize mode stuff
   switch (WorkMode.get())
   {
-  case Mode::M_DEBUG:
-    modeDebugInit();
-    break;
   case Mode::M_FA18C:
     modeFa18cInit();
+    break;
+  case Mode::M_DEBUG:
+    modeDebugInit();
     break;
   }
 
@@ -391,6 +435,9 @@ void setup()
 }
 
 
+/*
+ *   Main loop function.
+ */
 void loop()
 {
   // Check buttons

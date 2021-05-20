@@ -4,6 +4,17 @@
 
 const char DisplPnl::_LINE_KEY[] PROGMEM = "%03u Key:%c%u/%02u Dx:%c%02u";
 const char DisplPnl::_LINE_ENC[] PROGMEM = "%03u Enc:%c%u%-3s Dx:%c%02u";
+const char DisplPnl::_LCD_SEPARATOR_CHAR PROGMEM = '|';
+
+// Where to display separators {row, col} format
+const uint8_t DisplPnl::_FA18C_SEPARATORS[][2] PROGMEM =
+{
+  { 0, 12 }, { 0, 14 }, // Row 0
+  { 1, 5 }, { 1, 14 },  // Row 1
+  { 2, 5 }, { 2, 14 },  // Row 2
+  { 3, 2 }, { 3, 17 }   // Row 3
+};
+
 
 
 // Constants for position of data in LCD
@@ -17,14 +28,6 @@ constexpr uint8_t FA18C_OPTION_ROW[] = { 0U, 1U, 2U, 1U, 2U };
 constexpr uint8_t FA18C_COM1_COL = 0U;
 constexpr uint8_t FA18C_COM2_COL = 18U;
 constexpr uint8_t FA18C_COM_ROW = 3U;
-/*
-constexpr uint8_t FA18C_HDG_TAG_COL = 3U;
-constexpr uint8_t FA18C_CRS_TAG_COL = 14U;
-constexpr uint8_t FA18C_HDG_COL = 6U;
-constexpr uint8_t FA18C_CRS_COL = 11U;
-constexpr uint8_t FA18C_HDGCRS_ROW = 3U;
-*/
-
 
 /*
  *   Constructor.
@@ -79,12 +82,12 @@ void DisplPnl::showMode(const __FlashStringHelper *pmMode)
 
 
 /*
- *   Initializes display panel for default mode.
+ *   Initializes display panel for debug mode.
  */
 void DisplPnl::debugStart()
 {
   _Lcd.clear();
-  _defaultLine = 0U;
+  _debugLine = 0U;
 }
 
 
@@ -109,37 +112,37 @@ void DisplPnl::debugShowEvent(const Event &Ev, const Directx::Event_t &Dx)
   switch (Ev.Id)
   {
   case Event::EvKpPress:
-    sprintf_P(Buffer, _LINE_KEY, _defaultLine, PRESS, Ev.Kp.KpId, Ev.Kp.KeyId,
+    sprintf_P(Buffer, _LINE_KEY, _debugLine, PRESS, Ev.Kp.KpId, Ev.Kp.KeyId,
       Dx.Action == Directx::AcRelease? RELEASE: PRESS, Dx.Button);
     break;
   case Event::EvKpRelease:
-    sprintf_P(Buffer, _LINE_KEY, _defaultLine, RELEASE, Ev.Kp.KpId, Ev.Kp.KeyId,
+    sprintf_P(Buffer, _LINE_KEY, _debugLine, RELEASE, Ev.Kp.KpId, Ev.Kp.KeyId,
       Dx.Action == Directx::AcRelease? RELEASE: PRESS, Dx.Button);
     break;
   case Event::EvEncCcwPress:
-    sprintf_P(Buffer, _LINE_ENC, _defaultLine, PRESS, Ev.EncId, CCW,
+    sprintf_P(Buffer, _LINE_ENC, _debugLine, PRESS, Ev.EncId, CCW,
       Dx.Action == Directx::AcRelease? RELEASE: PRESS, Dx.Button);
     break;
   case Event::EvEncCcwRelease:
-    sprintf_P(Buffer, _LINE_ENC, _defaultLine, RELEASE, Ev.EncId, CCW,
+    sprintf_P(Buffer, _LINE_ENC, _debugLine, RELEASE, Ev.EncId, CCW,
       Dx.Action == Directx::AcRelease? RELEASE: PRESS, Dx.Button);
     break;
   case Event::EvEncCwPress:
-    sprintf_P(Buffer, _LINE_ENC, _defaultLine, PRESS, Ev.EncId, CW,
+    sprintf_P(Buffer, _LINE_ENC, _debugLine, PRESS, Ev.EncId, CW,
       Dx.Action == Directx::AcRelease? RELEASE: PRESS, Dx.Button);
     break;
   case Event::EvEncCwRelease:
-    sprintf_P(Buffer, _LINE_ENC, _defaultLine, RELEASE, Ev.EncId, CW,
+    sprintf_P(Buffer, _LINE_ENC, _debugLine, RELEASE, Ev.EncId, CW,
       Dx.Action == Directx::AcRelease? RELEASE: PRESS, Dx.Button);
     break;
   }
 
 #pragma GCC diagnostic pop
 
-  _Lcd.setCursor(0, _defaultLine % LCD_ROWS);
+  _Lcd.setCursor(0, _debugLine % LCD_ROWS);
   _Lcd.print(Buffer);
 
-  _defaultLine++;
+  _debugLine++;
 }
 
 
@@ -148,13 +151,22 @@ void DisplPnl::debugShowEvent(const Event &Ev, const Directx::Event_t &Dx)
  */
 void DisplPnl::fa18cStart()
 {
+  constexpr uint8_t Max =
+    sizeof _FA18C_SEPARATORS / sizeof _FA18C_SEPARATORS[0];
+  uint8_t Idx;
+  char Separator = (char) pgm_read_byte(&_LCD_SEPARATOR_CHAR);
+
+  // Cllear the display
   _Lcd.clear();
-/*
-  _Lcd.setCursor(FA18C_HDG_TAG_COL, FA18C_HDGCRS_ROW);
-  _Lcd.print(F("HDG"));
-  _Lcd.setCursor(, FA18C_HDGCRS_ROW);
-  _Lcd.print(F("CRS"));
-*/
+
+  // Print the field separators
+  for (Idx=0U; Idx<Max; Idx++)
+  {
+    _Lcd.setCursor(
+      pgm_read_byte(_FA18C_SEPARATORS[Idx]+1),
+      pgm_read_byte(_FA18C_SEPARATORS[Idx]));
+    _Lcd.print(Separator);
+  }
 }
 
 
@@ -245,28 +257,38 @@ void DisplPnl::fa18cCom2(const char *szValue)
 
 
 /*
- *   Updates F/A-18 heading in LCD.
+ *   Updates F/A-18 master caution light LED.
  *  Parameters:
- *  * szValue: string with the new value to display.
+ *  * Value (HIGH, LOW): new state value: HIGH = on; LOW = off
  */
-/*
-void DisplPnl::fa18cHdg(const char *szValue)
+void DisplPnl::fa18cMasterCaut(uint8_t Value)
 {
-  _Lcd.setCursor(FA18C_HDG_COL, FA18C_HDGCRS_ROW);
-  _Lcd.print(szValue);
+  _setLed(LedWrn, Value);
 }
-*/
+
 
 /*
- *   Updates F/A-18 course in LCD.
+ *   Updates F/A-18 APU Ready light LED.
  *  Parameters:
- *  * szValue: string with the new value to display.
+ *  * Value (HIGH, LOW): new state value: HIGH = on; LOW = off
+ */
+void DisplPnl::fa18cApuReady(uint8_t Value)
+{
+  _setLed(LedClr, Value);
+}
+
+
+/*
+ *   Initializes display panel for Mirage 2000C mode.
  */
 /*
-void DisplPnl::fa18cCrs(const char *szValue)
+void DisplPnl::m2000cStart()
 {
-  _Lcd.setCursor(FA18C_CRS_COL, FA18C_HDGCRS_ROW);
-  _Lcd.print(szValue);
+  _Lcd.home();
+  _Lcd.print("N  45:37.8       P07");
+  _Lcd.print("E 135:12.4  55   D03");
+  _Lcd.print("PRET   M91  M92  M93");
+  _Lcd.print("ALN  MIP  N.DEG  SEC");
 }
 */
 

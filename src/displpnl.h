@@ -63,8 +63,10 @@ public:
   void fa18cOptionStr(uint8_t Id, const char *szValue);
   void fa18cCom1(const char *szValue);
   void fa18cCom2(const char *szValue);
-// void fa18cHdg(const char *szValue);
-// void fa18cCrs(const char *szValue);
+  void fa18cMasterCaut(uint8_t Value);
+  void fa18cApuReady(uint8_t Value);
+
+//  void m2000cStart();
 
 protected:
 
@@ -82,11 +84,13 @@ protected:
 
   static const char _LINE_KEY[] PROGMEM;
   static const char _LINE_ENC[] PROGMEM;
+  static const char _LCD_SEPARATOR_CHAR PROGMEM;
+  static const uint8_t _FA18C_SEPARATORS[][2] PROGMEM;
 
   LiquidCrystal_I2C _Lcd;
   const uint8_t _LedPin[NUM_LED];
 
-  uint8_t _defaultLine;  // Current line for logs
+  uint8_t _debugLine;  // Current line for logs
 };
 
 

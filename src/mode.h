@@ -14,13 +14,14 @@ public:
   // Define all the available modes of operation
   enum Id_t: uint8_t
   {
-    M_DEFAULT = 0,
+    M_DIRECTX = 0,
     M_A10C,
     M_F16,
     M_FA18C,
     M_M2000C,
     M_DEBUG,
-    M_NUM_MODES
+    M_NUM_MODES,
+    M_DEFAULT = M_DIRECTX  // Default mode of operation
   };
 
 
@@ -33,6 +34,7 @@ public:
   Mode(const Mode &M);
   Mode &operator=(const Mode &M);
   inline Id_t get() const { return _Id; }
+  void set(Id_t Id);
   const __FlashStringHelper *P_str() const;
 
 
@@ -43,7 +45,7 @@ protected:
   /********************/
 
   static const int8_t _KEY[M_NUM_MODES] PROGMEM;
-  static const char _TXT_DEFAULT[] PROGMEM;
+  static const char _TXT_DIRECTX[] PROGMEM;
   static const char _TXT_A10C[] PROGMEM;
   static const char _TXT_F16C[] PROGMEM;
   static const char _TXT_FA18C[] PROGMEM;
