@@ -16,7 +16,7 @@
 /*******************/
 
 // Number of iterations processing switches per loop() call
-static const uint16_t SWITCH_LOOP_CNT = 500U;
+static const uint16_t SWITCH_LOOP_CNT = 150U;
 
 // EEPROM address where the default mode is stored
 static const int EEPROM_MODE_ADDR PROGMEM = 0;
@@ -79,6 +79,21 @@ constexpr unsigned int A10C_CDUSP_ADDR = 0x1298;
 constexpr unsigned int A10C_MASTERCAUTLT_ADDR = 0x1012;
 constexpr unsigned int A10C_MASTERCAUTLT_MASK = 0x0800;
 constexpr unsigned char A10C_MASTERCAUTLT_SHIFT = 11U;
+constexpr unsigned int A10C_HSIHDG_ADDR = 0x104c;
+constexpr unsigned int A10C_HSIHDG_MASK = 0xffff;
+constexpr unsigned char A10C_HSIHDG_SHIFT = 0U;
+constexpr unsigned int A10C_HSIHDGBUG_ADDR = 0x1052;
+constexpr unsigned int A10C_HSIHDGBUG_MASK = 0xffff;
+constexpr unsigned char A10C_HSIHDGBUG_SHIFT = 0U;
+constexpr unsigned int A10C_HSICRS_ADDR = 0x1054;
+constexpr unsigned int A10C_HSICRS_MASK = 0xffff;
+constexpr unsigned char A10C_HSICRS_SHIFT = 0U;
+constexpr unsigned int A10C_MASTERARMSW_ADDR = 0x10e8;
+constexpr unsigned int A10C_MASTERARMSW_MASK = 0x000c;
+constexpr unsigned char A10C_MASTERARMSW_SHIFT = 2U;
+constexpr unsigned int A10C_GUNRDYLT_ADDR = 0x1026;
+constexpr unsigned int A10C_GUNRDYLT_MASK = 0x8000;
+constexpr unsigned char A10C_GUNRDYLT_SHIFT = 15U;
 
 // F/A-18C
 constexpr uint8_t FA18C_UFCSPSTR_SZ = 2U;
@@ -101,12 +116,27 @@ constexpr unsigned int FA18C_UFCOPSTR5_ADDR = 0x7442;
 constexpr uint8_t FA18C_UFCCOM_SZ = 2U;
 constexpr unsigned int FA18C_UFCCOM1_ADDR = 0x7424;
 constexpr unsigned int FA18C_UFCCOM2_ADDR = 0x7426;
+constexpr uint8_t FA18C_IFEIFUEL_SZ = 6U;
+constexpr unsigned int FA18C_IFEIFUELUP_ADDR = 0x748a;
+constexpr unsigned int FA18C_IFEIFUELDN_ADDR = 0x7484;
+constexpr uint8_t FA18C_IFEIBINGO_SZ = 5U;
+constexpr unsigned int FA18C_IFEIBINGO_ADDR = 0x7462;
+constexpr uint8_t FA18C_IFEIBINGOT_SZ = 1U;
+constexpr unsigned int FA18C_IFEIBINGOT_ADDR = 0x74b6;
 constexpr unsigned int FA18C_MASTERCAUTLT_ADDR = 0x7408;
 constexpr unsigned int FA18C_MASTERCAUTLT_MASK = 0x0200;
 constexpr unsigned char FA18C_MASTERCAUTLT_SHIFT = 9U;
+/*
 constexpr unsigned int FA18C_APURDYLT_ADDR = 0x74bc;
 constexpr unsigned int FA18C_APURDYLT_MASK = 0x0400;
 constexpr unsigned char FA18C_APURDYLT_SHIFT = 10U;
+*/
+constexpr unsigned int FA18C_MASTERARMSW_ADDR = 0x740c;
+constexpr unsigned int FA18C_MASTERARMSW_MASK = 0x2000;
+constexpr unsigned char FA18C_MASTERARMSW_SHIFT = 13U;
+constexpr unsigned int FA18C_LTDRSW_ADDR = 0x74c4;
+constexpr unsigned int FA18C_LTDRSW_MASK = 0x0100;
+constexpr unsigned char FA18C_LTDRSW_SHIFT = 8U;
 
 
 /*************/
@@ -141,12 +171,59 @@ static void cbA10cCduScrpad(char *szValue)
   DiPnl.a10cScrpad(szValue);
 }
 
+
+/*
+ *   Callback to update A-10C HSI heading.
+ *  Parameters:
+ *  * Value: [0, 65535]
+ */
+static void cbA10cHsiHdg(unsigned int Value)
+{
+  DiPnl.a10cHdg(Value);
+}
+
+/*
+ *   Callback to update A-10C HSI heading bug.
+ *  Parameters:
+ *  * Value: [0, 65535]
+ */
+static void cbA10cHsiHdgBug(unsigned int Value)
+{
+  DiPnl.a10cHdgBug(Value);
+}
+
+/*
+ *   Callback to update A-10C HSI heading bug.
+ *  Parameters:
+ *  * Value: [0, 65535]
+ */
+static void cbA10cHsiCrs(unsigned int Value)
+{
+  DiPnl.a10cCrs(Value);
+}
+
 /*
  *   Callback to update A-10C Master Caution light.
  */
 static void cbA10cMasterCautLt(unsigned int Value)
 {
   DiPnl.a10cMasterCaut((uint8_t) Value);
+}
+
+/*
+ *   Callback to update A-10C Master Arm switch position.
+ */
+static void cbA10cMasterArmSw(unsigned int Value)
+{
+  DiPnl.a10cMasterArm((uint8_t) Value);
+}
+
+/*
+ *   Callback to update A-10C Gun Ready light.
+ */
+static void cbA10cGunReadyLt(unsigned int Value)
+{
+  DiPnl.a10cGunReady((uint8_t) Value);
 }
 
 /*
@@ -169,9 +246,21 @@ static void modeA10cInit()
   new DcsBios::StringBuffer<FA18C_UFCCOM_SZ>(
       FA18C_UFCCOM2_ADDR, cbFa18cUfcCom2);
 */
+  // Heading and course
+  new DcsBios::IntegerBuffer(A10C_HSIHDG_ADDR, A10C_HSIHDG_MASK,
+      A10C_HSIHDG_SHIFT, cbA10cHsiHdg);
+  new DcsBios::IntegerBuffer(A10C_HSIHDGBUG_ADDR, A10C_HSIHDGBUG_MASK,
+      A10C_HSIHDGBUG_SHIFT, cbA10cHsiHdgBug);
+  new DcsBios::IntegerBuffer(A10C_HSICRS_ADDR, A10C_HSICRS_MASK,
+      A10C_HSICRS_SHIFT, cbA10cHsiCrs);
+
   // Master warning light
   new DcsBios::IntegerBuffer(A10C_MASTERCAUTLT_ADDR, A10C_MASTERCAUTLT_MASK,
       A10C_MASTERCAUTLT_SHIFT, cbA10cMasterCautLt);
+  new DcsBios::IntegerBuffer(A10C_MASTERARMSW_ADDR, A10C_MASTERARMSW_MASK,
+      A10C_MASTERARMSW_SHIFT, cbA10cMasterArmSw);
+  new DcsBios::IntegerBuffer(A10C_GUNRDYLT_ADDR, A10C_GUNRDYLT_MASK,
+      A10C_GUNRDYLT_SHIFT, cbA10cGunReadyLt);
 }
 
 /* DCS-BIOS callbacks for F/A-18C */
@@ -297,6 +386,38 @@ static void cbFa18cUfcCom2(char *szValue)
 }
 
 /*
+ *   Callback to update F/A-18C upper line fuel display.
+ */
+static void cbFa18cIfeiFuelUp(char *szValue)
+{
+  DiPnl.fa18cFuel(false, szValue);
+}
+
+/*
+ *   Callback to update F/A-18C lower line fuel display.
+ */
+static void cbFa18cIfeiFuelDn(char *szValue)
+{
+  DiPnl.fa18cFuel(true, szValue);
+}
+
+/*
+ *   Callback to update F/A-18C bingo fuel display.
+ */
+static void cbFa18cIfeiBingo(char *szValue)
+{
+  DiPnl.fa18cBingo(szValue);
+}
+
+/*
+ *   Callback to update F/A-18C bingo fuel display.
+ */
+static void cbFa18cIfeiBingoTexture(char *szValue)
+{
+  DiPnl.fa18cBingoLbl(*szValue == '1');
+}
+
+/*
  *   Callback to update F/A-18C Master Caution light.
  */
 static void cbFa18cMasterCautLt(unsigned int Value)
@@ -307,9 +428,27 @@ static void cbFa18cMasterCautLt(unsigned int Value)
 /*
  *   Callback to update F/A-18C APU Ready light.
  */
+/*
 static void cbFa18cApuReadyLt(unsigned int Value)
 {
   DiPnl.fa18cApuReady((uint8_t) Value);
+}
+*/
+
+/*
+ *   Callback on change of F/A-18C Master Arm switch.
+ */
+static void cbFa18cMasterArmSw(unsigned int Value)
+{
+  DiPnl.fa18cMasterArm((uint8_t) Value);
+}
+
+/*
+ *   Callback on change of F/A-18C LTD/R switch.
+ */
+static void cbFa18cLtdrSw(unsigned int Value)
+{
+  DiPnl.fa18cLtdr((uint8_t) Value);
 }
 
 /*
@@ -360,13 +499,32 @@ static void modeFa18cInit()
   new DcsBios::StringBuffer<FA18C_UFCCOM_SZ>(
       FA18C_UFCCOM2_ADDR, cbFa18cUfcCom2);
 
+  // IFEI
+  // It is important that bingo texture is updated before fuel lines
+  new DcsBios::StringBuffer<FA18C_IFEIFUEL_SZ>(
+      FA18C_IFEIFUELUP_ADDR, cbFa18cIfeiFuelUp);
+  new DcsBios::StringBuffer<FA18C_IFEIFUEL_SZ>(
+      FA18C_IFEIFUELDN_ADDR, cbFa18cIfeiFuelDn);
+  new DcsBios::StringBuffer<FA18C_IFEIBINGOT_SZ>(
+      FA18C_IFEIBINGOT_ADDR, cbFa18cIfeiBingoTexture);
+  new DcsBios::StringBuffer<FA18C_IFEIBINGO_SZ>(
+      FA18C_IFEIBINGO_ADDR, cbFa18cIfeiBingo);
+
   // Master warning light
   new DcsBios::IntegerBuffer(FA18C_MASTERCAUTLT_ADDR, FA18C_MASTERCAUTLT_MASK,
       FA18C_MASTERCAUTLT_SHIFT, cbFa18cMasterCautLt);
 
   // APU Ready light
+/*
   new DcsBios::IntegerBuffer(FA18C_APURDYLT_ADDR, FA18C_APURDYLT_MASK,
       FA18C_APURDYLT_SHIFT, cbFa18cApuReadyLt);
+*/
+
+  // Master Arm and LTD/R switches
+  new DcsBios::IntegerBuffer(FA18C_MASTERARMSW_ADDR, FA18C_MASTERARMSW_MASK,
+      FA18C_MASTERARMSW_SHIFT, cbFa18cMasterArmSw);
+  new DcsBios::IntegerBuffer(FA18C_LTDRSW_ADDR, FA18C_LTDRSW_MASK,
+      FA18C_LTDRSW_SHIFT, cbFa18cLtdrSw);
 }
 
 
