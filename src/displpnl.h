@@ -59,6 +59,18 @@ public:
 
   void a10cStart();
   void a10cScrpad(const char *szValue);
+  void a10cUhfFreq(const char *szValue);
+  void a10cUhfMode(uint16_t Value);
+  void a10cUhfPreset(const char *szValue);
+  void a10cVamFreq(const char *szValue);
+  void a10cVamMode(uint16_t Value);
+  void a10cVamPreset(const char *szValue);
+  void a10cVfmFreq(const char *szValue);
+  void a10cVfmMode(uint16_t Value);
+  void a10cVfmPreset(const char *szValue);
+  void a10cTcnChannel(const char *szValue);
+  void a10cTcnMode(uint16_t Value);
+  void a10cIlsFreq(const char *szValue);
   inline void a10cHdg(uint16_t Value);
   void a10cHdgBug(uint16_t Value);
   void a10cCrs(uint16_t Value);
@@ -89,24 +101,45 @@ public:
 
 protected:
 
+  /******************************/
+  /* Protected static constants */
+  /******************************/
+
+  static const uint8_t _CRD_DIM = 2U; // Dimensions of the LCD coordinates
+
+  static const char _LINE_KEY[] PROGMEM;
+  static const char _LINE_ENC[] PROGMEM;
+
+  static const char _LCD_SEPARATOR_CHAR = '|';
+  static const uint8_t _A10C_SEPARATORS[][_CRD_DIM] PROGMEM;
+  static const uint8_t _FA18C_SEPARATORS[][_CRD_DIM] PROGMEM;
+
+  static const uint8_t _A10C_VHF_NUM_MODES = 4U;
+  static const uint8_t _A10C_UHF_NUM_MODES = 3U;
+  static const uint8_t _A10C_TCN_NUM_MODES = 5U;
+  static const uint8_t _A10C_TCN_MODES_LN = 3U;
+  static const char _A10C_VHF_MODES[_A10C_VHF_NUM_MODES] PROGMEM;
+  static const char _A10C_UHF_MODES[_A10C_UHF_NUM_MODES] PROGMEM;
+  static const char _A10C_TCN_MODES[_A10C_TCN_NUM_MODES][_A10C_TCN_MODES_LN+1]
+    PROGMEM;
+
+
   /*********************/
   /* Protected methods */
   /*********************/
 
+  void _writeSeparators(const uint8_t (*pmCrd)[_CRD_DIM], uint8_t Size);
   void _fa18cFuelWriteSuffix(bool Down, bool SetCursor);
 //  void _error();
-  void _lcdWritePadded(const char *szText, uint8_t Size);
+  void _lcdWritePadded(const char *szText, uint8_t Size, char PadChar=' ');
+  void _lcdWriteDeg(uint16_t Value);
   inline void _setLed(LedId_t Led, uint8_t Value) const;
-  static void _unpad(char *szDst, const char *szSrc);
+  static void _unpad(char *szDst, const char *szSrc, uint8_t Discard = 0U);
+
 
   /***************/
   /* Member data */
   /***************/
-
-  static const char _LINE_KEY[] PROGMEM;
-  static const char _LINE_ENC[] PROGMEM;
-  static const char _LCD_SEPARATOR_CHAR PROGMEM;
-  static const uint8_t _FA18C_SEPARATORS[][2] PROGMEM;
 
   LiquidCrystal_I2C _Lcd;
   const uint8_t _LedPin[NUM_LED];

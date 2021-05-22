@@ -1,15 +1,36 @@
 #include "displpnl.h"
 #include <Arduino.h>
 
+// Rounded division of positive integers
+#define DIV_PROUND(n, d) (((n) + (d)/2)/(d))
+
+
+/*************/
+/* Constants */
+/*************/
 
 const char DisplPnl::_LINE_KEY[] PROGMEM = "%03u Key:%c%u/%02u Dx:%c%02u";
 const char DisplPnl::_LINE_ENC[] PROGMEM = "%03u Enc:%c%u%-3s Dx:%c%02u";
-const char DisplPnl::_LCD_SEPARATOR_CHAR PROGMEM = '|';
+
+// Strings for the radio modes
+const char DisplPnl::_A10C_VHF_MODES[_A10C_VHF_NUM_MODES] PROGMEM =
+  { 'F', 'A', 'M', 'P' };
+const char DisplPnl::_A10C_UHF_MODES[_A10C_UHF_NUM_MODES] PROGMEM =
+  { 'M', 'P', 'G' };
+const char DisplPnl::_A10C_TCN_MODES[_A10C_TCN_NUM_MODES][_A10C_TCN_MODES_LN+1]
+  PROGMEM = { "OFF", "RCV", "T/R", "A-R", "A-T" };
 
 // Where to display separators {row, col} format
-const uint8_t DisplPnl::_FA18C_SEPARATORS[][2] PROGMEM =
+const uint8_t DisplPnl::_A10C_SEPARATORS[][_CRD_DIM] PROGMEM =
 {
-  { 0, 11 }, { 0, 14 }, // Row 0
+  { 1, 9 }, { 1, 10 },  // Row 1
+  { 2, 9 }, { 2, 10 },  // Row 2
+  { 3, 6 }, { 3, 13 }   // Row 3
+};
+
+const uint8_t DisplPnl::_FA18C_SEPARATORS[][_CRD_DIM] PROGMEM =
+{
+  { 0, 11 }, { 0, 14 },  // Row 0
   { 1,  5 }, { 1, 14 },  // Row 1
   { 2,  5 }, { 2, 14 },  // Row 2
   { 3,  2 }, { 3, 17 }   // Row 3
@@ -26,6 +47,27 @@ constexpr uint8_t A10C_CRS_COL = 17U;
 constexpr uint8_t A10C_CRS_LBL_COL = 14U;
 constexpr uint8_t A10C_HDGCRS_ROW = 3U;
 constexpr uint8_t A10C_MASTERARM_ARM_SW = 2U;
+constexpr uint8_t A10C_UHFFREQ_COL = 0U;
+constexpr uint8_t A10C_UHFMODE_COL = 6U;
+constexpr uint8_t A10C_UHFPSET_COL = 7U;
+constexpr uint8_t A10C_UHF_ROW = 2U;
+constexpr uint8_t A10C_VAMFREQ_COL = 0U;
+constexpr uint8_t A10C_VAMFREQ_SZ = 7U;
+constexpr uint8_t A10C_VAMMODE_COL = 6U;
+constexpr uint8_t A10C_VAMPSET_COL = 7U;
+constexpr uint8_t A10C_VAMPSET_SZ = 2U;
+constexpr uint8_t A10C_VAM_ROW = 1U;
+constexpr uint8_t A10C_VHFPSET_SZ = 2U;
+constexpr uint8_t A10C_VFMFREQ_COL = 14U;
+constexpr uint8_t A10C_VFMFREQ_SZ = 7U;
+constexpr uint8_t A10C_VFMMODE_COL = 13U;
+constexpr uint8_t A10C_VFMPSET_COL = 11U;
+constexpr uint8_t A10C_VFM_ROW = 1U;
+constexpr uint8_t A10C_TCNFREQ_COL = 16U;
+constexpr uint8_t A10C_TCNMODE_COL = 12U;
+constexpr uint8_t A10C_TCN_ROW = 2U;
+constexpr uint8_t A10C_ILSFREQ_COL = 7U;
+constexpr uint8_t A10C_ILS_ROW = 3U;
 
 // F/A-18C
 constexpr uint8_t FA18C_SCRPAD_STR1_COL = 0U;
@@ -47,6 +89,10 @@ constexpr uint8_t FA18C_BINGO_LBL_COL = 5U;
 constexpr uint8_t FA18C_BINGO_ROW = 3U;
 constexpr uint8_t FA18C_BINGO_SZ = 5U;
 
+
+/***********/
+/* Methods */
+/***********/
 
 /*
  *   Constructor.
@@ -92,10 +138,10 @@ void DisplPnl::showMode(const __FlashStringHelper *pmMode)
 
   // Prepare string with mode and claculate column to center it
   sprintf_P(Line, PSTR("* %S *"), (PGM_P) pmMode);
-  Column = (LCD_COLS - (uint8_t) strlen(Line)) / 2;
+  Column = (LCD_COLS - (uint8_t) strlen(Line)) / 2U;
 
   // Display the mode
-  _Lcd.setCursor(Column, 0);
+  _Lcd.setCursor(Column, 0U);
   _Lcd.write(Line);
 }
 
@@ -105,8 +151,14 @@ void DisplPnl::showMode(const __FlashStringHelper *pmMode)
  */
 void DisplPnl::a10cStart()
 {
+  constexpr uint8_t Size =
+    sizeof _A10C_SEPARATORS / sizeof _A10C_SEPARATORS[0];
+
   // Clear the display
   _Lcd.clear();
+
+  // Print the field separators
+  _writeSeparators(_A10C_SEPARATORS, Size);
 
   // Display heading and course labels
   _Lcd.setCursor(A10C_HDG_LBL_COL, A10C_HDGCRS_ROW);
@@ -124,7 +176,172 @@ void DisplPnl::a10cStart()
 void DisplPnl::a10cScrpad(const char *szValue)
 {
   _Lcd.setCursor(A10C_SCRPAD_COL, A10C_SCRPAD_ROW);
+  // Write only the scratchpad area, not the page at the end of the string
   _Lcd.write(szValue, A10C_SCRPAD_SZ);
+}
+
+/*
+ *   Updates A-10C UHF radio frequency in LCD.
+ *  Parameters:
+ *  * szValue: string with the new value to display.
+ */
+void DisplPnl::a10cUhfFreq(const char *szValue)
+{
+  _Lcd.setCursor(A10C_UHFFREQ_COL, A10C_UHF_ROW);
+  // Discard non significant last character in 25kHz separation frequency
+  _Lcd.write(szValue, A10C_VAMFREQ_SZ - 1U);
+}
+
+
+/*
+ *   Updates A-10C UHF radio mode in LCD.
+ *  Parameters:
+ *  * Value: mode identifier.
+ */
+void DisplPnl::a10cUhfMode(uint16_t Value)
+{
+  _Lcd.setCursor(A10C_UHFMODE_COL, A10C_UHF_ROW);
+  _Lcd.write(pgm_read_byte(_A10C_UHF_MODES + Value));
+}
+
+
+/*
+ *   Updates A-10C UHF radio preset channel in LCD.
+ *  Parameters:
+ *  * szValue: string with the new value to display.
+ */
+void DisplPnl::a10cUhfPreset(const char *szValue)
+{
+  _Lcd.setCursor(A10C_UHFPSET_COL, A10C_UHF_ROW);
+  _Lcd.write(szValue);
+}
+
+
+/*
+ *   Updates A-10C VHF AM radio frequency in LCD.
+ *  Parameters:
+ *  * szValue: string with the new value to display.
+ */
+void DisplPnl::a10cVamFreq(const char *szValue)
+{
+  char Unpadded[A10C_VAMFREQ_SZ + 1U];
+
+  _Lcd.setCursor(A10C_VAMFREQ_COL, A10C_VAM_ROW);
+  // Remove right padding and discard last character in 25kHz separation freq
+  _unpad(Unpadded, szValue, 1U);
+  // Repad with zeroes to the left
+  _lcdWritePadded(Unpadded, A10C_VAMFREQ_SZ - 1U, '0');
+}
+
+
+/*
+ *   Updates A-10C VHF AM radio mode in LCD.
+ *  Parameters:
+ *  * Value: mode identifier.
+ */
+void DisplPnl::a10cVamMode(uint16_t Value)
+{
+  _Lcd.setCursor(A10C_VAMMODE_COL, A10C_VAM_ROW);
+  _Lcd.write(pgm_read_byte(_A10C_VHF_MODES + Value));
+}
+
+
+/*
+ *   Updates A-10C VHF AM radio preset channel in LCD.
+ *  Parameters:
+ *  * szValue: string with the new value to display.
+ */
+void DisplPnl::a10cVamPreset(const char *szValue)
+{
+  char Unpadded[A10C_VHFPSET_SZ + 1U];
+
+  _Lcd.setCursor(A10C_VAMPSET_COL, A10C_VAM_ROW);
+  // Remove left blank padding
+  _unpad(Unpadded, szValue);
+  // Repad with zeroes to the left
+  _lcdWritePadded(Unpadded, A10C_VAMPSET_SZ, '0');
+}
+
+
+/*
+ *   Updates A-10C VHF FM radio frequency in LCD.
+ *  Parameters:
+ *  * szValue: string with the new value to display.
+ */
+void DisplPnl::a10cVfmFreq(const char *szValue)
+{
+  char Unpadded[A10C_VFMFREQ_SZ + 1U];
+
+  _Lcd.setCursor(A10C_VFMFREQ_COL, A10C_VFM_ROW);
+  // Remove right padding and discard last character in 25kHz separation freq
+  _unpad(Unpadded, szValue, 1U);
+  // Repad with zeroes to the left
+  _lcdWritePadded(Unpadded, A10C_VFMFREQ_SZ - 1U, '0');
+}
+
+
+/*
+ *   Updates A-10C VHF FM radio mode in LCD.
+ *  Parameters:
+ *  * Value: mode identifier.
+ */
+void DisplPnl::a10cVfmMode(uint16_t Value)
+{
+  _Lcd.setCursor(A10C_VFMMODE_COL, A10C_VFM_ROW);
+  _Lcd.write(pgm_read_byte(_A10C_VHF_MODES + Value));
+}
+
+
+/*
+ *   Updates A-10C VHF FM radio preset channel in LCD.
+ *  Parameters:
+ *  * szValue: string with the new value to display.
+ */
+void DisplPnl::a10cVfmPreset(const char *szValue)
+{
+  char Unpadded[A10C_VHFPSET_SZ + 1U];
+
+  _Lcd.setCursor(A10C_VFMPSET_COL, A10C_VFM_ROW);
+  // Remove left blank padding
+  _unpad(Unpadded, szValue);
+  // Repad with zeroes to the left
+  _lcdWritePadded(Unpadded, A10C_VHFPSET_SZ, '0');
+}
+
+
+/*
+ *   Updates A-10C TACAN radio frequency in LCD.
+ *  Parameters:
+ *  * szValue: string with the new value to display.
+ */
+void DisplPnl::a10cTcnChannel(const char *szValue)
+{
+  _Lcd.setCursor(A10C_TCNFREQ_COL, A10C_TCN_ROW);
+  _Lcd.write(szValue);
+}
+
+
+/*
+ *   Updates A-10C TACAN radio mode in LCD.
+ *  Parameters:
+ *  * Value: mode identifier.
+ */
+void DisplPnl::a10cTcnMode(uint16_t Value)
+{
+  _Lcd.setCursor(A10C_TCNMODE_COL, A10C_TCN_ROW);
+  _Lcd.print((const __FlashStringHelper *) (_A10C_TCN_MODES + Value));
+}
+
+
+/*
+ *   Updates A-10C ILS radio frequency in LCD.
+ *  Parameters:
+ *  * szValue: string with the new value to display.
+ */
+void DisplPnl::a10cIlsFreq(const char *szValue)
+{
+  _Lcd.setCursor(A10C_ILSFREQ_COL, A10C_ILS_ROW);
+  _Lcd.write(szValue);
 }
 
 
@@ -136,37 +353,20 @@ void DisplPnl::a10cScrpad(const char *szValue)
  */
 void DisplPnl::a10cHdgBug(uint16_t Value)
 {
-  uint16_t Deg;
-  char Buff[3+1];
-
-  // Add to current heading and convert to 360º range
-  Deg = (Value - _Status.A10c.Hdg) / (UINT16_MAX / 360U);
- 
   _Lcd.setCursor(A10C_HDG_COL, A10C_HDGCRS_ROW);
-  sprintf_P(Buff, PSTR("%03u"), Deg);
-  _Lcd.write(Buff);
+  _lcdWriteDeg(Value);
 }
 
 
 /*
  *   Updates A-10C selected course value. It is referenced from current heading.
  *  Parameters:
- *  * Value  [0, 65535]: new heading value
+ *  * Value  [0, 65535]: new course value
  */
 void DisplPnl::a10cCrs(uint16_t Value)
 {
-  uint16_t Deg;
-  char Buff[3+1];
-
-  // Add to current heading and convert to 360º range
-  Deg = (Value - _Status.A10c.Hdg) / (UINT16_MAX / 360U);
-  // Sometimes 360º just shows up due to round errors, just
-  if (Deg == 360U)
-    Deg = 0U;
-
   _Lcd.setCursor(A10C_CRS_COL, A10C_HDGCRS_ROW);
-  sprintf_P(Buff, PSTR("%03u"), Deg);
-  _Lcd.write(Buff);
+  _lcdWriteDeg(Value);
 }
 
 
@@ -208,22 +408,14 @@ void DisplPnl::a10cGunReady(uint8_t Value)
  */
 void DisplPnl::fa18cStart()
 {
-  constexpr uint8_t Max =
+  constexpr uint8_t Size =
     sizeof _FA18C_SEPARATORS / sizeof _FA18C_SEPARATORS[0];
-  uint8_t Idx;
-  char Separator = (char) pgm_read_byte(&_LCD_SEPARATOR_CHAR);
 
   // Clear the display
   _Lcd.clear();
 
   // Print the field separators
-  for (Idx=0U; Idx<Max; Idx++)
-  {
-    _Lcd.setCursor(
-      pgm_read_byte(_FA18C_SEPARATORS[Idx]+1),
-      pgm_read_byte(_FA18C_SEPARATORS[Idx]));
-    _Lcd.write(Separator);
-  }
+  _writeSeparators(_FA18C_SEPARATORS, Size);
 }
 
 
@@ -561,6 +753,26 @@ void DisplPnl::_error()
 }
 */
 
+/*
+ *   Writes field separators gettinf the coordinates from paCoord, which is
+ *  a two dimensional array stored in program memory.
+ *   Parameters:
+ *   * pmCrd: two dimensional array with coordinates [row, col], stored in
+ *     program memory.
+ *   * Size: number of coordinates in pmCrd array
+ */
+void DisplPnl::_writeSeparators(const uint8_t (*pmCrd)[_CRD_DIM], uint8_t Size)
+{
+  uint8_t Idx;
+
+  for (Idx=0U; Idx<Size; Idx++)
+  {
+    // Fetch coordinates from program memory
+    _Lcd.setCursor(pgm_read_byte(pmCrd[Idx]+1), pgm_read_byte(pmCrd[Idx]));
+    _Lcd.write(_LCD_SEPARATOR_CHAR);
+  }
+}
+
 
 /*
  *   Given a string and a field Size, writes the sting into the current
@@ -569,17 +781,48 @@ void DisplPnl::_error()
  *   Parameters:
  *   * szText: the string to write
  *   * Size: field size
+ *   * PadChar: character with which the padding will be filled
  */
-void DisplPnl::_lcdWritePadded(const char *szText, uint8_t Size)
+void DisplPnl::_lcdWritePadded(const char *szText, uint8_t Size, char PadChar)
 {
   uint8_t Whites = Size - (uint8_t) strlen(szText);
 
   // Write blank padding on the left
   while (Whites--)
-    _Lcd.write(' ');
+    _Lcd.write(PadChar);
 
   // Write the field value
   _Lcd.write(szText);
+}
+
+
+/*
+ *   Converts a Value from uint16_t range to 360º range and writes it into
+ *  the LCD.
+ *   Parameters:
+ *   * Value: the value to convert to degrees
+ */
+void DisplPnl::_lcdWriteDeg(uint16_t Value)
+{
+  // Conversion factor to translate uint16_t ranged value into degrees
+  constexpr uint32_t DEG_CONV_FACTOR = round(UINT16_MAX / 360.0F);
+  char Buff[3+1];
+  uint32_t AbsValue;  // Value unreferenced from present heading
+  uint16_t Deg;
+
+  // Decouple Value from current heading
+  AbsValue = (uint32_t) (Value - _Status.A10c.Hdg);
+
+  // Call the division macro with 32bit values to avoid overflow
+  Deg = (uint16_t) DIV_PROUND(AbsValue, DEG_CONV_FACTOR);
+
+  // Sometimes we get 360º, need a 360 quick modulo
+  if (Deg == 360U)
+    Deg = 0U;
+
+  // Convert to string and write on LCD
+  sprintf_P(Buff, PSTR("%03u"), Deg);
+  _Lcd.write(Buff);
 }
 
 
@@ -596,12 +839,14 @@ inline void DisplPnl::_setLed(LedId_t LedId, uint8_t Value) const
 
 
 /*
- *   Removes padding from a string copying to another buffer.
+ *   Removes padding from a string copying to another buffer and possibly
+ *  discarding the last Discard significant chars in the string.
  *  Parameters:
  *  * szDst: destination string (unpadded)
  *  * szSrc: source string (possibly padded)
+ *  * Discard: discard last characters
  */
-void DisplPnl::_unpad(char *szDst, const char *szSrc)
+void DisplPnl::_unpad(char *szDst, const char *szSrc, uint8_t Discard)
 {
   // Traverse the whole source string
   for ( ; *szSrc != '\0'; szSrc++)
@@ -610,5 +855,5 @@ void DisplPnl::_unpad(char *szDst, const char *szSrc)
       *szDst++ = *szSrc;
 
   // End destination string
-  *szDst = '\0';
+  *(szDst - Discard) = '\0';
 }

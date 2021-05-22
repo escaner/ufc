@@ -76,9 +76,34 @@ static const DisplPnl::LcdData_t LcdData =
 // A-10C
 constexpr uint8_t A10C_CDUSP_SZ = 24U;
 constexpr unsigned int A10C_CDUSP_ADDR = 0x1298;
-constexpr unsigned int A10C_MASTERCAUTLT_ADDR = 0x1012;
-constexpr unsigned int A10C_MASTERCAUTLT_MASK = 0x0800;
-constexpr unsigned char A10C_MASTERCAUTLT_SHIFT = 11U;
+constexpr uint8_t A10C_UHFFREQ_SZ = 7U;
+constexpr unsigned int A10C_UHFFREQ_ADDR = 0x1180;
+constexpr unsigned int A10C_UHFMODE_ADDR = 0x117c;
+constexpr unsigned int A10C_UHFMODE_MASK = 0x0003;
+constexpr unsigned int A10C_UHFMODE_SHIFT = 0U;
+constexpr uint8_t A10C_UHFPSET_SZ = 2U;
+constexpr unsigned int A10C_UHFPSET_ADDR = 0x1188;
+constexpr uint8_t A10C_VAMFREQ_SZ = 7U;
+constexpr unsigned int A10C_VAMFREQ_ADDR = 0x12de;
+constexpr unsigned int A10C_VAMMODE_ADDR = 0x1186;
+constexpr unsigned int A10C_VAMMODE_MASK = 0xc00;
+constexpr unsigned int A10C_VAMMODE_SHIFT = 10U;
+constexpr uint8_t A10C_VAMPSETSW_SZ = 2U;
+constexpr unsigned int A10C_VAMPSETSW_ADDR = 0x118a;
+constexpr uint8_t A10C_VFMFREQ_SZ = 7U;
+constexpr unsigned int A10C_VFMFREQ_ADDR = 0x12e6;
+constexpr unsigned int A10C_VFMMODE_ADDR = 0x1194;
+constexpr unsigned int A10C_VFMMODE_MASK = 0x0180;
+constexpr unsigned int A10C_VFMMODE_SHIFT = 7U;
+constexpr uint8_t A10C_VFMPSETSW_SZ = 2U;
+constexpr unsigned int A10C_VFMPSETSW_ADDR = 0x1196;
+constexpr uint8_t A10C_TCNCHNL_SZ = 4U;
+constexpr unsigned int A10C_TCNCHNL_ADDR = 0x1162;
+constexpr unsigned int A10C_TCNMODE_ADDR = 0x1168;
+constexpr unsigned int A10C_TCNMODE_MASK = 0x000e;
+constexpr unsigned int A10C_TCNMODE_SHIFT = 1U;
+constexpr uint8_t A10C_ILSFREQ_SZ = 6U;
+constexpr unsigned int A10C_ILSFREQ_ADDR = 0x12d8;
 constexpr unsigned int A10C_HSIHDG_ADDR = 0x104c;
 constexpr unsigned int A10C_HSIHDG_MASK = 0xffff;
 constexpr unsigned char A10C_HSIHDG_SHIFT = 0U;
@@ -88,6 +113,9 @@ constexpr unsigned char A10C_HSIHDGBUG_SHIFT = 0U;
 constexpr unsigned int A10C_HSICRS_ADDR = 0x1054;
 constexpr unsigned int A10C_HSICRS_MASK = 0xffff;
 constexpr unsigned char A10C_HSICRS_SHIFT = 0U;
+constexpr unsigned int A10C_MASTERCAUTLT_ADDR = 0x1012;
+constexpr unsigned int A10C_MASTERCAUTLT_MASK = 0x0800;
+constexpr unsigned char A10C_MASTERCAUTLT_SHIFT = 11U;
 constexpr unsigned int A10C_MASTERARMSW_ADDR = 0x10e8;
 constexpr unsigned int A10C_MASTERARMSW_MASK = 0x000c;
 constexpr unsigned char A10C_MASTERARMSW_SHIFT = 2U;
@@ -171,6 +199,102 @@ static void cbA10cCduScrpad(char *szValue)
   DiPnl.a10cScrpad(szValue);
 }
 
+/*
+ *   Callback to update A-10C UHF radio frequency.
+ */
+static void cbA10cUhfFreq(char *szValue)
+{
+  DiPnl.a10cUhfFreq(szValue);
+}
+
+/*
+ *   Callback to update A-10C UHF radio mode.
+ */
+static void cbA10cUhfMode(unsigned int Value)
+{
+  DiPnl.a10cUhfMode(Value);
+}
+
+/*
+ *   Callback to update A-10C UHF radio preset channel.
+ */
+static void cbA10cUhfPset(char *szValue)
+{
+  DiPnl.a10cUhfPreset(szValue);
+}
+
+/*
+ *   Callback to update A-10C VHF AM radio frequency.
+ */
+static void cbA10cVamFreq(char *szValue)
+{
+  DiPnl.a10cVamFreq(szValue);
+}
+
+/*
+ *   Callback to update A-10C VHF AM radio mode.
+ */
+static void cbA10cVamMode(unsigned int Value)
+{
+  DiPnl.a10cVamMode(Value);
+}
+
+/*
+ *   Callback to update A-10C VHF AM radio preset channel.
+ */
+static void cbA10cVamPset(char *szValue)
+{
+  DiPnl.a10cVamPreset(szValue);
+}
+
+
+/*
+ *   Callback to update A-10C VHF FM radio frequency.
+ */
+static void cbA10cVfmFreq(char *szValue)
+{
+  DiPnl.a10cVfmFreq(szValue);
+}
+
+/*
+ *   Callback to update A-10C VHF FM radio mode.
+ */
+static void cbA10cVfmMode(unsigned int Value)
+{
+  DiPnl.a10cVfmMode(Value);
+}
+
+/*
+ *   Callback to update A-10C VHF FM radio preset channel.
+ */
+static void cbA10cVfmPset(char *szValue)
+{
+  DiPnl.a10cVfmPreset(szValue);
+}
+
+/*
+ *   Callback to update A-10C TACAN radio channel.
+ */
+static void cbA10cTcnChannel(char *szValue)
+{
+  DiPnl.a10cTcnChannel(szValue);
+}
+
+/*
+ *   Callback to update A-10C TACAN radio mode.
+ */
+static void cbA10cTcnMode(unsigned int Value)
+{
+  DiPnl.a10cTcnMode(Value);
+}
+
+/*
+ *   Callback to update A-10C ILS radio frequency.
+ */
+static void cbA10cIlsFreq(char *szValue)
+{
+  DiPnl.a10cIlsFreq(szValue);
+}
 
 /*
  *   Callback to update A-10C HSI heading.
@@ -239,13 +363,33 @@ static void modeA10cInit()
   // CDU Scratchpad
   new DcsBios::StringBuffer<A10C_CDUSP_SZ>(
       A10C_CDUSP_ADDR, cbA10cCduScrpad);
-/*
-  // COMM
-  new DcsBios::StringBuffer<FA18C_UFCCOM_SZ>(
-      FA18C_UFCCOM1_ADDR, cbFa18cUfcCom1);
-  new DcsBios::StringBuffer<FA18C_UFCCOM_SZ>(
-      FA18C_UFCCOM2_ADDR, cbFa18cUfcCom2);
-*/
+
+  // Radios
+  new DcsBios::StringBuffer<A10C_UHFFREQ_SZ>(
+      A10C_UHFFREQ_ADDR, cbA10cUhfFreq);
+  new DcsBios::IntegerBuffer(A10C_UHFMODE_ADDR, A10C_UHFMODE_MASK,
+      A10C_UHFMODE_SHIFT, cbA10cUhfMode);
+  new DcsBios::StringBuffer<A10C_UHFPSET_SZ>(
+      A10C_UHFPSET_ADDR, cbA10cUhfPset);
+  new DcsBios::StringBuffer<A10C_VAMFREQ_SZ>(
+      A10C_VAMFREQ_ADDR, cbA10cVamFreq);
+  new DcsBios::IntegerBuffer(A10C_VAMMODE_ADDR, A10C_VAMMODE_MASK,
+      A10C_VAMMODE_SHIFT, cbA10cVamMode);
+  new DcsBios::StringBuffer<A10C_VAMPSETSW_SZ>(
+      A10C_VAMPSETSW_ADDR, cbA10cVamPset);
+  new DcsBios::StringBuffer<A10C_VFMFREQ_SZ>(
+      A10C_VFMFREQ_ADDR, cbA10cVfmFreq);
+  new DcsBios::IntegerBuffer(A10C_VFMMODE_ADDR, A10C_VFMMODE_MASK,
+      A10C_VFMMODE_SHIFT, cbA10cVfmMode);
+  new DcsBios::StringBuffer<A10C_VFMPSETSW_SZ>(
+      A10C_VFMPSETSW_ADDR, cbA10cVfmPset);
+  new DcsBios::StringBuffer<A10C_TCNCHNL_SZ>(
+      A10C_TCNCHNL_ADDR, cbA10cTcnChannel);
+  new DcsBios::IntegerBuffer(A10C_TCNMODE_ADDR, A10C_TCNMODE_MASK,
+      A10C_TCNMODE_SHIFT, cbA10cTcnMode);
+  new DcsBios::StringBuffer<A10C_ILSFREQ_SZ>(
+      A10C_ILSFREQ_ADDR, cbA10cIlsFreq);
+
   // Heading and course
   new DcsBios::IntegerBuffer(A10C_HSIHDG_ADDR, A10C_HSIHDG_MASK,
       A10C_HSIHDG_SHIFT, cbA10cHsiHdg);
