@@ -9,6 +9,19 @@
 /* Constants */
 /*************/
 
+// Custom character with a double triangle up & down
+const uint8_t DisplPnl::_LCD_CHAR_UPDOWN[] PROGMEM =
+{
+	0b00100,
+	0b01110,
+	0b11111,
+	0b00000,
+	0b00000,
+	0b11111,
+	0b01110,
+	0b00100
+};
+
 const char DisplPnl::_LINE_KEY[] PROGMEM = "%03u Key:%c%u/%02u Dx:%c%02u";
 const char DisplPnl::_LINE_ENC[] PROGMEM = "%03u Enc:%c%u%-3s Dx:%c%02u";
 
@@ -36,7 +49,33 @@ const uint8_t DisplPnl::_FA18C_SEPARATORS[][_CRD_DIM] PROGMEM =
   { 3,  2 }, { 3, 17 }   // Row 3
 };
 
+
+/* F-16C DED patterns to recognize page and data */
+constexpr char F16C_DED_EDIT_CHAR = '*';
+constexpr char F16C_DED_UHF_PTRN[] PROGMEM = "UHF";
+constexpr uint8_t F16C_DED_UHF_PTRN_COL = 1U;
+constexpr uint8_t F16C_DED_UHF_COL = 5U;
+constexpr uint8_t F16C_DED_UHF_SZ = 7U;
+constexpr uint8_t F16C_DED_STPT_COL = 19U;
+constexpr uint8_t F16C_DED_STPT_SZ = 4U;
+constexpr char F16C_DED_VHF_PTRN[] PROGMEM = "VHF";
+constexpr uint8_t F16C_DED_VHF_PTRN_COL = 1U;
+constexpr uint8_t F16C_DED_VHF_COL = 5U;
+constexpr uint8_t F16C_DED_VHF_SZ = 7U;
+constexpr uint8_t F16C_DED_TIME_COL = 15U;
+constexpr uint8_t F16C_DED_TIME_SZ = 8U;
+constexpr char F16C_DED_HACK_PTRN = ':';
+constexpr uint8_t F16C_DED_HACK_PTRN_COL[] = { 17U, 20U };
+constexpr uint8_t F16C_DED_HACK_COL = 15U;
+constexpr uint8_t F16C_DED_HACK_SZ = 7U;
+constexpr char F16C_DED_TCN_PTRN[] PROGMEM = " T";
+constexpr uint8_t F16C_DED_TCN_PTRN_COL = 18U;
+constexpr uint8_t F16C_DED_TCN_COL = 20U;
+constexpr uint8_t F16C_DED_TCN_SZ = 4U;
+
+
 /* Constants for position of data in LCD */
+
 // A-10C
 constexpr uint8_t A10C_SCRPAD_COL = 1U;
 constexpr uint8_t A10C_SCRPAD_ROW = 0U;
@@ -68,6 +107,24 @@ constexpr uint8_t A10C_TCNMODE_COL = 12U;
 constexpr uint8_t A10C_TCN_ROW = 2U;
 constexpr uint8_t A10C_ILSFREQ_COL = 7U;
 constexpr uint8_t A10C_ILS_ROW = 3U;
+
+// F-16C
+constexpr uint8_t F16C_UHF_LBL_COL = 0U;
+constexpr uint8_t F16C_UHF_COL = 3U;
+constexpr uint8_t F16C_STPT_LBL_COL = 12U;
+constexpr uint8_t F16C_STPT_COL = 16U;
+constexpr uint8_t F16C_UHFSTPT_ROW = 0U;
+constexpr uint8_t F16C_VHF_LBL_COL = 0U;
+constexpr uint8_t F16C_VHF_COL = 3U;
+constexpr uint8_t F16C_TIME_COL = 15U;
+constexpr uint8_t F16C_VHFTIME_ROW = 1U;
+constexpr uint8_t F16C_TCN_LBL_COL = 0U;
+constexpr uint8_t F16C_TCN_COL = 1U;
+constexpr uint8_t F16C_HACK_COL = 12U;
+constexpr uint8_t F16C_SCRATCHPAD_ROW = 4U;
+constexpr uint8_t F16C_TCNHACK_ROW = 2U;
+constexpr uint8_t F16C_MASTERARM_ARM_SW = 2U;
+constexpr uint8_t F16C_STORES_CATI_SW = 1U;
 
 // F/A-18C
 constexpr uint8_t FA18C_SCRPAD_STR1_COL = 0U;
@@ -404,6 +461,141 @@ void DisplPnl::a10cGunReady(uint8_t Value)
 
 
 /*
+ *   Initializes display panel for F-16C mode.
+ */
+void DisplPnl::f16cStart()
+{
+//  uint8_t Buffer[sizeof _LCD_CHAR_UPDOWN];
+
+  // Initialize status data
+  _Status.F16c.SpLine = _STATUS_F16C_SPLINE_NONE;  // Nothing in the scratchpad
+
+  // Clear the display
+  _Lcd.clear();
+
+  // Register custom LCD character
+//  memcpy_P(Buffer, _LCD_CHAR_UPDOWN, sizeof _LCD_CHAR_UPDOWN);
+//  _Lcd.createChar(_LCD_CHAR_UPDOWN_ID, Buffer);
+  _Lcd.createChar(_LCD_CHAR_UPDOWN_ID, (PGM_P) _LCD_CHAR_UPDOWN);
+
+  // Display labels
+  _Lcd.setCursor(F16C_UHF_LBL_COL, F16C_UHFSTPT_ROW);
+  _Lcd.print(F("UHF"));
+  _Lcd.setCursor(F16C_STPT_LBL_COL, F16C_UHFSTPT_ROW);
+  _Lcd.print(F("STPT"));
+  _Lcd.setCursor(F16C_UHF_LBL_COL, F16C_VHFTIME_ROW);
+  _Lcd.print(F("VHF"));
+  _Lcd.setCursor(F16C_TCN_LBL_COL, F16C_TCNHACK_ROW);
+  _Lcd.write('T');
+}
+
+
+/*
+ *   Updates LCD with F-16C's DED lines. Looks for entries surrounded by
+ *  asterisks and shows them as scratchpad.
+ *  Parameters:
+ *  * szValue: string with the new value to display.
+ */
+void DisplPnl::f16cDed(uint8_t Line, const char *szValue)
+{
+  bool Updated = false;
+
+  // Check for main CNI page values
+  switch (Line)
+  {
+  case 0:  // UHF & STPT
+    // Check whether we are on the CNI page
+    if (!strncmp_P(szValue + F16C_DED_UHF_PTRN_COL, F16C_DED_UHF_PTRN,
+        sizeof F16C_DED_UHF_PTRN))
+    {
+      // Copy UHF frequency
+      _f16cWriteDed(F16C_UHFSTPT_ROW, F16C_UHF_COL,
+        szValue + F16C_DED_UHF_COL, F16C_DED_UHF_SZ);
+      // Copy Steerpoint
+      _f16cWriteDed(F16C_UHFSTPT_ROW, F16C_STPT_COL,
+        szValue + F16C_DED_STPT_COL, F16C_DED_STPT_SZ);
+      Updated = true;
+    }
+    break;
+  case 2:  // VHF & Time
+    // Check whether we are on the CNI page
+    if (!strncmp_P(szValue + F16C_DED_VHF_PTRN_COL, F16C_DED_VHF_PTRN,
+        sizeof F16C_DED_VHF_PTRN))
+    {
+      // Copy VHF frequency
+      _f16cWriteDed(F16C_VHFTIME_ROW, F16C_VHF_COL,
+        szValue + F16C_DED_VHF_COL, F16C_DED_VHF_SZ);
+      // Copy Time
+      _f16cWriteDed(F16C_VHFTIME_ROW, F16C_TIME_COL,
+        szValue + F16C_DED_TIME_COL, F16C_DED_TIME_SZ);
+      Updated = true;
+    }
+    break;
+  case 3:  // Hack time
+    // Check whether we are on the CNI page
+    if (szValue[F16C_DED_HACK_PTRN_COL[0]] == F16C_DED_HACK_PTRN &&
+        szValue[F16C_DED_HACK_PTRN_COL[1]] == F16C_DED_HACK_PTRN)
+    {
+      // Copy Hack time
+      _f16cWriteDed(F16C_TCNHACK_ROW, F16C_HACK_COL,
+        szValue + F16C_DED_HACK_COL, F16C_DED_HACK_SZ);
+      Updated = true;
+    }
+    break;
+  case 4:  // TACAN
+    // Check whether we are on the CNI page
+    if (!strncmp_P(szValue + F16C_DED_TCN_PTRN_COL, F16C_DED_TCN_PTRN,
+        sizeof F16C_DED_TCN_PTRN))
+    {
+      // Copy TACAN channel
+      _f16cWriteDed(F16C_TCNHACK_ROW, F16C_TCN_COL,
+        szValue + F16C_DED_TCN_COL, F16C_DED_TCN_SZ);
+      Updated = true;
+    }
+    break;
+  }
+
+  // If  not in CNI, check for edited fields and display them as scratchpad
+  if (!Updated)
+    _f16DedUpdateScratchpad(Line, szValue);
+}
+
+
+/*
+ *   Updates F-16C master caution light LED.
+ *  Parameters:
+ *  * Value (HIGH, LOW): new state value: HIGH = on; LOW = off
+ */
+void DisplPnl::f16cMasterCaut(uint8_t Value)
+{
+  _setLed(LedWrn, Value);
+}
+
+
+/*
+ *   Updates F-16C Master Arm LED. Light is only with switch in ARM position.
+ *  Parameters:
+ *  * Value (0: Sim, 1: Off, 2: Arm): switch position
+ */
+void DisplPnl::f16cMasterArm(uint8_t Value)
+{
+  _setLed(LedClr, Value==F16C_MASTERARM_ARM_SW);
+}
+
+
+/*
+ *   Updates F-16C Stores Category LED. Light is turned on for CATI and off
+ *   for CATIII.
+ *  Parameters:
+ *  * Value (0: CATIII, 1: CATI): switch position
+ */
+void DisplPnl::f16cStoresCat(uint8_t Value)
+{
+  _setLed(LedEnt, Value=F16C_STORES_CATI_SW);
+}
+
+
+/*
  *   Initializes display panel for F/A-18C mode.
  */
 void DisplPnl::fa18cStart()
@@ -708,6 +900,65 @@ void DisplPnl::error(const __FlashStringHelper *pmMsg)
   _Lcd.write(pmMsg);
 }
 */
+
+/*
+ *   Copies a string from szText from the DED into the LCD indicated position.
+    Special DED characters are reinterpreted.
+    Parameters:
+    * LcdRow: row in the LCD where to copy the text
+    * LcdCol: column in the LCD where to copy the text
+    * sText: text to be copìed
+    * Size: number of characters from sText to copy
+ */
+void DisplPnl::_f16cWriteDed(uint8_t LcdRow, uint8_t LcdCol, const char *sText,
+  uint8_t Size)
+{
+}
+
+/*
+ *   Checks whether the szDedText contains an editable field and displays it
+ *  on the LCD scratchpad. If none is found, checks of the scratchpad has
+ *  data from this very same line and if so deletes it.
+ *   Parameters:
+ *   * Line: line in the DED that we are processing
+ *   * szDedText: text of the DED line
+ */
+void DisplPnl::_f16DedUpdateScratchpad(uint8_t Line, const char *szDedText)
+{
+  const char *pBegin, *pEnd;
+  uint8_t Length;  // Size of the scratchpad line that we are writing
+
+  // Look for the editable field characters
+  if ((pBegin = strchr(szDedText, F16C_DED_EDIT_CHAR)) &&
+      (pEnd = strchr(pBegin + 1, F16C_DED_EDIT_CHAR)))
+  {
+    // Editable field found: copy it to the LCD scratchpad
+    _Lcd.setCursor(0U, F16C_SCRATCHPAD_ROW);
+    Length = (uint8_t) (pEnd - pBegin + 1);
+    _Lcd.write(pBegin, Length);
+
+    // If the scratchpad was already displaying text, blank out the rest
+    if (_Status.F16c.SpLine!=_STATUS_F16C_SPLINE_NONE &&
+        Length<_Status.F16c.SpLength)
+      _lcdWriteN(_Status.F16c.SpLength - Length);
+
+    // Update status of the scratchpad
+    _Status.F16c.SpLine = Line;
+    _Status.F16c.SpLength = Length;
+  }
+  else if (_Status.F16c.SpLine == Line);
+  {
+    // No editable field found but scratchpad was visualizing a field from
+    // this line
+
+    // Clear the LCD scratchpad line
+    _Lcd.setCursor(0U, F16C_SCRATCHPAD_ROW);
+    _lcdWriteN(_Status.F16c.SpLength);
+
+    // Update status: scratchpad is now blank
+    _Status.F16c.SpLine = _STATUS_F16C_SPLINE_NONE;
+  }
+}
 
 
 /*

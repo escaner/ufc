@@ -16,7 +16,7 @@ public:
   {
     M_DIRECTX = 0,
     M_A10C,
-    M_F16,
+    M_F16C,
     M_FA18C,
     M_M2000C,
     M_DEBUG,

@@ -123,6 +123,23 @@ constexpr unsigned int A10C_GUNRDYLT_ADDR = 0x1026;
 constexpr unsigned int A10C_GUNRDYLT_MASK = 0x8000;
 constexpr unsigned char A10C_GUNRDYLT_SHIFT = 15U;
 
+// F-16C
+constexpr unsigned int F16C_DED_SZ = 25U;
+constexpr unsigned int F16C_DEDLINE1_ADDR = 0x44fc;
+constexpr unsigned int F16C_DEDLINE2_ADDR = 0x4516;
+constexpr unsigned int F16C_DEDLINE3_ADDR = 0x4530;
+constexpr unsigned int F16C_DEDLINE4_ADDR = 0x454a;
+constexpr unsigned int F16C_DEDLINE5_ADDR = 0x4564;
+constexpr unsigned int F16C_MASTERCAUTLT_ADDR = 0x4472;
+constexpr unsigned int F16C_MASTERCAUTLT_MASK = 0x0800;
+constexpr unsigned char F16C_MASTERCAUTLT_SHIFT = 11U;
+constexpr unsigned int F16C_MASTERARMSW_ADDR = 0x4424;
+constexpr unsigned int F16C_MASTERARMSW_MASK = 0x0030;
+constexpr unsigned char F16C_MASTERARMSW_SHIFT = 4U;
+constexpr unsigned int F16C_STORESCFGSW_ADDR = 0x4400;
+constexpr unsigned int F16C_STORESCFGSW_MASK = 0x0080;
+constexpr unsigned char F16C_STORESCFGSW_SHIFT = 7U;
+
 // F/A-18C
 constexpr uint8_t FA18C_UFCSPSTR_SZ = 2U;
 constexpr uint8_t FA18C_UFCSPNUM_SZ = 8U;
@@ -398,7 +415,7 @@ static void modeA10cInit()
   new DcsBios::IntegerBuffer(A10C_HSICRS_ADDR, A10C_HSICRS_MASK,
       A10C_HSICRS_SHIFT, cbA10cHsiCrs);
 
-  // Master warning light
+  // LED lights
   new DcsBios::IntegerBuffer(A10C_MASTERCAUTLT_ADDR, A10C_MASTERCAUTLT_MASK,
       A10C_MASTERCAUTLT_SHIFT, cbA10cMasterCautLt);
   new DcsBios::IntegerBuffer(A10C_MASTERARMSW_ADDR, A10C_MASTERARMSW_MASK,
@@ -406,6 +423,94 @@ static void modeA10cInit()
   new DcsBios::IntegerBuffer(A10C_GUNRDYLT_ADDR, A10C_GUNRDYLT_MASK,
       A10C_GUNRDYLT_SHIFT, cbA10cGunReadyLt);
 }
+
+
+/* DCS-BIOS callbacks for F-16C */
+
+/*
+ *   Callback to update F-16C DED Line 1.
+ */
+static void cbF16cDedLine1(char *szValue)
+{
+  DiPnl.f16cDed(0U, szValue);
+}
+
+/*
+ *   Callback to update F-16C DED Line 2.
+ */
+static void cbF16cDedLine2(char *szValue)
+{
+  DiPnl.f16cDed(1U, szValue);
+}
+
+/*
+ *   Callback to update F-16C DED Line 3.
+ */
+static void cbF16cDedLine3(char *szValue)
+{
+  DiPnl.f16cDed(2U, szValue);
+}
+
+/*
+ *   Callback to update F-16C DED Line 4.
+ */
+static void cbF16cDedLine4(char *szValue)
+{
+  DiPnl.f16cDed(3U, szValue);
+}
+
+/*
+ *   Callback to update F-16C DED Line 5.
+ */
+static void cbF16cDedLine5(char *szValue)
+{
+  DiPnl.f16cDed(4U, szValue);
+}
+
+/*
+ *   Callback to update F-16C Master Caution light.
+ */
+static void cbF16cMasterCautLt(unsigned int Value)
+{
+  DiPnl.f16cMasterCaut((uint8_t) Value);
+}
+
+/*
+ *   Callback to update F-16C Master Arm switch position.
+ */
+static void cbF16cMasterArmSw(unsigned int Value)
+{
+  DiPnl.f16cMasterArm((uint8_t) Value);
+}
+
+/*
+ *   Callback to update F-16C stores configuration category switch position.
+ */
+static void cbF16cStoresCat(unsigned int Value)
+{
+  DiPnl.f16cStoresCat((uint8_t) Value);
+}
+
+/*
+ *   Initializes F-16C mode.
+ */
+static void modeF16cInit()
+{
+  // Initializes display
+  DiPnl.f16cStart();
+
+  // Register callbacks creating DCS-BIOS handlers in heap memory
+
+  // LED lights
+  new DcsBios::IntegerBuffer(F16C_MASTERCAUTLT_ADDR, F16C_MASTERCAUTLT_MASK,
+      F16C_MASTERCAUTLT_SHIFT, cbF16cMasterCautLt);
+  new DcsBios::IntegerBuffer(F16C_MASTERARMSW_ADDR, F16C_MASTERARMSW_MASK,
+      F16C_MASTERARMSW_SHIFT, cbF16cMasterArmSw);
+  new DcsBios::IntegerBuffer(F16C_STORESCFGSW_ADDR, F16C_STORESCFGSW_MASK,
+      F16C_STORESCFGSW_SHIFT, cbF16cStoresCat);
+}
+
+
 
 /* DCS-BIOS callbacks for F/A-18C */
 
@@ -774,6 +879,9 @@ void setup()
   {
   case Mode::M_A10C:
     modeA10cInit();
+    break;
+  case Mode::M_F16C:
+    modeF16cInit();
     break;
   case Mode::M_FA18C:
     modeFa18cInit();

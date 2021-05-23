@@ -78,6 +78,12 @@ public:
   void a10cMasterArm(uint8_t Value);
   void a10cGunReady(uint8_t Value);
 
+  void f16cStart();
+  void f16cDed(uint8_t Line, const char *szValue);
+  void f16cMasterCaut(uint8_t Value);
+  void f16cMasterArm(uint8_t Value);
+  void f16cStoresCat(uint8_t Value);
+
   void fa18cStart();
   void fa18cScrpadStr1(const char *szValue);
   void fa18cScrpadStr2(const char *szValue);
@@ -110,6 +116,9 @@ protected:
   static const char _LINE_KEY[] PROGMEM;
   static const char _LINE_ENC[] PROGMEM;
 
+  static const uint8_t _LCD_CHAR_UPDOWN[] PROGMEM;
+  static const uint8_t _LCD_CHAR_UPDOWN_ID = 1;
+
   static const char _LCD_SEPARATOR_CHAR = '|';
   static const uint8_t _A10C_SEPARATORS[][_CRD_DIM] PROGMEM;
   static const uint8_t _FA18C_SEPARATORS[][_CRD_DIM] PROGMEM;
@@ -122,15 +131,19 @@ protected:
   static const char _A10C_UHF_MODES[_A10C_UHF_NUM_MODES] PROGMEM;
   static const char _A10C_TCN_MODES[_A10C_TCN_NUM_MODES][_A10C_TCN_MODES_LN+1]
     PROGMEM;
-
+  static const uint8_t _STATUS_F16C_SPLINE_NONE = UINT8_MAX;
 
   /*********************/
   /* Protected methods */
   /*********************/
 
   void _writeSeparators(const uint8_t (*pmCrd)[_CRD_DIM], uint8_t Size);
+  void _f16cWriteDed(uint8_t LcdRow, uint8_t LcdCol, const char *sText,
+    uint8_t Size);
+  void _f16DedUpdateScratchpad(uint8_t Line, const char *szDedText);
   void _fa18cFuelWriteSuffix(bool Down, bool SetCursor);
 //  void _error();
+  inline void _lcdWriteN(uint8_t Count=LCD_COLS, char Char=' ');
   void _lcdWritePadded(const char *szText, uint8_t Size, char PadChar=' ');
   void _lcdWriteDeg(uint16_t Value);
   inline void _setLed(LedId_t Led, uint8_t Value) const;
@@ -153,6 +166,14 @@ protected:
       uint16_t Hdg;  // HSI current heading
     } A10c;
 
+    // F-16C
+    struct
+    {
+      uint8_t SpLine;   // DED row displayed in the scratchpad
+                        // (or _STATUS_F16C_SPLINE_NONE)
+      uint8_t SpLength; // Number of chars written in the scratchpad
+    } F16c;
+  
     // F/A-18C
     struct
     {
@@ -177,6 +198,20 @@ protected:
 inline void DisplPnl::a10cHdg(uint16_t Value)
 {
   _Status.A10c.Hdg = Value;
+}
+
+
+/*
+ *   Writes Cound Chars in the LCD current position. Useful to clear lines,
+ *  etc.
+ *  Parameters:
+ *  * Count: the number of times to write the character.
+ *  * Char: the character to write several times.
+ */
+inline void DisplPnl::_lcdWriteN(uint8_t Count=LCD_COLS, char Char=' ')
+{
+  while (Count--)
+    _Lcd.write(Char);
 }
 
 
