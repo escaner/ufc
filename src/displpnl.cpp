@@ -22,6 +22,14 @@ const uint8_t DisplPnl::_LCD_CHAR_UPDOWN[] PROGMEM =
 	0b00100
 };
 
+// Some chars from the F-16C DED need to be replaced for correct visualization
+const char DisplPnl::_F16C_CHAR_REPLACEMENT[][2] =
+{
+  { 'a', _LCD_CHAR_UPDOWN_ID },
+  { 'o', '\xdf' }  // 'º' sign in LCD display charset
+};
+
+
 const char DisplPnl::_LINE_KEY[] PROGMEM = "%03u Key:%c%u/%02u Dx:%c%02u";
 const char DisplPnl::_LINE_ENC[] PROGMEM = "%03u Enc:%c%u%-3s Dx:%c%02u";
 
@@ -67,7 +75,7 @@ constexpr uint8_t F16C_DED_TIME_SZ = 8U;
 constexpr char F16C_DED_HACK_PTRN = ':';
 constexpr uint8_t F16C_DED_HACK_PTRN_COL[] = { 17U, 20U };
 constexpr uint8_t F16C_DED_HACK_COL = 15U;
-constexpr uint8_t F16C_DED_HACK_SZ = 7U;
+constexpr uint8_t F16C_DED_HACK_SZ = 8U;
 constexpr char F16C_DED_TCN_PTRN[] PROGMEM = " T";
 constexpr uint8_t F16C_DED_TCN_PTRN_COL = 18U;
 constexpr uint8_t F16C_DED_TCN_COL = 20U;
@@ -116,7 +124,7 @@ constexpr uint8_t F16C_STPT_COL = 16U;
 constexpr uint8_t F16C_UHFSTPT_ROW = 0U;
 constexpr uint8_t F16C_VHF_LBL_COL = 0U;
 constexpr uint8_t F16C_VHF_COL = 3U;
-constexpr uint8_t F16C_TIME_COL = 15U;
+constexpr uint8_t F16C_TIME_COL = 12U;
 constexpr uint8_t F16C_VHFTIME_ROW = 1U;
 constexpr uint8_t F16C_TCN_LBL_COL = 0U;
 constexpr uint8_t F16C_TCN_COL = 1U;
@@ -506,7 +514,7 @@ void DisplPnl::f16cDed(uint8_t Line, const char *szValue)
   case 0:  // UHF & STPT
     // Check whether we are on the CNI page
     if (!strncmp_P(szValue + F16C_DED_UHF_PTRN_COL, F16C_DED_UHF_PTRN,
-        sizeof F16C_DED_UHF_PTRN))
+        sizeof F16C_DED_UHF_PTRN - 1U))
     {
       // Copy UHF frequency
       _f16cWriteDed(F16C_UHFSTPT_ROW, F16C_UHF_COL,
@@ -520,7 +528,7 @@ void DisplPnl::f16cDed(uint8_t Line, const char *szValue)
   case 2:  // VHF & Time
     // Check whether we are on the CNI page
     if (!strncmp_P(szValue + F16C_DED_VHF_PTRN_COL, F16C_DED_VHF_PTRN,
-        sizeof F16C_DED_VHF_PTRN))
+        sizeof F16C_DED_VHF_PTRN - 1U))
     {
       // Copy VHF frequency
       _f16cWriteDed(F16C_VHFTIME_ROW, F16C_VHF_COL,
@@ -545,7 +553,7 @@ void DisplPnl::f16cDed(uint8_t Line, const char *szValue)
   case 4:  // TACAN
     // Check whether we are on the CNI page
     if (!strncmp_P(szValue + F16C_DED_TCN_PTRN_COL, F16C_DED_TCN_PTRN,
-        sizeof F16C_DED_TCN_PTRN))
+        sizeof F16C_DED_TCN_PTRN - 1U))
     {
       // Copy TACAN channel
       _f16cWriteDed(F16C_TCNHACK_ROW, F16C_TCN_COL,
@@ -555,9 +563,8 @@ void DisplPnl::f16cDed(uint8_t Line, const char *szValue)
     break;
   }
 
-  // If  not in CNI, check for edited fields and display them as scratchpad
-  if (!Updated)
-    _f16DedUpdateScratchpad(Line, szValue);
+  // Check for editedtion fields and display at scratchpad or erase it as needed
+  _f16DedUpdateScratchpad(Line, szValue);
 }
 
 
@@ -591,7 +598,7 @@ void DisplPnl::f16cMasterArm(uint8_t Value)
  */
 void DisplPnl::f16cStoresCat(uint8_t Value)
 {
-  _setLed(LedEnt, Value=F16C_STORES_CATI_SW);
+  _setLed(LedEnt, Value==F16C_STORES_CATI_SW);
 }
 
 
@@ -902,6 +909,31 @@ void DisplPnl::error(const __FlashStringHelper *pmMsg)
 */
 
 /*
+ *   Replace a DED character by its apropriate representation as defined in
+ *  _F16C_CHAR_REPLACEMENT array.
+ *   Parameters:
+ *   * DedChar: the character to check for replacement
+ *   Returns: a character replacing DedChar according to the translation table
+ *            or DedChar itself if none matches.
+ */
+inline char DisplPnl::_f16cReplaceChar(char DedChar)
+{
+  constexpr uint8_t Size =
+    sizeof _F16C_CHAR_REPLACEMENT / sizeof _F16C_CHAR_REPLACEMENT[0];
+  uint8_t Idx;
+
+  // Look for DedChar on the translation table
+  for (Idx = 0U; Idx < Size; Idx++)
+    if (DedChar == _F16C_CHAR_REPLACEMENT[Idx][0])
+      // Found it! Return its replacemente character
+      return _F16C_CHAR_REPLACEMENT[Idx][1];
+
+  // Default action: return the same character
+  return DedChar;
+}
+
+
+/*
  *   Copies a string from szText from the DED into the LCD indicated position.
     Special DED characters are reinterpreted.
     Parameters:
@@ -913,7 +945,24 @@ void DisplPnl::error(const __FlashStringHelper *pmMsg)
 void DisplPnl::_f16cWriteDed(uint8_t LcdRow, uint8_t LcdCol, const char *sText,
   uint8_t Size)
 {
+  char WriteChar;
+
+  _Lcd.setCursor(LcdCol, LcdRow);
+
+  // Copy as many chars as Size
+  while (Size--)
+  {
+    // Replace char if matching an special one
+    WriteChar = _f16cReplaceChar(*sText);
+
+    // Wirte current char into LCD
+    _Lcd.write(WriteChar);
+
+    // Advance to next char position
+    sText++;
+  }
 }
+
 
 /*
  *   Checks whether the szDedText contains an editable field and displays it
@@ -933,9 +982,10 @@ void DisplPnl::_f16DedUpdateScratchpad(uint8_t Line, const char *szDedText)
       (pEnd = strchr(pBegin + 1, F16C_DED_EDIT_CHAR)))
   {
     // Editable field found: copy it to the LCD scratchpad
-    _Lcd.setCursor(0U, F16C_SCRATCHPAD_ROW);
     Length = (uint8_t) (pEnd - pBegin + 1);
-    _Lcd.write(pBegin, Length);
+//    _Lcd.setCursor(0U, F16C_SCRATCHPAD_ROW);
+//    _Lcd.write(pBegin, Length);
+    _f16cWriteDed(F16C_SCRATCHPAD_ROW, 0U, pBegin, Length);
 
     // If the scratchpad was already displaying text, blank out the rest
     if (_Status.F16c.SpLine!=_STATUS_F16C_SPLINE_NONE &&
@@ -946,10 +996,10 @@ void DisplPnl::_f16DedUpdateScratchpad(uint8_t Line, const char *szDedText)
     _Status.F16c.SpLine = Line;
     _Status.F16c.SpLength = Length;
   }
-  else if (_Status.F16c.SpLine == Line);
+  else if (_Status.F16c.SpLine == Line)
   {
-    // No editable field found but scratchpad was visualizing a field from
-    // this line
+    // No editable field found but the LCD scratchpad was visualizing a field
+    // from this line
 
     // Clear the LCD scratchpad line
     _Lcd.setCursor(0U, F16C_SCRATCHPAD_ROW);

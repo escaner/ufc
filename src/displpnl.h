@@ -118,6 +118,7 @@ protected:
 
   static const uint8_t _LCD_CHAR_UPDOWN[] PROGMEM;
   static const uint8_t _LCD_CHAR_UPDOWN_ID = 1;
+  static const char _F16C_CHAR_REPLACEMENT[][2];
 
   static const char _LCD_SEPARATOR_CHAR = '|';
   static const uint8_t _A10C_SEPARATORS[][_CRD_DIM] PROGMEM;
@@ -133,11 +134,13 @@ protected:
     PROGMEM;
   static const uint8_t _STATUS_F16C_SPLINE_NONE = UINT8_MAX;
 
+
   /*********************/
   /* Protected methods */
   /*********************/
 
   void _writeSeparators(const uint8_t (*pmCrd)[_CRD_DIM], uint8_t Size);
+  inline static char _f16cReplaceChar(char DedChar);
   void _f16cWriteDed(uint8_t LcdRow, uint8_t LcdCol, const char *sText,
     uint8_t Size);
   void _f16DedUpdateScratchpad(uint8_t Line, const char *szDedText);
@@ -208,7 +211,7 @@ inline void DisplPnl::a10cHdg(uint16_t Value)
  *  * Count: the number of times to write the character.
  *  * Char: the character to write several times.
  */
-inline void DisplPnl::_lcdWriteN(uint8_t Count=LCD_COLS, char Char=' ')
+inline void DisplPnl::_lcdWriteN(uint8_t Count, char Char)
 {
   while (Count--)
     _Lcd.write(Char);

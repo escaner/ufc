@@ -378,8 +378,7 @@ static void modeA10cInit()
   // Register callbacks creating DCS-BIOS handlers in heap memory
 
   // CDU Scratchpad
-  new DcsBios::StringBuffer<A10C_CDUSP_SZ>(
-      A10C_CDUSP_ADDR, cbA10cCduScrpad);
+  new DcsBios::StringBuffer<A10C_CDUSP_SZ>(A10C_CDUSP_ADDR, cbA10cCduScrpad);
 
   // Radios
   new DcsBios::StringBuffer<A10C_UHFFREQ_SZ>(
@@ -500,6 +499,13 @@ static void modeF16cInit()
   DiPnl.f16cStart();
 
   // Register callbacks creating DCS-BIOS handlers in heap memory
+
+  // DED
+  new DcsBios::StringBuffer<F16C_DED_SZ>(F16C_DEDLINE1_ADDR, cbF16cDedLine1);
+  new DcsBios::StringBuffer<F16C_DED_SZ>(F16C_DEDLINE2_ADDR, cbF16cDedLine2);
+  new DcsBios::StringBuffer<F16C_DED_SZ>(F16C_DEDLINE3_ADDR, cbF16cDedLine3);
+  new DcsBios::StringBuffer<F16C_DED_SZ>(F16C_DEDLINE4_ADDR, cbF16cDedLine4);
+  new DcsBios::StringBuffer<F16C_DED_SZ>(F16C_DEDLINE5_ADDR, cbF16cDedLine5);
 
   // LED lights
   new DcsBios::IntegerBuffer(F16C_MASTERCAUTLT_ADDR, F16C_MASTERCAUTLT_MASK,
