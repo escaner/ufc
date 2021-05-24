@@ -130,6 +130,24 @@ constexpr unsigned int F16C_DEDLINE2_ADDR = 0x4516;
 constexpr unsigned int F16C_DEDLINE3_ADDR = 0x4530;
 constexpr unsigned int F16C_DEDLINE4_ADDR = 0x454a;
 constexpr unsigned int F16C_DEDLINE5_ADDR = 0x4564;
+constexpr unsigned int F16C_FUELQTYKNOB_ADDR = 0x441e;
+constexpr unsigned int F16C_FUELQTYKNOB_MASK = 0x0007;
+constexpr unsigned char F16C_FUELQTYKNOB_SHIFT = 0U;
+constexpr unsigned int F16C_FUELQTYAL_ADDR = 0x44dc;
+constexpr unsigned int F16C_FUELQTYAL_MASK = 0xffff;
+constexpr unsigned char F16C_FUELQTYAL_SHIFT = 0U;
+constexpr unsigned int F16C_FUELQTYFR_ADDR = 0x44de;
+constexpr unsigned int F16C_FUELQTYFR_MASK = 0xffff;
+constexpr unsigned char F16C_FUELQTYFR_SHIFT = 0U;
+constexpr unsigned int F16C_FUELTOT100_ADDR = 0x44e4;
+constexpr unsigned int F16C_FUELTOT100_MASK = 0xffff;
+constexpr unsigned char F16C_FUELTOT100_SHIFT = 0U;
+constexpr unsigned int F16C_FUELTOT1K_ADDR = 0x44e2;
+constexpr unsigned int F16C_FUELTOT1K_MASK = 0xffff;
+constexpr unsigned char F16C_FUELTOT1K_SHIFT = 0U;
+constexpr unsigned int F16C_FUELTOT10K_ADDR = 0x44e0;
+constexpr unsigned int F16C_FUELTOT10K_MASK = 0xffff;
+constexpr unsigned char F16C_FUELTOT10K_SHIFT = 0U;
 constexpr unsigned int F16C_MASTERCAUTLT_ADDR = 0x4472;
 constexpr unsigned int F16C_MASTERCAUTLT_MASK = 0x0800;
 constexpr unsigned char F16C_MASTERCAUTLT_SHIFT = 11U;
@@ -467,6 +485,54 @@ static void cbF16cDedLine5(char *szValue)
 }
 
 /*
+ *   Callback to update F-16C Fuel quantity selecion knob position.
+ */
+static void cbF16cFuelQtySelKnob(unsigned int Value)
+{
+  DiPnl.f16cFuelQtySelKnob((uint8_t) Value);
+}
+
+/*
+ *   Callback to update F-16C Fuel quantity AL indicator.
+ */
+static void cbF16cFuelQtyIndAl(unsigned int Value)
+{
+  DiPnl.f16cFuelQtyIndicator(false, Value);
+}
+
+/*
+ *   Callback to update F-16C Fuel quantity FR indicator.
+ */
+static void cbF16cFuelQtyIndFr(unsigned int Value)
+{
+  DiPnl.f16cFuelQtyIndicator(true, Value);
+}
+
+/*
+ *   Callback to update F-16C hundreds of the fuel totalizer counter.
+ */
+static void cbF16cFuelTotCounter100(unsigned int Value)
+{
+  DiPnl.f16cFuelTotalizerHundreds(Value);
+}
+
+/*
+ *   Callback to update F-16C thousands of the fuel totalizer counter.
+ */
+static void cbF16cFuelTotCounter1k(unsigned int Value)
+{
+  DiPnl.f16cFuelTotalizerThousands(false, Value);
+}
+
+/*
+ *   Callback to update F-16C tens of thousands of the fuel totalizer counter.
+ */
+static void cbF16cFuelTotCounter10k(unsigned int Value)
+{
+  DiPnl.f16cFuelTotalizerThousands(true, Value);
+}
+
+/*
  *   Callback to update F-16C Master Caution light.
  */
 static void cbF16cMasterCautLt(unsigned int Value)
@@ -506,6 +572,20 @@ static void modeF16cInit()
   new DcsBios::StringBuffer<F16C_DED_SZ>(F16C_DEDLINE3_ADDR, cbF16cDedLine3);
   new DcsBios::StringBuffer<F16C_DED_SZ>(F16C_DEDLINE4_ADDR, cbF16cDedLine4);
   new DcsBios::StringBuffer<F16C_DED_SZ>(F16C_DEDLINE5_ADDR, cbF16cDedLine5);
+
+  // Fuel
+  new DcsBios::IntegerBuffer(F16C_FUELQTYKNOB_ADDR, F16C_FUELQTYKNOB_MASK,
+      F16C_FUELQTYKNOB_SHIFT, cbF16cFuelQtySelKnob);
+  new DcsBios::IntegerBuffer(F16C_FUELQTYAL_ADDR, F16C_FUELQTYAL_MASK,
+      F16C_FUELQTYAL_SHIFT, cbF16cFuelQtyIndAl);
+  new DcsBios::IntegerBuffer(F16C_FUELQTYFR_ADDR, F16C_FUELQTYFR_MASK,
+      F16C_FUELQTYFR_SHIFT, cbF16cFuelQtyIndFr);
+  new DcsBios::IntegerBuffer(F16C_FUELTOT100_ADDR, F16C_FUELTOT100_MASK,
+      F16C_FUELTOT100_SHIFT, cbF16cFuelTotCounter100);
+  new DcsBios::IntegerBuffer(F16C_FUELTOT1K_ADDR, F16C_FUELTOT1K_MASK,
+      F16C_FUELTOT1K_SHIFT, cbF16cFuelTotCounter1k);
+  new DcsBios::IntegerBuffer(F16C_FUELTOT10K_ADDR, F16C_FUELTOT10K_MASK,
+      F16C_FUELTOT10K_SHIFT, cbF16cFuelTotCounter10k);
 
   // LED lights
   new DcsBios::IntegerBuffer(F16C_MASTERCAUTLT_ADDR, F16C_MASTERCAUTLT_MASK,

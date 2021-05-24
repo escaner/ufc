@@ -41,6 +41,9 @@ const char DisplPnl::_A10C_UHF_MODES[_A10C_UHF_NUM_MODES] PROGMEM =
 const char DisplPnl::_A10C_TCN_MODES[_A10C_TCN_NUM_MODES][_A10C_TCN_MODES_LN+1]
   PROGMEM = { "OFF", "RCV", "T/R", "A-R", "A-T" };
 
+const char DisplPnl::_F16C_FUEL_POS[_F16C_FUEL_NUM_POS][_F16C_FUEL_POS_LN+1]
+  PROGMEM = { "TEST", "NRML", "RSVR", "IWNG", "XWNG", "XCTR" };
+
 // Where to display separators {row, col} format
 const uint8_t DisplPnl::_A10C_SEPARATORS[][_CRD_DIM] PROGMEM =
 {
@@ -70,12 +73,6 @@ constexpr char F16C_DED_VHF_PTRN[] PROGMEM = "VHF";
 constexpr uint8_t F16C_DED_VHF_PTRN_COL = 1U;
 constexpr uint8_t F16C_DED_VHF_COL = 5U;
 constexpr uint8_t F16C_DED_VHF_SZ = 7U;
-constexpr uint8_t F16C_DED_TIME_COL = 15U;
-constexpr uint8_t F16C_DED_TIME_SZ = 8U;
-constexpr char F16C_DED_HACK_PTRN = ':';
-constexpr uint8_t F16C_DED_HACK_PTRN_COL[] = { 17U, 20U };
-constexpr uint8_t F16C_DED_HACK_COL = 15U;
-constexpr uint8_t F16C_DED_HACK_SZ = 8U;
 constexpr char F16C_DED_TCN_PTRN[] PROGMEM = " T";
 constexpr uint8_t F16C_DED_TCN_PTRN_COL = 18U;
 constexpr uint8_t F16C_DED_TCN_COL = 20U;
@@ -124,13 +121,17 @@ constexpr uint8_t F16C_STPT_COL = 16U;
 constexpr uint8_t F16C_UHFSTPT_ROW = 0U;
 constexpr uint8_t F16C_VHF_LBL_COL = 0U;
 constexpr uint8_t F16C_VHF_COL = 3U;
-constexpr uint8_t F16C_TIME_COL = 12U;
-constexpr uint8_t F16C_VHFTIME_ROW = 1U;
-constexpr uint8_t F16C_TCN_LBL_COL = 0U;
-constexpr uint8_t F16C_TCN_COL = 1U;
-constexpr uint8_t F16C_HACK_COL = 12U;
+constexpr uint8_t F16C_VHFTCN_ROW = 1U;
+constexpr uint8_t F16C_TCN_LBL_COL = 13U;
+constexpr uint8_t F16C_TCN_COL = 16U;
+constexpr uint8_t F16C_FUELPOS_COL = 0U;
+constexpr uint8_t F16C_FUELAL_COL = 4U;
+constexpr uint8_t F16C_FUELSEP_LBL_COL = 8U;
+constexpr uint8_t F16C_FUELFR_COL = 9U;
+constexpr uint8_t F16C_FUELT_LBL_COL = 14U;
+constexpr uint8_t F16C_FUELT_COL = 15U;
+constexpr uint8_t F16C_FUEL_ROW = 2U;
 constexpr uint8_t F16C_SCRATCHPAD_ROW = 4U;
-constexpr uint8_t F16C_TCNHACK_ROW = 2U;
 constexpr uint8_t F16C_MASTERARM_ARM_SW = 2U;
 constexpr uint8_t F16C_STORES_CATI_SW = 1U;
 
@@ -474,9 +475,15 @@ void DisplPnl::a10cGunReady(uint8_t Value)
 void DisplPnl::f16cStart()
 {
 //  uint8_t Buffer[sizeof _LCD_CHAR_UPDOWN];
+  constexpr char FUEL_ZERO = '0';
 
   // Initialize status data
   _Status.F16c.SpLine = _STATUS_F16C_SPLINE_NONE;  // Nothing in the scratchpad
+  _Status.F16c.FuelAl =
+  _Status.F16c.FuelFr = _STATUS_F16C_FUELALFR_NONE;
+  _Status.F16c.FuelTot100 =
+  _Status.F16c.FuelTot1k =
+  _Status.F16c.FuelTot10k = _STATUS_F16C_FUELT_NONE;
 
   // Clear the display
   _Lcd.clear();
@@ -491,10 +498,22 @@ void DisplPnl::f16cStart()
   _Lcd.print(F("UHF"));
   _Lcd.setCursor(F16C_STPT_LBL_COL, F16C_UHFSTPT_ROW);
   _Lcd.print(F("STPT"));
-  _Lcd.setCursor(F16C_UHF_LBL_COL, F16C_VHFTIME_ROW);
+  _Lcd.setCursor(F16C_UHF_LBL_COL, F16C_VHFTCN_ROW);
   _Lcd.print(F("VHF"));
-  _Lcd.setCursor(F16C_TCN_LBL_COL, F16C_TCNHACK_ROW);
+  _Lcd.setCursor(F16C_TCN_LBL_COL, F16C_VHFTCN_ROW);
+  _Lcd.write("TCN");
+  _Lcd.setCursor(F16C_FUELSEP_LBL_COL, F16C_FUEL_ROW);
+  _Lcd.write('/');
+  _Lcd.setCursor(F16C_FUELT_LBL_COL, F16C_FUEL_ROW);
   _Lcd.write('T');
+
+  // Zero values as last digit for fuel indicators
+  _Lcd.setCursor(F16C_FUELAL_COL+3, F16C_FUEL_ROW);
+  _Lcd.write(FUEL_ZERO);
+  _Lcd.setCursor(F16C_FUELFR_COL+3, F16C_FUEL_ROW);
+  _Lcd.write(FUEL_ZERO);
+  _Lcd.setCursor(F16C_FUELT_COL+4, F16C_FUEL_ROW);
+  _Lcd.write(FUEL_ZERO);
 }
 
 
@@ -525,28 +544,14 @@ void DisplPnl::f16cDed(uint8_t Line, const char *szValue)
       Updated = true;
     }
     break;
-  case 2:  // VHF & Time
+  case 2:  // VHF
     // Check whether we are on the CNI page
     if (!strncmp_P(szValue + F16C_DED_VHF_PTRN_COL, F16C_DED_VHF_PTRN,
         sizeof F16C_DED_VHF_PTRN - 1U))
     {
       // Copy VHF frequency
-      _f16cWriteDed(F16C_VHFTIME_ROW, F16C_VHF_COL,
+      _f16cWriteDed(F16C_VHFTCN_ROW, F16C_VHF_COL,
         szValue + F16C_DED_VHF_COL, F16C_DED_VHF_SZ);
-      // Copy Time
-      _f16cWriteDed(F16C_VHFTIME_ROW, F16C_TIME_COL,
-        szValue + F16C_DED_TIME_COL, F16C_DED_TIME_SZ);
-      Updated = true;
-    }
-    break;
-  case 3:  // Hack time
-    // Check whether we are on the CNI page
-    if (szValue[F16C_DED_HACK_PTRN_COL[0]] == F16C_DED_HACK_PTRN &&
-        szValue[F16C_DED_HACK_PTRN_COL[1]] == F16C_DED_HACK_PTRN)
-    {
-      // Copy Hack time
-      _f16cWriteDed(F16C_TCNHACK_ROW, F16C_HACK_COL,
-        szValue + F16C_DED_HACK_COL, F16C_DED_HACK_SZ);
       Updated = true;
     }
     break;
@@ -556,7 +561,7 @@ void DisplPnl::f16cDed(uint8_t Line, const char *szValue)
         sizeof F16C_DED_TCN_PTRN - 1U))
     {
       // Copy TACAN channel
-      _f16cWriteDed(F16C_TCNHACK_ROW, F16C_TCN_COL,
+      _f16cWriteDed(F16C_VHFTCN_ROW, F16C_TCN_COL,
         szValue + F16C_DED_TCN_COL, F16C_DED_TCN_SZ);
       Updated = true;
     }
@@ -565,6 +570,181 @@ void DisplPnl::f16cDed(uint8_t Line, const char *szValue)
 
   // Check for editedtion fields and display at scratchpad or erase it as needed
   _f16DedUpdateScratchpad(Line, szValue);
+}
+
+
+/*
+ *   Updates F-16C fuel quantity selector knob value on the LCD.
+ *  Parameters:
+ *  * Value: new position for the knob
+ */
+void DisplPnl::f16cFuelQtySelKnob(uint8_t Value)
+{
+  _Lcd.setCursor(F16C_FUELPOS_COL, F16C_FUEL_ROW);
+  _Lcd.print((const __FlashStringHelper *) (_F16C_FUEL_POS + Value));
+}
+
+
+/*
+ *   Updates F-16C fuel quantity AL and FR indicators on the LCD.
+ *  The actual fuel value ranges [0, 5000] but it is represented in the range
+ *  [0, UINT16_MAX]. This method produces a value in the range [0, 500] so the
+ *  last digit of the normalized value will be fixed to 0.
+ *   Parameters:
+ *   * Fr: true for FR, false for AL indicator
+ *   * Value [0, UINT16_MAX]: new value of the reading, needs to be normalized
+ *   *                        to [0, 5000].
+ */
+void DisplPnl::f16cFuelQtyIndicator(bool Fr, uint16_t Value)
+{
+  // Denominator to normalize to [0, 500]
+  constexpr uint32_t DENOMINATOR = (uint32_t) UINT16_MAX * (uint32_t) 10UL;
+  constexpr uint32_t MAX_NORM_VALUE = 5000UL;
+  char Buff[3+1];
+  uint8_t Col;
+  bool WriteLcd;
+  uint32_t TmpValue;
+  uint16_t NormValue; // Value normalized to range [0, 500]
+
+  // Position the cursor according to the indicator
+  Col = Fr? F16C_FUELFR_COL: F16C_FUELAL_COL;
+  _Lcd.setCursor(Col, F16C_FUEL_ROW);
+
+  // Normalize value
+  TmpValue = (uint32_t) Value * MAX_NORM_VALUE;
+  NormValue = (uint16_t) DIV_PROUND(TmpValue, DENOMINATOR);
+
+  // Check if the value to display has changed from the previous one
+  // and update when so for future reference
+  if (Fr)
+  {
+    if (WriteLcd = NormValue!=_Status.F16c.FuelFr)
+      _Status.F16c.FuelFr = NormValue;
+  }
+  else  // Al
+    if (WriteLcd = NormValue!=_Status.F16c.FuelAl)
+      _Status.F16c.FuelAl = NormValue;
+
+  // If changed, we need to convert NormValue to string and write it on the LCD
+  if (WriteLcd)
+  {
+    sprintf_P(Buff, PSTR("%03u"), (unsigned) NormValue);
+    _Lcd.write(Buff);
+  }
+}
+
+
+/*
+ *   Updates F-16C fuel totalizer hundreds counter indicator on the LCD.
+ *  The actual fuel value ranges [0, 1000) but it is represented in the range
+ *  [0, UINT16_MAX]. This method produces a value in the range [0, 99] so the
+ *  last digit of the normalized value will be fixed to 0.
+ *   Note that the value is truncated and not rounded to tenths. E.g. a value of
+ *  997 will be displayed as 990 and not 000. Otherwise, as the thousands are
+ *  calculated in another place, if the fuel were 2997 we would be showing 2000
+ *  instead of 3000.
+ *   Parameters:
+ *   * Value [0, UINT16_MAX]: new value of the reading, needs to be normalized
+ *                            to [0, 99].
+ */
+void DisplPnl::f16cFuelTotalizerHundreds(uint16_t Value)
+{
+  // Denominator to normalize to [0, 100]
+  constexpr uint32_t DENOMINATOR = (uint32_t) UINT16_MAX * (uint32_t) 10UL;
+  constexpr uint32_t MAX_NORM_VALUE = 1000UL;
+  char Buff[2+1];
+  uint32_t TmpValue;
+  uint8_t NormValue; // Value normalized to range [0, 99]
+
+  // Position the cursor
+  _Lcd.setCursor(F16C_FUELT_COL+2, F16C_FUEL_ROW);
+
+  // Normalize value
+  TmpValue = (uint32_t) Value * MAX_NORM_VALUE;
+  // Truncate: when value is 2,997, show e.g. 2,990 instead of 2,000!
+  NormValue = (uint8_t) (TmpValue / DENOMINATOR);  // Truncate!!!
+
+  // We obtain a NormValue [0, 100], make simple modulo for [0, 99]
+  if (NormValue == (uint8_t) (MAX_NORM_VALUE / 10UL))
+    NormValue = 0U;
+
+  // Check if the value to display has changed from the previous one
+  if (NormValue != _Status.F16c.FuelTot100)
+  {
+    // Update value in _Status for future reference
+    _Status.F16c.FuelTot100 = NormValue;
+
+    // Convert to string and write the value
+    sprintf_P(Buff, PSTR("%02u"), (unsigned) NormValue);
+    _Lcd.write(Buff);
+  }
+}
+
+
+/*
+ *   Updates F-16C fuel totalizer 1k & 10k counter indicator on the LCD.
+ *  The actual fuel value ranges [0, 10) but it is represented in the range
+ *  [0, UINT16_MAX]. The key values for the digits are:
+ *    Value = (trunc) Digit * UINT16_SIZE / 10
+ *  This means that for odd digits we are losing 0.5 precision.
+ *  Also, the Value decreases to the lower Digit only for a short time after
+ *  after the lower value digit has decreased, it is not linear.
+ *   Therefore we will need some tweaking to restore the actual Digit
+ *  represented by the Value.
+ *   Parameters:
+ *   * TenK: true for 10k digit; false for 1k digit.
+ *   * Value [0, UINT16_MAX]: new value of the reading, needs to be normalized
+ *                            to [0, 10).
+ */
+void DisplPnl::f16cFuelTotalizerThousands(bool TenK, uint16_t Value)
+{
+  char Buff[1+1];
+  uint8_t Col;
+  bool WriteLcd;
+  uint32_t TmpDigit;
+  uint8_t Digit; // Value normalized to range [0, 9]
+
+  // Position the cursor according to the digit
+  Col = F16C_FUELT_COL;
+  if (!TenK)
+    Col++;
+  _Lcd.setCursor(Col, F16C_FUEL_ROW);
+
+  // Calculate integer divisor of Value*10 to avoid decimal errors. We get a
+  // candidate Digit, but due to truncation calculating Value it could be
+  // an unit too low.
+  TmpDigit = (uint32_t) Value * (uint32_t) 10UL / UINT16_MAX;
+  Digit = (uint8_t) TmpDigit;
+
+  // We get a value [0, 10], need to quick modulo when 10
+  if (Digit == (uint8_t) 10U)
+    // If we got Digit==10, no need to check for Digit+1, the result is integer
+    // Also, modulo it to 0
+    Digit = 0U;
+  else  // Not 10 (max 9) -> no overflow in uint16 comparison
+    // Check if the next Digit would return the exact same Value after truncation
+    if ((uint16_t) ((TmpDigit + (uint32_t) 1UL) * UINT16_MAX / (uint32_t) 10UL)
+        == Value)
+      // Yes, our digit was one unit too low
+      Digit++;  // This cannot deliver 10, no need for modulo
+
+  // Check if the value to display has changed from the previous one
+  // and update when so for future reference
+  if (TenK)  // 10K digit
+  {
+    if (WriteLcd = Digit!=_Status.F16c.FuelTot10k)
+      _Status.F16c.FuelTot10k = Digit;
+  }
+  else  // 1K digit
+    if (WriteLcd = Digit!=_Status.F16c.FuelTot1k)
+      _Status.F16c.FuelTot1k = Digit;
+
+  // If changed, we need to convert Digit to string and write it on the LCD
+  if (WriteLcd)
+  {
+    sprintf_P(Buff, PSTR("%01u"), (unsigned) Digit);
+    _Lcd.write(Buff);
+  }
 }
 
 
@@ -1105,8 +1285,9 @@ void DisplPnl::_lcdWritePadded(const char *szText, uint8_t Size, char PadChar)
  */
 void DisplPnl::_lcdWriteDeg(uint16_t Value)
 {
-  // Conversion factor to translate uint16_t ranged value into degrees
-  constexpr uint32_t DEG_CONV_FACTOR = round(UINT16_MAX / 360.0F);
+  // Denominator to normalize to [0, 360]
+  constexpr uint32_t DENOMINATOR = UINT16_MAX;
+  constexpr uint32_t MAX_NORM_VALUE = 360UL;
   char Buff[3+1];
   uint32_t AbsValue;  // Value unreferenced from present heading
   uint16_t Deg;
@@ -1114,15 +1295,16 @@ void DisplPnl::_lcdWriteDeg(uint16_t Value)
   // Decouple Value from current heading
   AbsValue = (uint32_t) (Value - _Status.A10c.Hdg);
 
-  // Call the division macro with 32bit values to avoid overflow
-  Deg = (uint16_t) DIV_PROUND(AbsValue, DEG_CONV_FACTOR);
+  // Normalize value with 32 bit precision to avoid overflow
+  AbsValue *= MAX_NORM_VALUE;
+  Deg = (uint16_t) DIV_PROUND(AbsValue, DENOMINATOR);
 
-  // Sometimes we get 360º, need a 360 quick modulo
-  if (Deg == 360U)
+  // We obtain a Deg value [0, 360], make simple modulo for [0, 359]
+  if (Deg == (uint16_t) MAX_NORM_VALUE)
     Deg = 0U;
 
   // Convert to string and write on LCD
-  sprintf_P(Buff, PSTR("%03u"), Deg);
+  sprintf_P(Buff, PSTR("%03u"), (unsigned) Deg);
   _Lcd.write(Buff);
 }
 

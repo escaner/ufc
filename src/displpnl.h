@@ -80,6 +80,10 @@ public:
 
   void f16cStart();
   void f16cDed(uint8_t Line, const char *szValue);
+  void f16cFuelQtySelKnob(uint8_t Value);
+  void f16cFuelQtyIndicator(bool Fr, uint16_t Value);
+  void f16cFuelTotalizerHundreds(uint16_t Value);
+  void f16cFuelTotalizerThousands(bool TenK, uint16_t Value);
   void f16cMasterCaut(uint8_t Value);
   void f16cMasterArm(uint8_t Value);
   void f16cStoresCat(uint8_t Value);
@@ -100,10 +104,11 @@ public:
   void fa18cMasterArm(uint8_t Value);
   void fa18cLtdr(uint8_t Value);
 
+//  void m2000cStart();
+
   void debugStart();
   void debugShowEvent(const Event &Ev, const Directx::Event_t &EvDx);
 
-//  void m2000cStart();
 
 protected:
 
@@ -132,7 +137,14 @@ protected:
   static const char _A10C_UHF_MODES[_A10C_UHF_NUM_MODES] PROGMEM;
   static const char _A10C_TCN_MODES[_A10C_TCN_NUM_MODES][_A10C_TCN_MODES_LN+1]
     PROGMEM;
+
+  static const uint8_t _F16C_FUEL_NUM_POS = 6U;
+  static const uint8_t _F16C_FUEL_POS_LN = 4U;
+  static const char _F16C_FUEL_POS[_F16C_FUEL_NUM_POS][_F16C_FUEL_POS_LN+1]
+    PROGMEM;
   static const uint8_t _STATUS_F16C_SPLINE_NONE = UINT8_MAX;
+  static const uint16_t _STATUS_F16C_FUELALFR_NONE = UINT16_MAX;
+  static const uint8_t _STATUS_F16C_FUELT_NONE = UINT8_MAX;
 
 
   /*********************/
@@ -175,6 +187,8 @@ protected:
       uint8_t SpLine;   // DED row displayed in the scratchpad
                         // (or _STATUS_F16C_SPLINE_NONE)
       uint8_t SpLength; // Number of chars written in the scratchpad
+      uint16_t FuelAl, FuelFr;  // Fuel for AL and FR gauges
+      uint8_t FuelTot100, FuelTot1k, FuelTot10k;  // Fuel for total indicator
     } F16c;
   
     // F/A-18C
