@@ -12,14 +12,40 @@
 // Custom character with a double triangle up & down
 const uint8_t DisplPnl::_LCD_CHAR_UPDOWN[] PROGMEM =
 {
-	0b00100,
-	0b01110,
-	0b11111,
-	0b00000,
-	0b00000,
-	0b11111,
-	0b01110,
-	0b00100
+  0b00100,
+  0b01110,
+  0b11111,
+  0b00000,
+  0b00000,
+  0b11111,
+  0b01110,
+  0b00100
+};
+
+// Custom character with a capital delta letter
+const uint8_t DisplPnl::_LCD_CHAR_DELTA[] PROGMEM =
+{
+  0b00000,
+  0b00100,
+  0b01010,
+  0b01010,
+  0b10001,
+  0b10001,
+  0b11111,
+  0b00000
+};
+
+// Custom character with a capital rho letter
+const uint8_t DisplPnl::_LCD_CHAR_RHO[] PROGMEM =
+{
+  0b01110,
+  0b10001,
+  0b10001,
+  0b11111,
+  0b10001,
+  0b10001,
+  0b01110,
+  0b00000
 };
 
 // Some chars from the F-16C DED need to be replaced for correct visualization
@@ -43,6 +69,13 @@ const char DisplPnl::_A10C_TCN_MODES[_A10C_TCN_NUM_MODES][_A10C_TCN_MODES_LN+1]
 
 const char DisplPnl::_F16C_FUEL_POS[_F16C_FUEL_NUM_POS][_F16C_FUEL_POS_LN+1]
   PROGMEM = { "TEST", "NRML", "RSVR", "IWNG", "XWNG", "XCTR" };
+
+const char DisplPnl::_M2000C_PCNMODE_POS[_M2000C_PCNMODE_NUM_POS]
+  [_M2000C_PCNMODE_POS_LN+1] PROGMEM =
+  {
+    "TR/VS", "D/RLT", "CP/PD", " ALT ", " L/G ", "RD/TD",
+    "\x02L/\x02G", "\x02ALT ", " P/\x03 ", " DEC ", "DV/FV"
+  };
 
 // Where to display separators {row, col} format
 const uint8_t DisplPnl::_A10C_SEPARATORS[][_CRD_DIM] PROGMEM =
@@ -155,6 +188,55 @@ constexpr uint8_t FA18C_BINGO_LBL_COL = 5U;
 constexpr uint8_t FA18C_BINGO_ROW = 3U;
 constexpr uint8_t FA18C_BINGO_SZ = 5U;
 
+// M2000C
+constexpr uint8_t M2000C_PCNLR_ROW = 0U;
+constexpr uint8_t M2000C_PCNDIGL_COL = 0U;
+constexpr uint8_t M2000C_PCNL_COL = 2U;
+constexpr uint8_t M2000C_PCNDIGR_COL = 10U;
+constexpr uint8_t M2000C_PCNR_COL = 12U;
+constexpr uint8_t M2000C_PREPDEST_ROW = 1U;
+constexpr uint8_t M2000C_PREPLT_COL = 0U;
+constexpr uint8_t M2000C_DESTLT_COL = 19U;
+constexpr uint8_t M2000C_PCNPREP_COL = 1U;
+constexpr uint8_t M2000C_PCNDEST_COL = 17U;
+constexpr uint8_t M2000C_BADRECLT_ROW = 2U;
+constexpr uint8_t M2000C_BADLT_COL = 0U;
+constexpr uint8_t M2000C_RECLT_COL = 19U;
+constexpr uint8_t M2000C_VALMRCLT_ROW = 3U;
+constexpr uint8_t M2000C_VALLT_COL = 0U;
+constexpr uint8_t M2000C_MRCLT_COL = 19U;
+constexpr uint8_t M2000C_PCNMODE_ROW = 1U;
+constexpr uint8_t M2000C_PCNMODE_COL = 5U;
+constexpr uint8_t M2000C_REDLT_ROW = 1U;
+constexpr uint8_t M2000C_AMBERLT_ROW = 2U;
+constexpr uint8_t M2000C_GREENLT_ROW = 3U;
+constexpr uint8_t M2000C_UNILT_COL = 12U;
+constexpr uint8_t M2000C_ALNLT_COL = 2U;
+constexpr uint8_t M2000C_MIPLT_COL = 6U;
+constexpr uint8_t M2000C_NDEGLT_COL = 10U;
+constexpr uint8_t M2000C_SECLT_COL = 15U;
+constexpr uint8_t M2000C_PRETLT_COL = 2U;
+constexpr uint8_t M2000C_M91LT_COL = 7U;
+constexpr uint8_t M2000C_M92LT_COL = 11U;
+constexpr uint8_t M2000C_M93LT_COL = 15U;
+
+constexpr uint8_t M2000C_BTNLT_PREP_BIT = 0b00000001;
+constexpr uint8_t M2000C_BTNLT_DEST_BIT = 0b00000010;
+constexpr uint8_t M2000C_BTNLT_BAD_BIT =  0b00000100;
+constexpr uint8_t M2000C_BTNLT_REC_BIT =  0b00001000;
+constexpr uint8_t M2000C_BTNLT_EFF_BIT =  0b00010000;
+constexpr uint8_t M2000C_BTNLT_INS_BIT =  0b00100000;
+constexpr uint8_t M2000C_BTNLT_VAL_BIT =  0b01000000;
+constexpr uint8_t M2000C_BTNLT_MRC_BIT =  0b10000000;
+constexpr uint8_t M2000C_PANLT_PRET_BIT = 0b00000100;
+constexpr uint8_t M2000C_PANLT_ALN_BIT =  0b00001000;
+constexpr uint8_t M2000C_PANLT_MIP_BIT =  0b00010000;
+constexpr uint8_t M2000C_PANLT_NDEG_BIT = 0b00100000;
+constexpr uint8_t M2000C_PANLT_SEC_BIT =  0b01000000;
+constexpr uint8_t M2000C_PANLT_UNI_BIT =  0b10000000;
+constexpr uint8_t M2000C_MEMLT_M91_BIT = 0b00000010;
+constexpr uint8_t M2000C_MEMLT_M92_BIT = 0b00000100;
+constexpr uint8_t M2000C_MEMLT_M93_BIT = 0b00001000;
 
 /***********/
 /* Methods */
@@ -474,7 +556,6 @@ void DisplPnl::a10cGunReady(uint8_t Value)
  */
 void DisplPnl::f16cStart()
 {
-//  uint8_t Buffer[sizeof _LCD_CHAR_UPDOWN];
   constexpr char FUEL_ZERO = '0';
 
   // Initialize status data
@@ -489,8 +570,6 @@ void DisplPnl::f16cStart()
   _Lcd.clear();
 
   // Register custom LCD character
-//  memcpy_P(Buffer, _LCD_CHAR_UPDOWN, sizeof _LCD_CHAR_UPDOWN);
-//  _Lcd.createChar(_LCD_CHAR_UPDOWN_ID, Buffer);
   _Lcd.createChar(_LCD_CHAR_UPDOWN_ID, (PGM_P) _LCD_CHAR_UPDOWN);
 
   // Display labels
@@ -525,8 +604,6 @@ void DisplPnl::f16cStart()
  */
 void DisplPnl::f16cDed(uint8_t Line, const char *szValue)
 {
-  bool Updated = false;
-
   // Check for main CNI page values
   switch (Line)
   {
@@ -536,13 +613,16 @@ void DisplPnl::f16cDed(uint8_t Line, const char *szValue)
         sizeof F16C_DED_UHF_PTRN - 1U))
     {
       // Copy UHF frequency
-      _f16cWriteDed(F16C_UHFSTPT_ROW, F16C_UHF_COL,
+      _f16cDedWrite(F16C_UHFSTPT_ROW, F16C_UHF_COL,
         szValue + F16C_DED_UHF_COL, F16C_DED_UHF_SZ);
       // Copy Steerpoint
-      _f16cWriteDed(F16C_UHFSTPT_ROW, F16C_STPT_COL,
+      _f16cDedWrite(F16C_UHFSTPT_ROW, F16C_STPT_COL,
         szValue + F16C_DED_STPT_COL, F16C_DED_STPT_SZ);
-      Updated = true;
     }
+    else
+      // Clear up/down arrow positions
+      _f16cDedClearArrows(Line);
+
     break;
   case 2:  // VHF
     // Check whether we are on the CNI page
@@ -550,10 +630,12 @@ void DisplPnl::f16cDed(uint8_t Line, const char *szValue)
         sizeof F16C_DED_VHF_PTRN - 1U))
     {
       // Copy VHF frequency
-      _f16cWriteDed(F16C_VHFTCN_ROW, F16C_VHF_COL,
+      _f16cDedWrite(F16C_VHFTCN_ROW, F16C_VHF_COL,
         szValue + F16C_DED_VHF_COL, F16C_DED_VHF_SZ);
-      Updated = true;
     }
+    else
+      // Clear up/down arrow positions
+      _f16cDedClearArrows(Line);
     break;
   case 4:  // TACAN
     // Check whether we are on the CNI page
@@ -561,9 +643,8 @@ void DisplPnl::f16cDed(uint8_t Line, const char *szValue)
         sizeof F16C_DED_TCN_PTRN - 1U))
     {
       // Copy TACAN channel
-      _f16cWriteDed(F16C_VHFTCN_ROW, F16C_TCN_COL,
+      _f16cDedWrite(F16C_VHFTCN_ROW, F16C_TCN_COL,
         szValue + F16C_DED_TCN_COL, F16C_DED_TCN_SZ);
-      Updated = true;
     }
     break;
   }
@@ -963,18 +1044,6 @@ void DisplPnl::fa18cMasterCaut(uint8_t Value)
 
 
 /*
- *   Updates F/A-18C APU Ready light LED.
- *  Parameters:
- *  * Value (HIGH, LOW): new state value: HIGH = on; LOW = off
- */
-/*
-void DisplPnl::fa18cApuReady(uint8_t Value)
-{
-  _setLed(LedClr, Value);
-}
-*/
-
-/*
  *   Updates F/A-18C Master Arm LED.
  *  Parameters:
  *  * Value (HIGH, LOW): new state value: HIGH = on; LOW = off
@@ -993,6 +1062,252 @@ void DisplPnl::fa18cMasterArm(uint8_t Value)
 void DisplPnl::fa18cLtdr(uint8_t Value)
 {
   _setLed(LedEnt, Value);
+}
+
+
+/*
+ *   Initializes display panel for Mirage 2000C mode.
+ */
+void DisplPnl::m2000cStart()
+{
+  _Lcd.clear();
+
+  // Register custom LCD characters
+  _Lcd.createChar(_LCD_CHAR_DELTA_ID, (PGM_P) _LCD_CHAR_DELTA);
+  _Lcd.createChar(_LCD_CHAR_RHO_ID, (PGM_P) _LCD_CHAR_RHO);
+
+//  _Lcd.setCursor(0,1);
+//  _Lcd.write("\231001         UNI  17\177");
+//  _Lcd.write("* ALN MIP NDEG SEC *");
+//  _Lcd.write("* PRET M91 M92 M93 *");
+}
+
+
+/*
+ *   Updates M2000C PCN Pre-Latitude chars.
+ *  Parameters:
+ *  * szValue: string with the new value to display.
+ */
+void DisplPnl::m2000cPcnDigLeft(const char *szValue)
+{
+  _Lcd.setCursor(M2000C_PCNDIGL_COL, M2000C_PCNLR_ROW);
+  _Lcd.write(szValue);
+}
+
+
+/*
+ *   Updates M2000C PCN Latitude.
+ *  Parameters:
+ *  * szValue: string with the new value to display.
+ */
+void DisplPnl::m2000cPcnLeft(const char *szValue)
+{
+  _Lcd.setCursor(M2000C_PCNL_COL, M2000C_PCNLR_ROW);
+  _Lcd.write(szValue + 3);
+}
+
+
+/*
+ *   Updates M2000C PCN Pre-Longitude chars.
+ *  Parameters:
+ *  * szValue: string with the new value to display.
+ */
+void DisplPnl::m2000cPcnDigRight(const char *szValue)
+{
+  _Lcd.setCursor(M2000C_PCNDIGR_COL, M2000C_PCNLR_ROW);
+  _Lcd.write(szValue);
+}
+
+
+/*
+ *   Updates M2000C PCN Longitude.
+ *  Parameters:
+ *  * szValue: string with the new value to display.
+ */
+void DisplPnl::m2000cPcnRight(const char *szValue)
+{
+  _Lcd.setCursor(M2000C_PCNR_COL, M2000C_PCNLR_ROW);
+  _Lcd.write(szValue + 3);
+}
+
+
+/*
+ *   Updates M2000C PCN Prep.
+ *  Parameters:
+ *  * szValue: string with the new value to display.
+ */
+void DisplPnl::m2000cPcnPrep(const char *szValue)
+{
+  _Lcd.setCursor(M2000C_PCNPREP_COL, M2000C_PREPDEST_ROW);
+  _Lcd.write(szValue);
+}
+
+
+/*
+ *   Updates M2000C PCN Dest.
+ *  Parameters:
+ *  * szValue: string with the new value to display.
+ */
+void DisplPnl::m2000cPcnDest(const char *szValue)
+{
+  _Lcd.setCursor(M2000C_PCNDEST_COL, M2000C_PREPDEST_ROW);
+  _Lcd.write(szValue);
+}
+
+
+/*
+ *   Updates M2000C PCN mode switch position.
+ *  Parameters:
+ *  * szValue: string with the new value to display.
+ */
+void DisplPnl::m2000cPcnMode(uint8_t Value)
+{
+  _Lcd.setCursor(M2000C_PCNMODE_COL, M2000C_PCNMODE_ROW);
+  _Lcd.print((const __FlashStringHelper *) (_M2000C_PCNMODE_POS + Value));
+}
+
+
+/*
+ *   Updates M2000C PCN button lights.
+ *   More than one light can change in a single call, so check them all.
+ *  Parameters:
+ *  * Value: bit map with the lights state
+ */
+void DisplPnl::m2000cPcnButtonLt(uint8_t Value)
+{
+  uint8_t Set;
+
+  // PREP
+  if ((Set = Value & M2000C_BTNLT_PREP_BIT) !=
+      (_Status.M2000c.BtnLt & M2000C_BTNLT_PREP_BIT))
+    _m2000cSetButtonLt(M2000C_PREPDEST_ROW, M2000C_PREPLT_COL, Set);
+
+  // DEST
+  if ((Set = Value & M2000C_BTNLT_DEST_BIT) !=
+      (_Status.M2000c.BtnLt & M2000C_BTNLT_DEST_BIT))
+    _m2000cSetButtonLt(M2000C_PREPDEST_ROW, M2000C_DESTLT_COL, Set);
+
+  // BAD
+  if ((Set = Value & M2000C_BTNLT_BAD_BIT) !=
+      (_Status.M2000c.BtnLt & M2000C_BTNLT_BAD_BIT))
+    _m2000cSetButtonLt(M2000C_BADRECLT_ROW, M2000C_BADLT_COL, Set);
+
+  // REC
+  if ((Set = Value & M2000C_BTNLT_REC_BIT) !=
+      (_Status.M2000c.BtnLt & M2000C_BTNLT_REC_BIT))
+    _m2000cSetButtonLt(M2000C_BADRECLT_ROW, M2000C_RECLT_COL, Set);
+
+  // EFF
+  if ((Set = Value & M2000C_BTNLT_EFF_BIT) !=
+      (_Status.M2000c.BtnLt & M2000C_BTNLT_EFF_BIT))
+    _setLed(LedClr, Set);
+
+  // INS
+  if ((Set = Value & M2000C_BTNLT_INS_BIT) !=
+      (_Status.M2000c.BtnLt & M2000C_BTNLT_INS_BIT))
+    _setLed(LedEnt, Set);
+
+  // VAL
+  if ((Set = Value & M2000C_BTNLT_VAL_BIT) !=
+      (_Status.M2000c.BtnLt & M2000C_BTNLT_VAL_BIT))
+    _m2000cSetButtonLt(M2000C_VALMRCLT_ROW, M2000C_VALLT_COL, Set);
+
+  // MRC
+  if ((Set = Value & M2000C_BTNLT_MRC_BIT) !=
+      (_Status.M2000c.BtnLt & M2000C_BTNLT_MRC_BIT))
+    _m2000cSetButtonLt(M2000C_VALMRCLT_ROW, M2000C_MRCLT_COL, Set);
+
+  // Save the new status
+  _Status.M2000c.BtnLt = Value;
+}
+
+
+/*
+ *   Updates M2000C PCN Panne lights.
+ *   More than one light can change in a single call, so check them all.
+ *  Parameters:
+ *  * Value: bit map with the lights state
+ */
+void DisplPnl::m2000cPcnPanneLt(uint8_t Value)
+{
+  uint8_t Set;
+
+  // PRET
+  if ((Set = Value & M2000C_PANLT_PRET_BIT) !=
+      (_Status.M2000c.PanneLt & M2000C_PANLT_PRET_BIT))
+    _m2000cSetPcnLt(M2000C_GREENLT_ROW, M2000C_PRETLT_COL, Set, PSTR("PRET"));
+
+  // ALN
+  if ((Set = Value & M2000C_PANLT_ALN_BIT) !=
+      (_Status.M2000c.PanneLt & M2000C_PANLT_ALN_BIT))
+    _m2000cSetPcnLt(M2000C_AMBERLT_ROW, M2000C_ALNLT_COL, Set, PSTR("ALN"));
+
+  // MIP
+  if ((Set = Value & M2000C_PANLT_MIP_BIT) !=
+      (_Status.M2000c.PanneLt & M2000C_PANLT_MIP_BIT))
+    _m2000cSetPcnLt(M2000C_AMBERLT_ROW, M2000C_MIPLT_COL, Set, PSTR("MIP"));
+
+  // N.DEG
+  if ((Set = Value & M2000C_PANLT_NDEG_BIT) !=
+      (_Status.M2000c.PanneLt & M2000C_PANLT_NDEG_BIT))
+    _m2000cSetPcnLt(M2000C_AMBERLT_ROW, M2000C_NDEGLT_COL, Set, PSTR("NDEG"));
+
+  // SEC
+  if ((Set = Value & M2000C_PANLT_SEC_BIT) !=
+      (_Status.M2000c.PanneLt & M2000C_PANLT_SEC_BIT))
+    _m2000cSetPcnLt(M2000C_AMBERLT_ROW, M2000C_SECLT_COL, Set, PSTR("SEC"));
+
+  // UNI
+  if ((Set = Value & M2000C_PANLT_UNI_BIT) !=
+      (_Status.M2000c.PanneLt & M2000C_PANLT_UNI_BIT))
+    _m2000cSetPcnLt(M2000C_REDLT_ROW, M2000C_UNILT_COL, Set, PSTR("UNI"));
+
+  // Save the new status
+  _Status.M2000c.PanneLt = Value;
+}
+
+
+/*
+ *   Updates M2000C PCN Memory lights.
+ *   More than one light can change in a single call, so check them all.
+ *  Parameters:
+ *  * Value: bit map with the lights state
+ */
+void DisplPnl::m2000cPcnMemLt(uint8_t Value)
+{
+  uint8_t Set;
+
+  // M91
+  if ((Set = Value & M2000C_MEMLT_M91_BIT) !=
+      (_Status.M2000c.PanneLt & M2000C_MEMLT_M91_BIT))
+    _m2000cSetPcnLt(M2000C_GREENLT_ROW, M2000C_M91LT_COL, Set, PSTR("M91"));
+
+  // M92
+  if ((Set = Value & M2000C_MEMLT_M92_BIT) !=
+      (_Status.M2000c.PanneLt & M2000C_MEMLT_M92_BIT))
+    _m2000cSetPcnLt(M2000C_GREENLT_ROW, M2000C_M92LT_COL, Set, PSTR("M92"));
+
+  // M93
+  if ((Set = Value & M2000C_MEMLT_M93_BIT) !=
+      (_Status.M2000c.PanneLt & M2000C_MEMLT_M93_BIT))
+    _m2000cSetPcnLt(M2000C_GREENLT_ROW, M2000C_M93LT_COL, Set, PSTR("M93"));
+
+  // Save the new status
+  _Status.M2000c.MemLt = Value;
+}
+
+
+/*
+ *   Updates M2000C Panne lights status.
+ *  Parameters:
+ *  * Value: bit map with the lights state
+ *    bit0: amber
+ *    bit1: red
+ */
+void DisplPnl::m2000cPanneLt(uint8_t Value)
+{
+  // Light led up when any of the two warnings is active
+  _setLed(LedWrn, Value != (uint8_t) 0U);
 }
 
 
@@ -1062,20 +1377,6 @@ void DisplPnl::debugShowEvent(const Event &Ev, const Directx::Event_t &Dx)
 
 
 /*
- *   Initializes display panel for Mirage 2000C mode.
- */
-/*
-void DisplPnl::m2000cStart()
-{
-  _Lcd.home();
-  _Lcd.write("N  45:37.8       P07");
-  _Lcd.write("E 135:12.4  55   D03");
-  _Lcd.write("PRET   M91  M92  M93");
-  _Lcd.write("ALN  MIP  N.DEG  SEC");
-}
-*/
-
-/*
  *   Shows an error message in the display. PROGMEM friendly version.
  *  Parameters:
  *  * pMsg: string with the error message.
@@ -1122,7 +1423,7 @@ inline char DisplPnl::_f16cReplaceChar(char DedChar)
     * sText: text to be copìed
     * Size: number of characters from sText to copy
  */
-void DisplPnl::_f16cWriteDed(uint8_t LcdRow, uint8_t LcdCol, const char *sText,
+void DisplPnl::_f16cDedWrite(uint8_t LcdRow, uint8_t LcdCol, const char *sText,
   uint8_t Size)
 {
   char WriteChar;
@@ -1165,7 +1466,7 @@ void DisplPnl::_f16DedUpdateScratchpad(uint8_t Line, const char *szDedText)
     Length = (uint8_t) (pEnd - pBegin + 1);
 //    _Lcd.setCursor(0U, F16C_SCRATCHPAD_ROW);
 //    _Lcd.write(pBegin, Length);
-    _f16cWriteDed(F16C_SCRATCHPAD_ROW, 0U, pBegin, Length);
+    _f16cDedWrite(F16C_SCRATCHPAD_ROW, 0U, pBegin, Length);
 
     // If the scratchpad was already displaying text, blank out the rest
     if (_Status.F16c.SpLine!=_STATUS_F16C_SPLINE_NONE &&
@@ -1187,6 +1488,32 @@ void DisplPnl::_f16DedUpdateScratchpad(uint8_t Line, const char *szDedText)
 
     // Update status: scratchpad is now blank
     _Status.F16c.SpLine = _STATUS_F16C_SPLINE_NONE;
+  }
+}
+
+
+/*
+ *   Removes the up/down arrows identifying a modifiable field from the
+ *  line of the DED CNI page displayed in the LCD.
+ *   Parameters:
+ *   * Line: Line of the DED to remove the arrows.
+ */
+void DisplPnl::_f16cDedClearArrows(uint8_t Line)
+{
+  switch (Line)
+  {
+  case 0:
+    // Remove arrows both for UHF and STPT fields
+    _Lcd.setCursor(F16C_UHF_COL, F16C_UHFSTPT_ROW);
+    _Lcd.write(' ');
+    _Lcd.setCursor(F16C_STPT_COL, F16C_UHFSTPT_ROW);
+    _Lcd.write(' ');
+    break;
+  case 2:
+    // Remove arrows for VHF field
+    _Lcd.setCursor(F16C_VHF_COL, F16C_VHFTCN_ROW);
+    _Lcd.write(' ');
+    break;
   }
 }
 
@@ -1218,6 +1545,43 @@ void DisplPnl::_fa18cFuelWriteSuffix(bool Down, bool SetCursor)
 
   // Write the suffix char
   _Lcd.write(Suffix);
+}
+
+
+/*
+ *   Sets or clears the stauts on the LCD of a Mirage 2000C button light.
+ *  Parameters:
+ *  * LcdRow: row of LCD where the light character is
+ *  * LcdCol: column of LCD where the light character is
+ *  * Set: whether to set or unset the light.
+ */
+inline void DisplPnl::_m2000cSetButtonLt(uint8_t LcdRow, uint8_t LcdCol,
+  bool Set)
+{
+  _Lcd.setCursor(LcdCol, LcdRow);
+  _Lcd.write(Set? _M2000C_LIGHT_CHAR: ' ');
+}
+
+
+/*
+ *   Sets or clears the status on the LCD of a Mirage 2000C PCN light.
+ *  Parameters:
+ *  * LcdRow: row of LCD where the light string is
+ *  * LcdCol: column of LCD where the light string is
+ *  * Set: whether to set or unset the light.
+ *  * pmszLabel: the text to set in the LCD when Set is true
+ */
+inline void DisplPnl::_m2000cSetPcnLt(uint8_t LcdRow, uint8_t LcdCol,
+  bool Set, const char *pmszLabel)
+{
+  _Lcd.setCursor(LcdCol, LcdRow);
+
+  if (Set)
+    // Display the label
+    _Lcd.print((const __FlashStringHelper *) pmszLabel);
+  else
+    // Clear as many chars as the string label has
+    _lcdWriteN(strlen_P(pmszLabel));
 }
 
 

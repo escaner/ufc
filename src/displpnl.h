@@ -100,11 +100,21 @@ public:
   void fa18cBingo(const char *szValue);
   void fa18cBingoLbl(bool Show);
   void fa18cMasterCaut(uint8_t Value);
-//  void fa18cApuReady(uint8_t Value);
   void fa18cMasterArm(uint8_t Value);
   void fa18cLtdr(uint8_t Value);
 
-//  void m2000cStart();
+  void m2000cStart();
+  void m2000cPcnDigLeft(const char *szValue);
+  void m2000cPcnLeft(const char *szValue);
+  void m2000cPcnDigRight(const char *szValue);
+  void m2000cPcnRight(const char *szValue);
+  void m2000cPcnPrep(const char *szValue);
+  void m2000cPcnDest(const char *szValue);
+  void m2000cPcnMode(uint8_t Value);
+  void m2000cPcnButtonLt(uint8_t Value);
+  void m2000cPcnPanneLt(uint8_t Value);
+  void m2000cPcnMemLt(uint8_t Value);
+  void m2000cPanneLt(uint8_t Value);
 
   void debugStart();
   void debugShowEvent(const Event &Ev, const Directx::Event_t &EvDx);
@@ -122,7 +132,11 @@ protected:
   static const char _LINE_ENC[] PROGMEM;
 
   static const uint8_t _LCD_CHAR_UPDOWN[] PROGMEM;
-  static const uint8_t _LCD_CHAR_UPDOWN_ID = 1;
+  static const uint8_t _LCD_CHAR_DELTA[] PROGMEM;
+  static const uint8_t _LCD_CHAR_RHO[] PROGMEM;
+  static const char _LCD_CHAR_UPDOWN_ID = 1;
+  static const char _LCD_CHAR_DELTA_ID = 2;
+  static const char _LCD_CHAR_RHO_ID = 3;
   static const char _F16C_CHAR_REPLACEMENT[][2];
 
   static const char _LCD_SEPARATOR_CHAR = '|';
@@ -146,6 +160,13 @@ protected:
   static const uint16_t _STATUS_F16C_FUELALFR_NONE = UINT16_MAX;
   static const uint8_t _STATUS_F16C_FUELT_NONE = UINT8_MAX;
 
+  static const char _M2000C_LIGHT_CHAR = '\xff';  // Full block
+  static const uint8_t _M2000C_PCNMODE_NUM_POS = 11U;
+  static const uint8_t _M2000C_PCNMODE_POS_LN = 5U;
+  static const char
+    _M2000C_PCNMODE_POS[_M2000C_PCNMODE_NUM_POS][_M2000C_PCNMODE_POS_LN+1]
+    PROGMEM;
+
 
   /*********************/
   /* Protected methods */
@@ -153,10 +174,14 @@ protected:
 
   void _writeSeparators(const uint8_t (*pmCrd)[_CRD_DIM], uint8_t Size);
   inline static char _f16cReplaceChar(char DedChar);
-  void _f16cWriteDed(uint8_t LcdRow, uint8_t LcdCol, const char *sText,
+  void _f16cDedWrite(uint8_t LcdRow, uint8_t LcdCol, const char *sText,
     uint8_t Size);
   void _f16DedUpdateScratchpad(uint8_t Line, const char *szDedText);
+  void _f16cDedClearArrows(uint8_t Line);
   void _fa18cFuelWriteSuffix(bool Down, bool SetCursor);
+  inline void _m2000cSetButtonLt(uint8_t LcdRow, uint8_t LcdCol, bool Set);
+  inline void _m2000cSetPcnLt(uint8_t LcdRow, uint8_t LcdCol, bool Set,
+    const char *pmszLabel);
 //  void _error();
   inline void _lcdWriteN(uint8_t Count=LCD_COLS, char Char=' ');
   void _lcdWritePadded(const char *szText, uint8_t Size, char PadChar=' ');
@@ -198,6 +223,14 @@ protected:
       char Ifei[2];    // Upper/Lower fuel line character
     } Fa18c;
 
+    // Mirage 2000C
+    struct
+    {
+      uint8_t BtnLt;    // PCN Button lights
+      uint8_t PanneLt;  // PCN caution & warning lights
+      uint8_t MemLt;    // PCN M lights
+    } M2000c;
+  
     // Debug
     struct
     {

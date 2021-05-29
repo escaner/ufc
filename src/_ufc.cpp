@@ -189,17 +189,68 @@ constexpr unsigned int FA18C_IFEIBINGOT_ADDR = 0x74b6;
 constexpr unsigned int FA18C_MASTERCAUTLT_ADDR = 0x7408;
 constexpr unsigned int FA18C_MASTERCAUTLT_MASK = 0x0200;
 constexpr unsigned char FA18C_MASTERCAUTLT_SHIFT = 9U;
-/*
-constexpr unsigned int FA18C_APURDYLT_ADDR = 0x74bc;
-constexpr unsigned int FA18C_APURDYLT_MASK = 0x0400;
-constexpr unsigned char FA18C_APURDYLT_SHIFT = 10U;
-*/
 constexpr unsigned int FA18C_MASTERARMSW_ADDR = 0x740c;
 constexpr unsigned int FA18C_MASTERARMSW_MASK = 0x2000;
 constexpr unsigned char FA18C_MASTERARMSW_SHIFT = 13U;
 constexpr unsigned int FA18C_LTDRSW_ADDR = 0x74c4;
 constexpr unsigned int FA18C_LTDRSW_MASK = 0x0100;
 constexpr unsigned char FA18C_LTDRSW_SHIFT = 8U;
+
+// M2000C
+
+constexpr unsigned int M2000C_PCNLEFT_ADDR = 0x72ec;
+constexpr uint8_t M2000C_PCNLEFT_SZ = 8U;
+constexpr unsigned int M2000C_PCNRIGHT_ADDR = 0x72f6;
+constexpr uint8_t M2000C_PCNRIGHT_SZ = 9U;
+constexpr unsigned int M2000C_PCNDLEFT_ADDR = 0x7304;
+constexpr uint8_t M2000C_PCNDLEFT_SZ = 2U;
+constexpr unsigned int M2000C_PCNDRIGHT_ADDR = 0x7306;
+constexpr uint8_t M2000C_PCNDRIGHT_SZ = 2U;
+constexpr unsigned int M2000C_PCNDISPPREP_ADDR = 0x72f4;
+constexpr uint8_t M2000C_PCNDISPPREP_SZ = 2U;
+constexpr unsigned int M2000C_PCNDISPDEST_ADDR = 0x72ea;
+constexpr uint8_t M2000C_PCNDISPDEST_SZ = 2U;
+constexpr unsigned int M2000C_PCNBTNLT_ADDR = 0x72d4;
+constexpr unsigned int M2000C_PCNPREPBTNLT_MASK = 0x0100;
+constexpr unsigned int M2000C_PCNDESTBTNLT_MASK = 0x0200;
+constexpr unsigned int M2000C_PCNBADBTNLT_MASK = 0x0400;
+constexpr unsigned int M2000C_PCNRECBTNLT_MASK = 0x0800;
+constexpr unsigned int M2000C_PCNEFFBTNLT_MASK = 0x1000;
+constexpr unsigned int M2000C_PCNINSBTNLT_MASK = 0x2000;
+constexpr unsigned int M2000C_PCNVALBTNLT_MASK = 0x4000;
+constexpr unsigned int M2000C_PCNMRCBTNLT_MASK = 0x8000;
+constexpr unsigned char M2000C_PCNPREPBTNLT_SHIFT = 8U;
+constexpr unsigned char M2000C_PCNDESTBTNLT_SHIFT = 9U;
+constexpr unsigned char M2000C_PCNBADBTNLT_SHIFT = 10U;
+constexpr unsigned char M2000C_PCNRECBTNLT_SHIFT = 11U;
+constexpr unsigned char M2000C_PCNEFFBTNLT_SHIFT = 12U;
+constexpr unsigned char M2000C_PCNINSBTNLT_SHIFT = 13U;
+constexpr unsigned char M2000C_PCNVALBTNLT_SHIFT = 14U;
+constexpr unsigned char M2000C_PCNMRCBTNLT_SHIFT = 15U;
+constexpr unsigned int M2000C_PCNPANLT_ADDR = 0x72d0;
+constexpr unsigned int M2000C_PCNPRETPANLT_MASK = 0x0400;
+constexpr unsigned int M2000C_PCNALNPANLT_MASK = 0x0800;
+constexpr unsigned int M2000C_PCNMIPPANLT_MASK = 0x1000;
+constexpr unsigned int M2000C_PCNNDEGPANLT_MASK = 0x2000;
+constexpr unsigned int M2000C_PCNSECPANLT_MASK = 0x4000;
+constexpr unsigned int M2000C_PCNUNIPANLT_MASK = 0x8000;
+constexpr unsigned char M2000C_PCNPRETPANLT_SHIFT = 10U;
+constexpr unsigned char M2000C_PCNALNPANLT_SHIFT = 11U;
+constexpr unsigned char M2000C_PCNMIPPANLT_SHIFT = 12U;
+constexpr unsigned char M2000C_PCNNDEGPANLT_SHIFT = 13U;
+constexpr unsigned char M2000C_PCNSECPANLT_SHIFT = 14U;
+constexpr unsigned char M2000C_PCNUNIPANLT_SHIFT = 15U;
+constexpr unsigned int M2000C_PCNMEMLT_ADDR = 0x72d8;
+constexpr unsigned int M2000C_PCNM91MEMLT_MASK = 0x0200;
+constexpr unsigned int M2000C_PCNM92MEMLT_MASK = 0x0400;
+constexpr unsigned int M2000C_PCNM93MEMLT_MASK = 0x0800;
+constexpr unsigned char M2000C_PCNM91MEMLT_SHIFT = 9U;
+constexpr unsigned char M2000C_PCNM92MEMLT_SHIFT = 10U;
+constexpr unsigned char M2000C_PCNM93MEMLT_SHIFT = 11U;
+constexpr unsigned int M2000C_PANNELT_ADDR = 0x72aa;
+constexpr unsigned char M2000C_PANNELT_SHIFT = 11U;
+constexpr unsigned int M2000C_PANNEAMBERLT_MASK = 0x0800;
+constexpr unsigned int M2000C_PANNEREDLT_MASK = 0x1000;
 
 
 /*************/
@@ -761,16 +812,6 @@ static void cbFa18cMasterCautLt(unsigned int Value)
 }
 
 /*
- *   Callback to update F/A-18C APU Ready light.
- */
-/*
-static void cbFa18cApuReadyLt(unsigned int Value)
-{
-  DiPnl.fa18cApuReady((uint8_t) Value);
-}
-*/
-
-/*
  *   Callback on change of F/A-18C Master Arm switch.
  */
 static void cbFa18cMasterArmSw(unsigned int Value)
@@ -849,17 +890,165 @@ static void modeFa18cInit()
   new DcsBios::IntegerBuffer(FA18C_MASTERCAUTLT_ADDR, FA18C_MASTERCAUTLT_MASK,
       FA18C_MASTERCAUTLT_SHIFT, cbFa18cMasterCautLt);
 
-  // APU Ready light
-/*
-  new DcsBios::IntegerBuffer(FA18C_APURDYLT_ADDR, FA18C_APURDYLT_MASK,
-      FA18C_APURDYLT_SHIFT, cbFa18cApuReadyLt);
-*/
-
   // Master Arm and LTD/R switches
   new DcsBios::IntegerBuffer(FA18C_MASTERARMSW_ADDR, FA18C_MASTERARMSW_MASK,
       FA18C_MASTERARMSW_SHIFT, cbFa18cMasterArmSw);
   new DcsBios::IntegerBuffer(FA18C_LTDRSW_ADDR, FA18C_LTDRSW_MASK,
       FA18C_LTDRSW_SHIFT, cbFa18cLtdrSw);
+}
+
+
+/*
+ *   Callback to update M2000C PCN left digit display.
+ */
+static void m2000cPcnDigLeft(char *szValue)
+{
+  DiPnl.m2000cPcnDigLeft(szValue);
+}
+
+/*
+ *   Callback to update M2000C PCN right digit display.
+ */
+static void m2000cPcnDigRight(char *szValue)
+{
+  DiPnl.m2000cPcnDigRight(szValue);
+}
+
+/*
+ *   Callback to update M2000C PCN Prep display.
+ */
+static void m2000cPcnPrep(char *szValue)
+{
+  DiPnl.m2000cPcnPrep(szValue);
+}
+
+/*
+ *   Callback to update M2000C PCN Dest display.
+ */
+static void m2000cPcnDest(char *szValue)
+{
+  DiPnl.m2000cPcnDest(szValue);
+}
+
+
+/*
+ *   Callback to update M2000C PCN left display.
+ */
+static void m2000cPcnLeft(char *szValue)
+{
+  DiPnl.m2000cPcnLeft(szValue);
+}
+
+/*
+ *   Callback to update M2000C PCN right display.
+ */
+static void m2000cPcnRight(char *szValue)
+{
+  DiPnl.m2000cPcnRight(szValue);
+}
+
+/*
+ *   Callback to update M2000C PCN Prep display.
+ */
+static void m2000cPcnDispPrep(char *szValue)
+{
+  DiPnl.m2000cPcnPrep(szValue);
+}
+
+/*
+ *   Callback to update M2000C PCN Dest display.
+ */
+static void m2000cPcnDispDest(char *szValue)
+{
+  DiPnl.m2000cPcnDest(szValue);
+}
+
+/*
+ *   Callback on change of M2000C PCN mode rotary switch.
+ */
+static void cbM2000cPcnModeRot(unsigned int Value)
+{
+  DiPnl.m2000cPcnMode((uint8_t) Value);
+}
+
+/*
+ *   Callback on change of M2000C UNC button lights.
+ */
+static void cbM2000cPcnBtnLt(unsigned int Value)
+{
+  DiPnl.m2000cPcnButtonLt(highByte(Value));
+}
+
+/*
+ *   Callback on change of M2000C UNC panne lights.
+ */
+static void cbM2000cPcnPanLt(unsigned int Value)
+{
+  DiPnl.m2000cPcnPanneLt(highByte(Value));
+}
+
+/*
+ *   Callback on change of M2000C UNC M lights.
+ */
+static void cbM2000cPcnMemLt(unsigned int Value)
+{
+  DiPnl.m2000cPcnMemLt(highByte(Value));
+}
+
+
+/*
+ *   Callback on change of M2000C Panne lights.
+ */
+static void cbM2000cPanneLt(unsigned int Value)
+{
+  // Send both Amber (bit 0) and Red (bit 1) Panne lights status
+  DiPnl.m2000cPanneLt((uint8_t) Value);
+}
+
+/*
+ *   Initializes M2000C mode.
+ */
+static void modeM2000cInit()
+{
+  // Initializes display
+  DiPnl.m2000cStart();
+
+  // Register callbacks creating DCS-BIOS handlers in heap memory
+  // PCN
+  new DcsBios::StringBuffer<M2000C_PCNDLEFT_SZ>(
+      M2000C_PCNDLEFT_ADDR, m2000cPcnDigLeft);
+  new DcsBios::StringBuffer<M2000C_PCNLEFT_SZ>(
+      M2000C_PCNLEFT_ADDR, m2000cPcnLeft);
+  new DcsBios::StringBuffer<M2000C_PCNDRIGHT_SZ>(
+      M2000C_PCNDRIGHT_ADDR, m2000cPcnDigRight);
+  new DcsBios::StringBuffer<M2000C_PCNRIGHT_SZ>(
+      M2000C_PCNRIGHT_ADDR, m2000cPcnRight);
+  new DcsBios::StringBuffer<M2000C_PCNDISPPREP_SZ>(
+      M2000C_PCNDISPPREP_ADDR, m2000cPcnDispPrep);
+  new DcsBios::StringBuffer<M2000C_PCNDISPDEST_SZ>(
+      M2000C_PCNDISPDEST_ADDR, m2000cPcnDispDest);
+
+  // PCN lights
+  new DcsBios::IntegerBuffer(M2000C_PCNBTNLT_ADDR,
+      M2000C_PCNPREPBTNLT_MASK | M2000C_PCNDESTBTNLT_MASK |
+      M2000C_PCNBADBTNLT_MASK | M2000C_PCNRECBTNLT_MASK |
+      M2000C_PCNEFFBTNLT_MASK | M2000C_PCNINSBTNLT_MASK |
+      M2000C_PCNVALBTNLT_MASK | M2000C_PCNMRCBTNLT_MASK,
+      (unsigned char) 0U, cbM2000cPcnBtnLt);
+  new DcsBios::IntegerBuffer(M2000C_PCNPANLT_ADDR,
+      M2000C_PCNPRETPANLT_MASK | M2000C_PCNALNPANLT_MASK |
+      M2000C_PCNMIPPANLT_MASK | M2000C_PCNNDEGPANLT_MASK |
+      M2000C_PCNSECPANLT_MASK | M2000C_PCNUNIPANLT_MASK,
+      (unsigned char) 0U, cbM2000cPcnPanLt);
+  new DcsBios::IntegerBuffer(M2000C_PCNMEMLT_ADDR,
+      M2000C_PCNM91MEMLT_MASK | M2000C_PCNM92MEMLT_MASK |
+      M2000C_PCNM93MEMLT_MASK,
+      (unsigned char) 0U, cbM2000cPcnMemLt);
+
+  // Caution lights: both amber and red on same callback
+  new DcsBios::IntegerBuffer(M2000C_PANNELT_ADDR,
+      M2000C_PANNEAMBERLT_MASK | M2000C_PANNEREDLT_MASK,
+      M2000C_PANNELT_SHIFT, cbM2000cPanneLt);
 }
 
 
@@ -971,6 +1160,9 @@ void setup()
     break;
   case Mode::M_FA18C:
     modeFa18cInit();
+    break;
+  case Mode::M_M2000C:
+    modeM2000cInit();
     break;
   case Mode::M_DEBUG:
     modeDebugInit();
