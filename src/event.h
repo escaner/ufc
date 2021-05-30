@@ -30,14 +30,6 @@ public:
     uint8_t KeyId;
   };
 
-  // Rotary encoder turn event
-/*
-  struct EncEvent_t
-  {
-    uint8_t EncId;
-    int8_t Value;
-  };
-*/
 
   /**********************/
   /* Public member data */
@@ -48,7 +40,6 @@ public:
   {
     KpEvent_t Kp;
     uint8_t EncId;
-/*      EncEvent_t Enc;*/
   };
 
   // Default constuctor
@@ -57,6 +48,12 @@ public:
   // Copy constructor and operator
   inline Event(const Event &Ev);
   inline Event &operator=(const Event &Ev);
+  inline bool isKp() const;
+  inline bool isEnc() const;
+  inline bool isEncCw() const;
+  inline bool isEncCcw() const;
+  inline bool isPress() const;
+  inline bool isRelease() const;
 };
 
 
@@ -123,6 +120,60 @@ inline Event &Event::operator=(const Event &Ev)
 #pragma GCC diagnostic pop
 
   return *this;
+}
+
+
+/*
+ *   Returns whether this is a keypad event.
+ */
+inline bool Event::isKp() const
+{
+  return Id == EvKpPress || Id == EvKpRelease;
+}
+
+
+/*
+ *   Returns whether this is an encoder event.
+ */
+inline bool Event::isEnc() const
+{
+  return Id >= EvEncCcwPress || Id <= EvEncCwRelease;
+}
+
+
+/*
+ *   Returns whether this is a clockwise encoder event.
+ */
+inline bool Event::isEncCw() const
+{
+  return Id == EvEncCwPress || Id == EvEncCwRelease;
+}
+
+
+/*
+ *   Returns whether this is a counterclockwise encoder event.
+ */
+inline bool Event::isEncCcw() const
+{
+  return Id == EvEncCcwPress || Id == EvEncCcwRelease;
+}
+
+
+/*
+ *   Returns whether this is a press event event.
+ */
+inline bool Event::isPress() const
+{
+  return Id==EvKpPress || Id==EvEncCwPress || Id==EvEncCcwPress;
+}
+
+
+/*
+ *   Returns whether this is a release event event.
+ */
+inline bool Event::isRelease() const
+{
+  return Id==EvKpRelease || Id==EvEncCwRelease || Id==EvEncCcwRelease;
 }
 
 

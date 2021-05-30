@@ -98,33 +98,48 @@ SwitchPnl::SwitchPnl(const uint8_t KpPin[NUM_KP],
   _Encoder{REncoderAsync(DX_DELAY_PR, DX_DELAY_RP),
     REncoderAsync(DX_DELAY_PR, DX_DELAY_RP),
     REncoderAsync(DX_DELAY_PR, DX_DELAY_RP),
-    REncoderAsync(DX_DELAY_PR, DX_DELAY_RP)}
+    REncoderAsync(DX_DELAY_PR, DX_DELAY_RP)},
+  _UseEnc(false)
 {
 }
 
 
 /*
- *   Configures Arduino pins for switch panel, pulling them up as required.
+ *   Configures Arduino pins for switch panel keypads, pulling them up as
+ *  required. Encoders are not initialized here.
  *  Parameters:
- *  * Keypad: return which 
+ *  * Keypad: in which keypad to look for a pressed button
  *  Returns: key id in Keypad that is being depressed during initialization
  *  or SwitchKp::SWITCH_NONE when none is.
  */
- uint8_t SwitchPnl::init(uint8_t Keypad) const
+ uint8_t SwitchPnl::initKp(uint8_t Keypad) const
 {
-  uint8_t KpId, EncId, EncPinId;
+  uint8_t KpId;
 
   // Initialize Keypad pins
   for (KpId = 0U; KpId < NUM_KP; KpId++)
     pinMode(_KpPin[KpId], INPUT);
+
+  // Read value on Keypad and translate to its key
+  return _kpGetKey(Keypad);
+}
+
+
+/*
+ *   Configures Arduino encoders pins for switch panel, pulling them up as
+ *  required. Keypads are not initialized here.
+ */
+ void SwitchPnl::initEnc()
+{
+  uint8_t EncId, EncPinId;
 
   // Initialize encoder pins
   for (EncId = 0U; EncId < NUM_ENC; EncId++)
     for (EncPinId = 0U; EncPinId < ENC_NUM_PINS; EncPinId++)
       pinMode(_EncPin[EncId][EncPinId], INPUT_PULLUP);
 
-  // Read value on Keypad and translate to its key
-  return _kpGetKey(Keypad);
+  // Manage encoders too
+  _UseEnc = true;
 }
 
 
@@ -164,49 +179,52 @@ Event SwitchPnl::check(uint16_t LoopCnt)
   // As soon as an event is detected, it is returned
   while (LoopCnt--)
   {
-    // Update all rotary encoders
-    for (Id = 0U; Id < NUM_ENC; Id++)
+    if (_UseEnc)
     {
-      // Read the encoder values
-      EncValA = digitalRead(_EncPin[Id][0]);
-      EncValB = digitalRead(_EncPin[Id][1]);
+      // Update all rotary encoders
+      for (Id = 0U; Id < NUM_ENC; Id++)
+      {
+        // Read the encoder values
+        EncValA = digitalRead(_EncPin[Id][0]);
+        EncValB = digitalRead(_EncPin[Id][1]);
 
-      // Update encoder status
-      _Encoder[Id].update(EncValA, EncValB);
-    }
+        // Update encoder status
+        _Encoder[Id].update(EncValA, EncValB);
+      }
 
-    // Check for pending rotary encoder events, they are asynchronous
-    for (Id = 0U; Id < NUM_ENC; Id++)
-    {
-      EventEnc = _Encoder[Id].getEvent();
+      // Check for pending rotary encoder events, they are asynchronous
+      for (Id = 0U; Id < NUM_ENC; Id++)
+      {
+        EventEnc = _Encoder[Id].getEvent();
 
 #pragma GCC diagnostic push
   // Disable: warning: enumeration value '' not handled in switch
 #pragma GCC diagnostic ignored "-Wswitch"
 
-      switch (EventEnc)
-      {
-      case REncoderAsync::EV_CCW_PRESS:
-        Ev.Id = Event::EvEncCcwPress;
-        Ev.EncId = Id;
-        return Ev;
-      case REncoderAsync::EV_CCW_RELEASE:
-        Ev.Id = Event::EvEncCcwRelease;
-        Ev.EncId = Id;
-        return Ev;
-      case REncoderAsync::EV_CW_PRESS:
-        Ev.Id = Event::EvEncCwPress;
-        Ev.EncId = Id;
-        return Ev;
-      case REncoderAsync::EV_CW_RELEASE:
-        Ev.Id = Event::EvEncCwRelease;
-        Ev.EncId = Id;
-        return Ev;
-      // default: EV_NONE -> do nothing
-      }
+        switch (EventEnc)
+        {
+        case REncoderAsync::EV_CCW_PRESS:
+          Ev.Id = Event::EvEncCcwPress;
+          Ev.EncId = Id;
+          return Ev;
+        case REncoderAsync::EV_CCW_RELEASE:
+          Ev.Id = Event::EvEncCcwRelease;
+          Ev.EncId = Id;
+          return Ev;
+        case REncoderAsync::EV_CW_PRESS:
+          Ev.Id = Event::EvEncCwPress;
+          Ev.EncId = Id;
+          return Ev;
+        case REncoderAsync::EV_CW_RELEASE:
+          Ev.Id = Event::EvEncCwRelease;
+          Ev.EncId = Id;
+          return Ev;
+        // default: EV_NONE -> do nothing
+        }
 
 #pragma GCC diagnostic pop
 
+      }
     }
 
     // Check keypads

@@ -4,7 +4,7 @@
 /********************/
 /* Static constants */
 /********************/
-
+/*
 // KP0: converts keypad matrix button id to DX: [0, 15]
 const uint8_t Directx::_KP0_BTN_DX[KP0_NUM_KEYS] =
 {
@@ -66,6 +66,16 @@ const uint8_t *const Directx::_KP_BTN_DX[NUM_KP] =
   _KP1_BTN_DX,
   _KP2_BTN_DX
 };
+*/
+
+// First DirectX value for keypads
+const uint8_t Directx::_BTN_DX_BASE[NUM_KP] =
+{
+  0U,
+  KP0_NUM_KEYS,
+  KP0_NUM_KEYS + KP1_NUM_KEYS
+};
+
 
 
 /******************/
@@ -90,11 +100,13 @@ Directx::Event_t Directx::translate(const Event &Ev)
   switch (Ev.Id)
   {
   case Event::EvKpPress:
-    EvDx.Button = _KP_BTN_DX[Ev.Kp.KpId][Ev.Kp.KeyId];
+//    EvDx.Button = _KP_BTN_DX[Ev.Kp.KpId][Ev.Kp.KeyId];
+    EvDx.Button = _keyDx(Ev.Kp.KpId, Ev.Kp.KeyId);
     EvDx.Action = AcPress;
     break;
   case Event::EvKpRelease:
-    EvDx.Button = _KP_BTN_DX[Ev.Kp.KpId][Ev.Kp.KeyId];
+//    EvDx.Button = _KP_BTN_DX[Ev.Kp.KpId][Ev.Kp.KeyId];
+    EvDx.Button = _keyDx(Ev.Kp.KpId, Ev.Kp.KeyId);
     EvDx.Action = AcRelease;
     break;
   case Event::EvEncCcwPress:
@@ -118,6 +130,18 @@ Directx::Event_t Directx::translate(const Event &Ev)
 #pragma GCC diagnostic pop
 
   return EvDx;
+}
+
+
+/*
+ *   Calculates DirectX button from a keypad.
+ *   Parameters:
+ *   * KpId: keypad identifier
+ *   * KeyId: key identifier for the keypad
+ */
+inline uint8_t Directx::_keyDx(uint8_t KpId, uint8_t KeyId)
+{
+  return _BTN_DX_BASE[KpId] + KeyId;
 }
 
 

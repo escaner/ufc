@@ -32,7 +32,8 @@ public:
 
   SwitchPnl(const uint8_t KpPin[NUM_KP],
     const uint8_t EncPin[NUM_ENC][ENC_NUM_PINS]);
-  uint8_t init(uint8_t Keypad) const;
+  uint8_t initKp(uint8_t Keypad) const;
+  void initEnc();
   void wait(uint8_t Keypad) const;
   Event check(uint16_t LoopCnt = 1U);
 
@@ -75,9 +76,10 @@ protected:
   /* Member data */
   /***************/
 
-  // Keypad matrixes for buttons
+  // Keypad matrices for buttons
   SwitchKp _Keypad[NUM_KP];         // Manage keypads
   REncoderAsync _Encoder[NUM_ENC];  // Manage Encoders
+  bool _UseEnc;  // Whether to manage the encoders or only keypads
 };
 
 

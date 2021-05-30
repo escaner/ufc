@@ -57,7 +57,7 @@ const char DisplPnl::_F16C_CHAR_REPLACEMENT[][2] =
 
 
 const char DisplPnl::_LINE_KEY[] PROGMEM = "%03u Key:%c%u/%02u Dx:%c%02u";
-const char DisplPnl::_LINE_ENC[] PROGMEM = "%03u Enc:%c%u%-3s Dx:%c%02u";
+const char DisplPnl::_LINE_ENC[] PROGMEM = "%03u Enc:%c%u%-3S Dx:%c%02u";
 
 // Strings for the radio modes
 const char DisplPnl::_A10C_VHF_MODES[_A10C_VHF_NUM_MODES] PROGMEM =
@@ -695,6 +695,10 @@ void DisplPnl::f16cFuelQtyIndicator(bool Fr, uint16_t Value)
   TmpValue = (uint32_t) Value * MAX_NORM_VALUE;
   NormValue = (uint16_t) DIV_PROUND(TmpValue, DENOMINATOR);
 
+#pragma GCC diagnostic push
+// Disable: warning: suggest parentheses around assignment used as truth value
+#pragma GCC diagnostic ignored "-Wparentheses"
+
   // Check if the value to display has changed from the previous one
   // and update when so for future reference
   if (Fr)
@@ -705,6 +709,8 @@ void DisplPnl::f16cFuelQtyIndicator(bool Fr, uint16_t Value)
   else  // Al
     if (WriteLcd = NormValue!=_Status.F16c.FuelAl)
       _Status.F16c.FuelAl = NormValue;
+
+#pragma GCC diagnostic pop
 
   // If changed, we need to convert NormValue to string and write it on the LCD
   if (WriteLcd)
@@ -809,6 +815,10 @@ void DisplPnl::f16cFuelTotalizerThousands(bool TenK, uint16_t Value)
       // Yes, our digit was one unit too low
       Digit++;  // This cannot deliver 10, no need for modulo
 
+#pragma GCC diagnostic push
+// Disable: warning: suggest parentheses around assignment used as truth value
+#pragma GCC diagnostic ignored "-Wparentheses"
+
   // Check if the value to display has changed from the previous one
   // and update when so for future reference
   if (TenK)  // 10K digit
@@ -819,6 +829,8 @@ void DisplPnl::f16cFuelTotalizerThousands(bool TenK, uint16_t Value)
   else  // 1K digit
     if (WriteLcd = Digit!=_Status.F16c.FuelTot1k)
       _Status.F16c.FuelTot1k = Digit;
+
+#pragma GCC diagnostic pop
 
   // If changed, we need to convert Digit to string and write it on the LCD
   if (WriteLcd)
@@ -1326,43 +1338,26 @@ void DisplPnl::debugShowEvent(const Event &Ev, const Directx::Event_t &Dx)
 {
   static const char PRESS = 'P';
   static const char RELEASE = 'R';
-  static const char CCW[] = "CCW";
-  static const char CW[] = "CW";
   char Buffer[LCD_COLS+1];
+  char EvAction;
+  char DxAction;
 
-#pragma GCC diagnostic push
-  // Disable: warning: enumeration value 'EvNone' not handled in switch
-#pragma GCC diagnostic ignored "-Wswitch"
+  // Prepare parameters
+  EvAction = Ev.isRelease()? RELEASE: PRESS;
+  DxAction = Dx.Action == Directx::AcRelease? RELEASE: PRESS;
 
-  switch (Ev.Id)
+  if (Ev.isKp())
   {
-  case Event::EvKpPress:
-    sprintf_P(Buffer, _LINE_KEY, _Status.Debug.Line, PRESS, Ev.Kp.KpId, Ev.Kp.KeyId,
-      Dx.Action == Directx::AcRelease? RELEASE: PRESS, Dx.Button);
-    break;
-  case Event::EvKpRelease:
-    sprintf_P(Buffer, _LINE_KEY, _Status.Debug.Line, RELEASE, Ev.Kp.KpId, Ev.Kp.KeyId,
-      Dx.Action == Directx::AcRelease? RELEASE: PRESS, Dx.Button);
-    break;
-  case Event::EvEncCcwPress:
-    sprintf_P(Buffer, _LINE_ENC, _Status.Debug.Line, PRESS, Ev.EncId, CCW,
-      Dx.Action == Directx::AcRelease? RELEASE: PRESS, Dx.Button);
-    break;
-  case Event::EvEncCcwRelease:
-    sprintf_P(Buffer, _LINE_ENC, _Status.Debug.Line, RELEASE, Ev.EncId, CCW,
-      Dx.Action == Directx::AcRelease? RELEASE: PRESS, Dx.Button);
-    break;
-  case Event::EvEncCwPress:
-    sprintf_P(Buffer, _LINE_ENC, _Status.Debug.Line, PRESS, Ev.EncId, CW,
-      Dx.Action == Directx::AcRelease? RELEASE: PRESS, Dx.Button);
-    break;
-  case Event::EvEncCwRelease:
-    sprintf_P(Buffer, _LINE_ENC, _Status.Debug.Line, RELEASE, Ev.EncId, CW,
-      Dx.Action == Directx::AcRelease? RELEASE: PRESS, Dx.Button);
-    break;
+    // Keypad event
+    sprintf_P(Buffer, _LINE_KEY, _Status.Debug.Line, EvAction, Ev.Kp.KpId,
+      Ev.Kp.KeyId, DxAction, Dx.Button);
   }
-
-#pragma GCC diagnostic pop
+  else
+  {
+    // Encoder event, as EvNone is not valid here
+    sprintf_P(Buffer, _LINE_ENC, _Status.Debug.Line, EvAction, Ev.EncId,
+      Ev.isEncCw()? PSTR("CW"): PSTR("CCW"), DxAction, Dx.Button);
+  }
 
   _Lcd.setCursor(0, _Status.Debug.Line % LCD_ROWS);
   _Lcd.write(Buffer);
@@ -1411,12 +1406,12 @@ inline char DisplPnl::_f16cReplaceChar(char DedChar)
 
 /*
  *   Copies a string from szText from the DED into the LCD indicated position.
-    Special DED characters are reinterpreted.
-    Parameters:
-    * LcdRow: row in the LCD where to copy the text
-    * LcdCol: column in the LCD where to copy the text
-    * sText: text to be copìed
-    * Size: number of characters from sText to copy
+ *  Special DED characters are reinterpreted.
+ *  Parameters:
+ *  * LcdRow: row in the LCD where to copy the text
+ *  * LcdCol: column in the LCD where to copy the text
+ *  * sText: text to be copìed
+ *  * Size: number of characters from sText to copy
  */
 void DisplPnl::_f16cDedWrite(uint8_t LcdRow, uint8_t LcdCol, const char *sText,
   uint8_t Size)

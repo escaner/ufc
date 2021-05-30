@@ -36,7 +36,7 @@ protected:
   /********************/
   /* Static constants */
   /********************/
-
+/*
   // Converts keypad matrix button id to DX
   static const uint8_t _KP0_BTN_DX[KP0_NUM_KEYS];
   static const uint8_t _KP1_BTN_DX[KP1_NUM_KEYS];
@@ -44,9 +44,13 @@ protected:
 
   // Label to access all KP*_BTN_DX through indexes
   static const uint8_t *const _KP_BTN_DX[NUM_KP];
-
+*/
+  // First DirectX value for keypads
+  static const uint8_t _BTN_DX_BASE[NUM_KP];
+  
   // First DirectX value for encoders
-  static const uint8_t _ENC_DX_BASE = 39;
+  static const uint8_t _ENC_DX_BASE =
+    KP0_NUM_KEYS + KP1_NUM_KEYS + KP2_NUM_KEYS;
 
 
   /************************/
@@ -65,6 +69,7 @@ protected:
   /* Protected methods */
   /*********************/
 
+  inline static uint8_t _keyDx(uint8_t KpId, uint8_t KeyId);
   inline static uint8_t _encDx(uint8_t EncId, _EncDirArray EncDir);
 };
 

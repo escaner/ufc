@@ -37,8 +37,8 @@ static const uint8_t PIN_ENCODER[NUM_ENC][ENC_NUM_PINS] =
 {
   {  8,  9 }, // COM1
   {  6,  0 }, // COM2 pin 7 does not work in my Pro Micro, using 0 (RXI) instead
-  { 16, 10 }, // HDG
-  { 15, 14 }, // CRS
+  { 16, 10 }, // Left
+  { 15, 14 }, // Right
 };
 static const uint8_t PIN_KP[NUM_KP] = { A1, A2, A3 };
 static const uint8_t PIN_LED[NUM_LED] = { 4, 5, A0 };
@@ -494,6 +494,15 @@ static void modeA10cInit()
       A10C_MASTERARMSW_SHIFT, cbA10cMasterArmSw);
   new DcsBios::IntegerBuffer(A10C_GUNRDYLT_ADDR, A10C_GUNRDYLT_MASK,
       A10C_GUNRDYLT_SHIFT, cbA10cGunReadyLt);
+/*
+  // Encoders
+  new DcsBios::RotaryEncoder("HSI_HDG_KNOB", "-3200", "+3200",
+    PIN_ENCODER[0][0], PIN_ENCODER[0][1]);
+  new DcsBios::RotaryEncoder("HSI_CRS_KNOB", "-3200", "+3200",
+    PIN_ENCODER[1][0], PIN_ENCODER[1][1]);
+  new DcsBios::RotaryEncoder("UFC_STEER", "DEC", "INC",
+    PIN_ENCODER[3][0], PIN_ENCODER[3][1]);
+*/
 }
 
 
@@ -649,6 +658,17 @@ static void modeF16cInit()
       F16C_MASTERARMSW_SHIFT, cbF16cMasterArmSw);
   new DcsBios::IntegerBuffer(F16C_STORESCFGSW_ADDR, F16C_STORESCFGSW_MASK,
       F16C_STORESCFGSW_SHIFT, cbF16cStoresCat);
+/*
+  // Encoders
+  new DcsBios::RotaryEncoder("EHSI_HDG_SET_KNOB", "DEC", "INC",
+    PIN_ENCODER[0][0], PIN_ENCODER[0][1]);
+  new DcsBios::RotaryEncoder("HSI_CRS_SET_KNOB", "DEC", "INC",
+    PIN_ENCODER[1][0], PIN_ENCODER[1][1]);
+  new DcsBios::RotaryEncoder("ICP_DED_SW", "DEC", "INC",
+    PIN_ENCODER[2][0], PIN_ENCODER[2][1]);
+  new DcsBios::RotaryEncoder("ICP_DATA_UP_DN_SW", "DEC", "INC",
+    PIN_ENCODER[3][0], PIN_ENCODER[3][1]);
+*/
 }
 
 
@@ -919,23 +939,6 @@ static void m2000cPcnDigRight(char *szValue)
 }
 
 /*
- *   Callback to update M2000C PCN Prep display.
- */
-static void m2000cPcnPrep(char *szValue)
-{
-  DiPnl.m2000cPcnPrep(szValue);
-}
-
-/*
- *   Callback to update M2000C PCN Dest display.
- */
-static void m2000cPcnDest(char *szValue)
-{
-  DiPnl.m2000cPcnDest(szValue);
-}
-
-
-/*
  *   Callback to update M2000C PCN left display.
  */
 static void m2000cPcnLeft(char *szValue)
@@ -1136,13 +1139,19 @@ static void setupWorkMode(uint8_t KeyId)
 void setup()
 {
   uint8_t ModeKeyId;
+  Mode::Id_t Mode;
 
   // Initialize display panel
   DiPnl.init();
 
   // Initialize all input stuff and setup mode of operation selected
-  ModeKeyId = SwPnl.init(KP_MODE);
+  ModeKeyId = SwPnl.initKp(KP_MODE);
   setupWorkMode(ModeKeyId);
+
+  // Only manage encoders for DirectX and Debug modes, otherwise let DCS-BIOS do
+  Mode = WorkMode.get();
+//  if (Mode != Mode::M_F16C && Mode != Mode::M_A10C)
+    SwPnl.initEnc();
 
   // Display mode of operation
   DiPnl.showMode(WorkMode.P_str());
