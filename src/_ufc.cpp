@@ -210,6 +210,10 @@ constexpr unsigned int M2000C_PCNDISPPREP_ADDR = 0x72f4;
 constexpr uint8_t M2000C_PCNDISPPREP_SZ = 2U;
 constexpr unsigned int M2000C_PCNDISPDEST_ADDR = 0x72ea;
 constexpr uint8_t M2000C_PCNDISPDEST_SZ = 2U;
+constexpr unsigned int M2000C_PCNMODEROT_ADDR = 0x72ea;
+constexpr unsigned int M2000C_PCNSELROT_ADDR = 0x72c4;
+constexpr unsigned int M2000C_PCNSELROT_MASK = 0xf000;
+constexpr unsigned int M2000C_PCNSELROT_SHIFT = 12U;
 constexpr unsigned int M2000C_PCNBTNLT_ADDR = 0x72d4;
 constexpr unsigned int M2000C_PCNPREPBTNLT_MASK = 0x0100;
 constexpr unsigned int M2000C_PCNDESTBTNLT_MASK = 0x0200;
@@ -964,9 +968,9 @@ static void m2000cPcnDispDest(char *szValue)
 }
 
 /*
- *   Callback on change of M2000C PCN mode rotary switch.
+ *   Callback on change of M2000C PCN selector mode rotary switch.
  */
-static void cbM2000cPcnModeRot(unsigned int Value)
+static void cbM2000cPcnSelectorRot(unsigned int Value)
 {
   DiPnl.m2000cPcnMode((uint8_t) Value);
 }
@@ -1027,6 +1031,10 @@ static void modeM2000cInit()
       M2000C_PCNDISPPREP_ADDR, m2000cPcnDispPrep);
   new DcsBios::StringBuffer<M2000C_PCNDISPDEST_SZ>(
       M2000C_PCNDISPDEST_ADDR, m2000cPcnDispDest);
+
+  // PCN Selector Mode rotary
+  new DcsBios::IntegerBuffer(M2000C_PCNSELROT_ADDR, M2000C_PCNSELROT_MASK,
+      M2000C_PCNSELROT_SHIFT, cbM2000cPcnSelectorRot);
 
   // PCN lights
   new DcsBios::IntegerBuffer(M2000C_PCNBTNLT_ADDR,

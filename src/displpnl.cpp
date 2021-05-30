@@ -25,7 +25,7 @@ const uint8_t DisplPnl::_LCD_CHAR_UPDOWN[] PROGMEM =
 // Custom character with a capital delta letter
 const uint8_t DisplPnl::_LCD_CHAR_DELTA[] PROGMEM =
 {
-  0b00000,
+  0b00100,
   0b00100,
   0b01010,
   0b01010,
@@ -74,7 +74,7 @@ const char DisplPnl::_M2000C_PCNMODE_POS[_M2000C_PCNMODE_NUM_POS]
   [_M2000C_PCNMODE_POS_LN+1] PROGMEM =
   {
     "TR/VS", "D/RLT", "CP/PD", " ALT ", " L/G ", "RD/TD",
-    "\x02L/\x02G", "\x02ALT ", " P/\x03 ", " DEC ", "DV/FV"
+    "\002L/\002G", "\002ALT ", " P/\003 ", " DEC ", "DV/FV"
   };
 
 // Where to display separators {row, col} format
@@ -1075,11 +1075,6 @@ void DisplPnl::m2000cStart()
   // Register custom LCD characters
   _Lcd.createChar(_LCD_CHAR_DELTA_ID, (PGM_P) _LCD_CHAR_DELTA);
   _Lcd.createChar(_LCD_CHAR_RHO_ID, (PGM_P) _LCD_CHAR_RHO);
-
-//  _Lcd.setCursor(0,1);
-//  _Lcd.write("\231001         UNI  17\177");
-//  _Lcd.write("* ALN MIP NDEG SEC *");
-//  _Lcd.write("* PRET M91 M92 M93 *");
 }
 
 
@@ -1279,17 +1274,17 @@ void DisplPnl::m2000cPcnMemLt(uint8_t Value)
 
   // M91
   if ((Set = Value & M2000C_MEMLT_M91_BIT) !=
-      (_Status.M2000c.PanneLt & M2000C_MEMLT_M91_BIT))
+      (_Status.M2000c.MemLt & M2000C_MEMLT_M91_BIT))
     _m2000cSetPcnLt(M2000C_GREENLT_ROW, M2000C_M91LT_COL, Set, PSTR("M91"));
 
   // M92
   if ((Set = Value & M2000C_MEMLT_M92_BIT) !=
-      (_Status.M2000c.PanneLt & M2000C_MEMLT_M92_BIT))
+      (_Status.M2000c.MemLt & M2000C_MEMLT_M92_BIT))
     _m2000cSetPcnLt(M2000C_GREENLT_ROW, M2000C_M92LT_COL, Set, PSTR("M92"));
 
   // M93
   if ((Set = Value & M2000C_MEMLT_M93_BIT) !=
-      (_Status.M2000c.PanneLt & M2000C_MEMLT_M93_BIT))
+      (_Status.M2000c.MemLt & M2000C_MEMLT_M93_BIT))
     _m2000cSetPcnLt(M2000C_GREENLT_ROW, M2000C_M93LT_COL, Set, PSTR("M93"));
 
   // Save the new status
