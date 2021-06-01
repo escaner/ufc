@@ -35,10 +35,10 @@ constexpr uint8_t PIN_LCD_BL = 3U;
 
 static const uint8_t PIN_ENCODER[NUM_ENC][ENC_NUM_PINS] =
 {
-  {  8,  9 }, // COM1
-  {  6,  0 }, // COM2 pin 7 does not work in my Pro Micro, using 0 (RXI) instead
-  { 16, 10 }, // Left
-  { 15, 14 }, // Right
+  {  8,  9 }, // EncCom1
+  {  6,  0 }, // EncCom2 (pin 7 does not work in my Pro Micro -> using 0 (RXI))
+  { 16, 10 }, // EncLeft
+  { 15, 14 }, // EncRight
 };
 static const uint8_t PIN_KP[NUM_KP] = { A1, A2, A3 };
 static const uint8_t PIN_LED[NUM_LED] = { 4, 5, A0 };
@@ -72,6 +72,12 @@ static const DisplPnl::LcdData_t LcdData =
 
 
 /* DCS-BIOS */
+
+// Used in DCS BIOS messages in several modules
+static const char _BIOS_MSG_HDG[] PROGMEM = { 'H', 'D', 'G' };
+static const char _BIOS_MSG_CRS[] PROGMEM = { 'C', 'R', 'S' };
+static const char _BIOS_ARG_INC_CHAR = '+';
+static const char _BIOS_ARG_DEC_CHAR = '-';
 
 // A-10C
 constexpr uint8_t A10C_CDUSP_SZ = 24U;
@@ -263,6 +269,12 @@ constexpr unsigned int M2000C_PANNEREDLT_MASK = 0x1000;
 
 static Mode WorkMode;
 
+// Function to call for special procesing of input before sending DX events
+// It depends on the WorkMode and returns true when standard processing should
+// follow.
+static bool (*pModeProcessEv)(const Event &Ev, const Directx::Event_t &EvDx) =
+  nullptr;
+
 // Switch panel: reads buttons (keypads) and rotary encoders
 static SwitchPnl SwPnl(PIN_KP, PIN_ENCODER);
 
@@ -448,6 +460,9 @@ static void modeA10cInit()
   // Initializes display
   DiPnl.a10cStart();
 
+  // Register special processing function
+  pModeProcessEv = A10cProcessEv;
+
   // Register callbacks creating DCS-BIOS handlers in heap memory
 
   // CDU Scratchpad
@@ -494,15 +509,6 @@ static void modeA10cInit()
       A10C_MASTERARMSW_SHIFT, cbA10cMasterArmSw);
   new DcsBios::IntegerBuffer(A10C_GUNRDYLT_ADDR, A10C_GUNRDYLT_MASK,
       A10C_GUNRDYLT_SHIFT, cbA10cGunReadyLt);
-/*
-  // Encoders
-  new DcsBios::RotaryEncoder("HSI_HDG_KNOB", "-3200", "+3200",
-    PIN_ENCODER[0][0], PIN_ENCODER[0][1]);
-  new DcsBios::RotaryEncoder("HSI_CRS_KNOB", "-3200", "+3200",
-    PIN_ENCODER[1][0], PIN_ENCODER[1][1]);
-  new DcsBios::RotaryEncoder("UFC_STEER", "DEC", "INC",
-    PIN_ENCODER[3][0], PIN_ENCODER[3][1]);
-*/
 }
 
 
@@ -628,6 +634,12 @@ static void modeF16cInit()
   // Initializes display
   DiPnl.f16cStart();
 
+  // Register special processing function
+  pModeProcessEv = F16cProcessEv;
+
+  // Tune encoder DX event delays for HDG/CRS and ICP Up/Dn
+  SwPnl.setEncDelay(SwitchPnl::EncLeft, F16C_ICP_DX_DELAY_PR, DX_DELAY_RP);
+
   // Register callbacks creating DCS-BIOS handlers in heap memory
 
   // DED
@@ -658,19 +670,7 @@ static void modeF16cInit()
       F16C_MASTERARMSW_SHIFT, cbF16cMasterArmSw);
   new DcsBios::IntegerBuffer(F16C_STORESCFGSW_ADDR, F16C_STORESCFGSW_MASK,
       F16C_STORESCFGSW_SHIFT, cbF16cStoresCat);
-/*
-  // Encoders
-  new DcsBios::RotaryEncoder("EHSI_HDG_SET_KNOB", "DEC", "INC",
-    PIN_ENCODER[0][0], PIN_ENCODER[0][1]);
-  new DcsBios::RotaryEncoder("HSI_CRS_SET_KNOB", "DEC", "INC",
-    PIN_ENCODER[1][0], PIN_ENCODER[1][1]);
-  new DcsBios::RotaryEncoder("ICP_DED_SW", "DEC", "INC",
-    PIN_ENCODER[2][0], PIN_ENCODER[2][1]);
-  new DcsBios::RotaryEncoder("ICP_DATA_UP_DN_SW", "DEC", "INC",
-    PIN_ENCODER[3][0], PIN_ENCODER[3][1]);
-*/
 }
-
 
 
 /* DCS-BIOS callbacks for F/A-18C */
@@ -1002,7 +1002,6 @@ static void cbM2000cPcnMemLt(unsigned int Value)
   DiPnl.m2000cPcnMemLt(highByte(Value));
 }
 
-
 /*
  *   Callback on change of M2000C Panne lights.
  */
@@ -1068,7 +1067,180 @@ static void modeM2000cInit()
  */
 static void modeDebugInit()
 {
+  // Init display panel
   DiPnl.debugStart();
+
+  // Prepare function to display event information
+  pModeProcessEv = DebugProcessEv;
+}
+
+
+/*
+ *   A-10C mode pModeProcessEv function. Performs special processing of the
+ *  input for buggy DCS controls such as HDG & CRS knobs that do not work
+ *  correctly with DX events.
+ *   Parameters:
+ *   * Ev: Event that was registered, cannot be EvNone.
+ *   * EvDx: DirectX event to be sent (not used in this function)
+ *  Returns:
+ *  * true: when the Event was processed and a corresponding action was issued
+ *  * false: nothing done, standard DX event should be issued 
+ */
+static bool A10cProcessEv(const Event &Ev, const Directx::Event_t &EvDx)
+{
+  constexpr uint8_t MSG_POS = 4U;
+  constexpr uint8_t ARG_POS = 0U;
+  static char Msg[] = "HSI_xxx_KNOB";
+  static char Arg[] = "x1144";
+  bool Processed = false;
+  bool Send = false;
+
+  // Only interested on encoder events
+  if (Ev.isEnc())
+  {
+
+#pragma GCC diagnostic push
+// Disable: warning: enumeration value '' not handled in switch
+#pragma GCC diagnostic ignored "-Wswitch"
+
+    // Only interested on encoders EncCom1 & EncCom2
+    switch (Ev.EncId)
+    {
+    case SwitchPnl::EncCom1:  // HDG
+      switch (Ev.Id)
+      {
+      case Event::EvEncCwPress:
+        Arg[ARG_POS] = _BIOS_ARG_INC_CHAR;
+        memcpy_P(Msg + MSG_POS, _BIOS_MSG_HDG, sizeof _BIOS_MSG_HDG);
+        Send = true;
+        break;
+      case Event::EvEncCcwPress:
+        Arg[ARG_POS] = _BIOS_ARG_DEC_CHAR;
+        memcpy_P(Msg + MSG_POS, _BIOS_MSG_HDG, sizeof _BIOS_MSG_HDG);
+        Send = true;
+        break;
+      }
+      Processed = true;
+      break;
+    case SwitchPnl::EncCom2:  // CRS
+      switch (Ev.Id)
+      {
+      case Event::EvEncCwPress:
+        Arg[ARG_POS] = _BIOS_ARG_INC_CHAR;
+        memcpy_P(Msg + MSG_POS, _BIOS_MSG_CRS, sizeof _BIOS_MSG_CRS);
+        Send = true;
+        break;
+      case Event::EvEncCcwPress:
+        Arg[ARG_POS] = _BIOS_ARG_DEC_CHAR;
+        memcpy_P(Msg + MSG_POS, _BIOS_MSG_CRS, sizeof _BIOS_MSG_CRS);
+        Send = true;
+        break;
+      }
+      Processed = true;
+      break;
+    }
+
+#pragma GCC diagnostic pop
+
+    // Send the message
+    if (Send)
+      DcsBios::sendDcsBiosMessage(Msg, Arg);
+  }
+
+  return Processed;
+}
+
+
+/*
+ *   F-16C mode pModeProcessEv function. Performs special processing of the
+ *  input for buggy DCS controls such as HDG & CRS knobs that do not work
+ *  correctly with DX events (they need very large push times).
+ *   Parameters:
+ *   * Ev: Event that was registered, cannot be EvNone.
+ *   * EvDx: DirectX event to be sent (not used in this function)
+ *  Returns:
+ *  * true: when the Event was processed and a corresponding action was issued
+ *  * false: nothing done, standard DX event should be issued 
+ */
+static bool F16cProcessEv(const Event &Ev, const Directx::Event_t &EvDx)
+{
+  constexpr uint8_t MSG_POS = 5U;
+  constexpr uint8_t ARG_POS = 0U;
+  static char Msg[] = "EHSI_xxx_SET_KNB";
+  static char Arg[] = "x9";
+  bool Processed = false;
+  bool Send = false;
+
+  // Only interested on encoder events
+  if (Ev.isEnc())
+  {
+
+#pragma GCC diagnostic push
+// Disable: warning: enumeration value '' not handled in switch
+#pragma GCC diagnostic ignored "-Wswitch"
+
+    // Only interested on encoders EncCom1 & EncCom2
+    switch (Ev.EncId)
+    {
+    case SwitchPnl::EncCom1:  // HDG
+      switch (Ev.Id)
+      {
+      case Event::EvEncCwPress:
+        Arg[ARG_POS] = _BIOS_ARG_INC_CHAR;
+        memcpy_P(Msg + MSG_POS, _BIOS_MSG_HDG, sizeof _BIOS_MSG_HDG);
+        Send = true;
+        break;
+      case Event::EvEncCcwPress:
+        Arg[ARG_POS] = _BIOS_ARG_DEC_CHAR;
+        memcpy_P(Msg + MSG_POS, _BIOS_MSG_HDG, sizeof _BIOS_MSG_HDG);
+        Send = true;
+        break;
+      }
+      Processed = true;
+      break;
+    case SwitchPnl::EncCom2:  // CRS
+      switch (Ev.Id)
+      {
+      case Event::EvEncCwPress:
+        Arg[ARG_POS] = _BIOS_ARG_INC_CHAR;
+        memcpy_P(Msg + MSG_POS, _BIOS_MSG_CRS, sizeof _BIOS_MSG_CRS);
+        Send = true;
+        break;
+      case Event::EvEncCcwPress:
+        Arg[ARG_POS] =_BIOS_ARG_DEC_CHAR;
+        memcpy_P(Msg + MSG_POS, _BIOS_MSG_CRS, sizeof _BIOS_MSG_CRS);
+        Send = true;
+        break;
+      }
+      Processed = true;
+      break;
+    }
+
+#pragma GCC diagnostic pop
+
+    // Send the message
+    if (Send)
+      DcsBios::sendDcsBiosMessage(Msg, Arg);
+  }
+
+  return Processed;
+}
+
+
+/*
+ *   DEBUG mode pModeProcessEv function. Performs special processing of the
+ *  input displaying the event on the LCD.
+ *   Parameters:
+ *   * Ev: Event that was registered, cannot be EvNone.
+ *   * EvDx: DirectX event to be sent
+ *  Returns:
+ *  * false: standard DX event should be issued 
+ */
+static bool DebugProcessEv(const Event &Ev, const Directx::Event_t &EvDx)
+{
+  DiPnl.debugShowEvent(Ev, EvDx);
+
+  return false;
 }
 
 
@@ -1089,15 +1261,17 @@ static void processInput()
     // Yes, translate to DirectX
     EvDx = Directx::translate(Ev);
 
-    // Send DirectX event to PC
-    if (EvDx.Action == Directx::AcRelease)
-      Joy.releaseButton(EvDx.Button);
-    else
-      Joy.pressButton(EvDx.Button);
+    // Do special processing first if configured so
+    if (pModeProcessEv==nullptr || !(*pModeProcessEv)(Ev, EvDx))
+    {
+      // Continue with std processing when special not configured or says so
 
-    // Show stuff in debug mode
-    if (WorkMode.get() == Mode::M_DEBUG)
-      DiPnl.debugShowEvent(Ev, EvDx);
+      // Send DirectX event to PC
+      if (EvDx.Action == Directx::AcRelease)
+        Joy.releaseButton(EvDx.Button);
+      else
+        Joy.pressButton(EvDx.Button);
+    }
   }
 }
 
@@ -1139,19 +1313,13 @@ static void setupWorkMode(uint8_t KeyId)
 void setup()
 {
   uint8_t ModeKeyId;
-  Mode::Id_t Mode;
 
   // Initialize display panel
   DiPnl.init();
 
   // Initialize all input stuff and setup mode of operation selected
-  ModeKeyId = SwPnl.initKp(KP_MODE);
+  ModeKeyId = SwPnl.init(KP_MODE);
   setupWorkMode(ModeKeyId);
-
-  // Only manage encoders for DirectX and Debug modes, otherwise let DCS-BIOS do
-  Mode = WorkMode.get();
-//  if (Mode != Mode::M_F16C && Mode != Mode::M_A10C)
-    SwPnl.initEnc();
 
   // Display mode of operation
   DiPnl.showMode(WorkMode.P_str());

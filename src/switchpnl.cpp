@@ -98,27 +98,31 @@ SwitchPnl::SwitchPnl(const uint8_t KpPin[NUM_KP],
   _Encoder{REncoderAsync(DX_DELAY_PR, DX_DELAY_RP),
     REncoderAsync(DX_DELAY_PR, DX_DELAY_RP),
     REncoderAsync(DX_DELAY_PR, DX_DELAY_RP),
-    REncoderAsync(DX_DELAY_PR, DX_DELAY_RP)},
-  _UseEnc(false)
+    REncoderAsync(DX_DELAY_PR, DX_DELAY_RP)}
 {
 }
 
 
 /*
- *   Configures Arduino pins for switch panel keypads, pulling them up as
- *  required. Encoders are not initialized here.
+ *   Configures Arduino pins for switch panel keypads and encoders, pulling
+ *  them up as required.
  *  Parameters:
  *  * Keypad: in which keypad to look for a pressed button
  *  Returns: key id in Keypad that is being depressed during initialization
  *  or SwitchKp::SWITCH_NONE when none is.
  */
- uint8_t SwitchPnl::initKp(uint8_t Keypad) const
+ uint8_t SwitchPnl::init(uint8_t Keypad) const
 {
-  uint8_t KpId;
+  uint8_t KpId, EncId, EncPinId;
 
   // Initialize Keypad pins
   for (KpId = 0U; KpId < NUM_KP; KpId++)
     pinMode(_KpPin[KpId], INPUT);
+
+  // Initialize encoder pins
+  for (EncId = 0U; EncId < NUM_ENC; EncId++)
+    for (EncPinId = 0U; EncPinId < ENC_NUM_PINS; EncPinId++)
+      pinMode(_EncPin[EncId][EncPinId], INPUT_PULLUP);
 
   // Read value on Keypad and translate to its key
   return _kpGetKey(Keypad);
@@ -126,20 +130,16 @@ SwitchPnl::SwitchPnl(const uint8_t KpPin[NUM_KP],
 
 
 /*
- *   Configures Arduino encoders pins for switch panel, pulling them up as
- *  required. Keypads are not initialized here.
+ *   Sets the delays for the DirecX events of one of the encoders.
+ *  Parameters:
+ *  * EncId: encoder identifier
+ *  * DelayPR: delay from press to release in ms.
+ *  * DelayRP: delay from release to press in ms.
  */
- void SwitchPnl::initEnc()
+void SwitchPnl::setEncDelay(EncId_t EncId, uint8_t DelayPR, uint8_t DelayRP)
 {
-  uint8_t EncId, EncPinId;
-
-  // Initialize encoder pins
-  for (EncId = 0U; EncId < NUM_ENC; EncId++)
-    for (EncPinId = 0U; EncPinId < ENC_NUM_PINS; EncPinId++)
-      pinMode(_EncPin[EncId][EncPinId], INPUT_PULLUP);
-
-  // Manage encoders too
-  _UseEnc = true;
+  _Encoder[EncId].setDelayPressRel(DelayPR);
+  _Encoder[EncId].setDelayRelPress(DelayRP);
 }
 
 
@@ -179,52 +179,49 @@ Event SwitchPnl::check(uint16_t LoopCnt)
   // As soon as an event is detected, it is returned
   while (LoopCnt--)
   {
-    if (_UseEnc)
+    // Update all rotary encoders
+    for (Id = 0U; Id < NUM_ENC; Id++)
     {
-      // Update all rotary encoders
-      for (Id = 0U; Id < NUM_ENC; Id++)
-      {
-        // Read the encoder values
-        EncValA = digitalRead(_EncPin[Id][0]);
-        EncValB = digitalRead(_EncPin[Id][1]);
+      // Read the encoder values
+      EncValA = digitalRead(_EncPin[Id][0]);
+      EncValB = digitalRead(_EncPin[Id][1]);
 
-        // Update encoder status
-        _Encoder[Id].update(EncValA, EncValB);
-      }
+      // Update encoder status
+      _Encoder[Id].update(EncValA, EncValB);
+    }
 
-      // Check for pending rotary encoder events, they are asynchronous
-      for (Id = 0U; Id < NUM_ENC; Id++)
-      {
-        EventEnc = _Encoder[Id].getEvent();
+    // Check for pending rotary encoder events, they are asynchronous
+    for (Id = 0U; Id < NUM_ENC; Id++)
+    {
+      EventEnc = _Encoder[Id].getEvent();
 
 #pragma GCC diagnostic push
   // Disable: warning: enumeration value '' not handled in switch
 #pragma GCC diagnostic ignored "-Wswitch"
 
-        switch (EventEnc)
-        {
-        case REncoderAsync::EV_CCW_PRESS:
-          Ev.Id = Event::EvEncCcwPress;
-          Ev.EncId = Id;
-          return Ev;
-        case REncoderAsync::EV_CCW_RELEASE:
-          Ev.Id = Event::EvEncCcwRelease;
-          Ev.EncId = Id;
-          return Ev;
-        case REncoderAsync::EV_CW_PRESS:
-          Ev.Id = Event::EvEncCwPress;
-          Ev.EncId = Id;
-          return Ev;
-        case REncoderAsync::EV_CW_RELEASE:
-          Ev.Id = Event::EvEncCwRelease;
-          Ev.EncId = Id;
-          return Ev;
-        // default: EV_NONE -> do nothing
-        }
+      switch (EventEnc)
+      {
+      case REncoderAsync::EV_CCW_PRESS:
+        Ev.Id = Event::EvEncCcwPress;
+        Ev.EncId = Id;
+        return Ev;
+      case REncoderAsync::EV_CCW_RELEASE:
+        Ev.Id = Event::EvEncCcwRelease;
+        Ev.EncId = Id;
+        return Ev;
+      case REncoderAsync::EV_CW_PRESS:
+        Ev.Id = Event::EvEncCwPress;
+        Ev.EncId = Id;
+        return Ev;
+      case REncoderAsync::EV_CW_RELEASE:
+        Ev.Id = Event::EvEncCwRelease;
+        Ev.EncId = Id;
+        return Ev;
+      // default: EV_NONE -> do nothing
+      }
 
 #pragma GCC diagnostic pop
 
-      }
     }
 
     // Check keypads

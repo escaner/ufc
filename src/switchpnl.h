@@ -25,6 +25,9 @@ public:
   static const uint8_t ENC_PIN_A = 0;
   static const uint8_t ENC_PIN_B = 1;
 
+  // Identifiers for Encoders
+  enum EncId_t: uint8_t { EncCom1 = 0,  EncCom2 = 1, EncLeft= 2, EncRight = 3 };
+
 
   /******************/
   /* Public methods */
@@ -32,8 +35,8 @@ public:
 
   SwitchPnl(const uint8_t KpPin[NUM_KP],
     const uint8_t EncPin[NUM_ENC][ENC_NUM_PINS]);
-  uint8_t initKp(uint8_t Keypad) const;
-  void initEnc();
+  uint8_t init(uint8_t Keypad) const;
+  void setEncDelay(EncId_t EncId, uint8_t DelayPR, uint8_t DelayRP);
   void wait(uint8_t Keypad) const;
   Event check(uint16_t LoopCnt = 1U);
 
@@ -79,7 +82,6 @@ protected:
   // Keypad matrices for buttons
   SwitchKp _Keypad[NUM_KP];         // Manage keypads
   REncoderAsync _Encoder[NUM_ENC];  // Manage Encoders
-  bool _UseEnc;  // Whether to manage the encoders or only keypads
 };
 
 

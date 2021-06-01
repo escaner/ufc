@@ -137,7 +137,7 @@ inline bool Event::isKp() const
  */
 inline bool Event::isEnc() const
 {
-  return Id >= EvEncCcwPress || Id <= EvEncCwRelease;
+  return Id >= EvEncCcwPress && Id <= EvEncCwRelease;
 }
 
 

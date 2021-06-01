@@ -502,7 +502,7 @@ void DisplPnl::a10cIlsFreq(const char *szValue)
 void DisplPnl::a10cHdgBug(uint16_t Value)
 {
   _Lcd.setCursor(A10C_HDG_COL, A10C_HDGCRS_ROW);
-  _lcdWriteDeg(Value);
+  _a10cLcdWriteDeg(Value);
 }
 
 
@@ -514,7 +514,7 @@ void DisplPnl::a10cHdgBug(uint16_t Value)
 void DisplPnl::a10cCrs(uint16_t Value)
 {
   _Lcd.setCursor(A10C_CRS_COL, A10C_HDGCRS_ROW);
-  _lcdWriteDeg(Value);
+  _a10cLcdWriteDeg(Value);
 }
 
 
@@ -1379,6 +1379,61 @@ void DisplPnl::error(const __FlashStringHelper *pmMsg)
 }
 */
 
+
+/*
+ *   Writes field separators gettinf the coordinates from paCoord, which is
+ *  a two dimensional array stored in program memory.
+ *   Parameters:
+ *   * pmCrd: two dimensional array with coordinates [row, col], stored in
+ *     program memory.
+ *   * Size: number of coordinates in pmCrd array
+ */
+void DisplPnl::_writeSeparators(const uint8_t (*pmCrd)[_CRD_DIM], uint8_t Size)
+{
+  uint8_t Idx;
+
+  for (Idx=0U; Idx<Size; Idx++)
+  {
+    // Fetch coordinates from program memory
+    _Lcd.setCursor(pgm_read_byte(pmCrd[Idx]+1), pgm_read_byte(pmCrd[Idx]));
+    _Lcd.write(_LCD_SEPARATOR_CHAR);
+  }
+}
+
+
+/*
+ *   In the A-10C, decouples a heading Value from the present heading and
+ *  converts it from uint16_t range to 360º range and then writes it into
+ *  the LCD.
+ *   Parameters:
+ *   * Value: the value to convert to degrees
+ */
+void DisplPnl::_a10cLcdWriteDeg(uint16_t Value)
+{
+  // Denominator to normalize to [0, 360]
+  constexpr uint32_t DENOMINATOR = UINT16_MAX;
+  constexpr uint32_t MAX_NORM_VALUE = 360UL;
+  char Buff[3+1];
+  uint32_t AbsValue;  // Value unreferenced from present heading
+  uint16_t Deg;
+
+  // Decouple Value from current heading
+  AbsValue = (uint32_t) (Value - _Status.A10c.Hdg);
+
+  // Normalize value with 32 bit precision to avoid overflow
+  AbsValue *= MAX_NORM_VALUE;
+  Deg = (uint16_t) DIV_PROUND(AbsValue, DENOMINATOR);
+
+  // We obtain a Deg value [0, 360], make simple modulo for [0, 359]
+  if (Deg == (uint16_t) MAX_NORM_VALUE)
+    Deg = 0U;
+
+  // Convert to string and write on LCD
+  sprintf_P(Buff, PSTR("%03u"), (unsigned) Deg);
+  _Lcd.write(Buff);
+}
+
+
 /*
  *   Replace a DED character by its apropriate representation as defined in
  *  _F16C_CHAR_REPLACEMENT array.
@@ -1588,26 +1643,6 @@ void DisplPnl::_error()
 }
 */
 
-/*
- *   Writes field separators gettinf the coordinates from paCoord, which is
- *  a two dimensional array stored in program memory.
- *   Parameters:
- *   * pmCrd: two dimensional array with coordinates [row, col], stored in
- *     program memory.
- *   * Size: number of coordinates in pmCrd array
- */
-void DisplPnl::_writeSeparators(const uint8_t (*pmCrd)[_CRD_DIM], uint8_t Size)
-{
-  uint8_t Idx;
-
-  for (Idx=0U; Idx<Size; Idx++)
-  {
-    // Fetch coordinates from program memory
-    _Lcd.setCursor(pgm_read_byte(pmCrd[Idx]+1), pgm_read_byte(pmCrd[Idx]));
-    _Lcd.write(_LCD_SEPARATOR_CHAR);
-  }
-}
-
 
 /*
  *   Given a string and a field Size, writes the sting into the current
@@ -1628,38 +1663,6 @@ void DisplPnl::_lcdWritePadded(const char *szText, uint8_t Size, char PadChar)
 
   // Write the field value
   _Lcd.write(szText);
-}
-
-
-/*
- *   Converts a Value from uint16_t range to 360º range and writes it into
- *  the LCD.
- *   Parameters:
- *   * Value: the value to convert to degrees
- */
-void DisplPnl::_lcdWriteDeg(uint16_t Value)
-{
-  // Denominator to normalize to [0, 360]
-  constexpr uint32_t DENOMINATOR = UINT16_MAX;
-  constexpr uint32_t MAX_NORM_VALUE = 360UL;
-  char Buff[3+1];
-  uint32_t AbsValue;  // Value unreferenced from present heading
-  uint16_t Deg;
-
-  // Decouple Value from current heading
-  AbsValue = (uint32_t) (Value - _Status.A10c.Hdg);
-
-  // Normalize value with 32 bit precision to avoid overflow
-  AbsValue *= MAX_NORM_VALUE;
-  Deg = (uint16_t) DIV_PROUND(AbsValue, DENOMINATOR);
-
-  // We obtain a Deg value [0, 360], make simple modulo for [0, 359]
-  if (Deg == (uint16_t) MAX_NORM_VALUE)
-    Deg = 0U;
-
-  // Convert to string and write on LCD
-  sprintf_P(Buff, PSTR("%03u"), (unsigned) Deg);
-  _Lcd.write(Buff);
 }
 
 

@@ -173,6 +173,7 @@ protected:
   /*********************/
 
   void _writeSeparators(const uint8_t (*pmCrd)[_CRD_DIM], uint8_t Size);
+  void _a10cLcdWriteDeg(uint16_t Value);
   inline static char _f16cReplaceChar(char DedChar);
   void _f16cDedWrite(uint8_t LcdRow, uint8_t LcdCol, const char *sText,
     uint8_t Size);
@@ -185,7 +186,6 @@ protected:
 //  void _error();
   inline void _lcdWriteN(uint8_t Count=LCD_COLS, char Char=' ');
   void _lcdWritePadded(const char *szText, uint8_t Size, char PadChar=' ');
-  void _lcdWriteDeg(uint16_t Value);
   inline void _setLed(LedId_t Led, uint8_t Value) const;
   static void _unpad(char *szDst, const char *szSrc, uint8_t Discard = 0U);
 
