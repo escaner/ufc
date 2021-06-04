@@ -461,7 +461,7 @@ static void modeA10cInit()
   DiPnl.a10cStart();
 
   // Register special processing function
-  pModeProcessEv = A10cProcessEv;
+  pModeProcessEv = a10cProcessEv;
 
   // Register callbacks creating DCS-BIOS handlers in heap memory
 
@@ -635,7 +635,7 @@ static void modeF16cInit()
   DiPnl.f16cStart();
 
   // Register special processing function
-  pModeProcessEv = F16cProcessEv;
+  pModeProcessEv = f16cProcessEv;
 
   // Tune encoder DX event delays for HDG/CRS and ICP Up/Dn
   SwPnl.setEncDelay(SwitchPnl::EncLeft, F16C_ICP_DX_DELAY_PR, DX_DELAY_RP);
@@ -1071,7 +1071,7 @@ static void modeDebugInit()
   DiPnl.debugStart();
 
   // Prepare function to display event information
-  pModeProcessEv = DebugProcessEv;
+  pModeProcessEv = debugProcessEv;
 }
 
 
@@ -1086,7 +1086,7 @@ static void modeDebugInit()
  *  * true: when the Event was processed and a corresponding action was issued
  *  * false: nothing done, standard DX event should be issued 
  */
-static bool A10cProcessEv(const Event &Ev, const Directx::Event_t &EvDx)
+static bool a10cProcessEv(const Event &Ev, const Directx::Event_t &EvDx)
 {
   constexpr uint8_t MSG_POS = 4U;
   constexpr uint8_t ARG_POS = 0U;
@@ -1162,7 +1162,7 @@ static bool A10cProcessEv(const Event &Ev, const Directx::Event_t &EvDx)
  *  * true: when the Event was processed and a corresponding action was issued
  *  * false: nothing done, standard DX event should be issued 
  */
-static bool F16cProcessEv(const Event &Ev, const Directx::Event_t &EvDx)
+static bool f16cProcessEv(const Event &Ev, const Directx::Event_t &EvDx)
 {
   constexpr uint8_t MSG_POS = 5U;
   constexpr uint8_t ARG_POS = 0U;
@@ -1236,7 +1236,7 @@ static bool F16cProcessEv(const Event &Ev, const Directx::Event_t &EvDx)
  *  Returns:
  *  * false: standard DX event should be issued 
  */
-static bool DebugProcessEv(const Event &Ev, const Directx::Event_t &EvDx)
+static bool debugProcessEv(const Event &Ev, const Directx::Event_t &EvDx)
 {
   DiPnl.debugShowEvent(Ev, EvDx);
 
