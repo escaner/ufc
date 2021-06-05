@@ -1075,6 +1075,8 @@ static void modeDebugInit()
 }
 
 
+
+
 /*
  *   A-10C mode pModeProcessEv function. Performs special processing of the
  *  input for buggy DCS controls such as HDG & CRS knobs that do not work
@@ -1086,6 +1088,10 @@ static void modeDebugInit()
  *  * true: when the Event was processed and a corresponding action was issued
  *  * false: nothing done, standard DX event should be issued 
  */
+#pragma GCC diagnostic push
+// Disable: warning: unused parameter '' [-Wunused-parameter]
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
 static bool a10cProcessEv(const Event &Ev, const Directx::Event_t &EvDx)
 {
   constexpr uint8_t MSG_POS = 4U;
@@ -1150,6 +1156,8 @@ static bool a10cProcessEv(const Event &Ev, const Directx::Event_t &EvDx)
   return Processed;
 }
 
+#pragma GCC diagnostic pop
+
 
 /*
  *   F-16C mode pModeProcessEv function. Performs special processing of the
@@ -1162,6 +1170,10 @@ static bool a10cProcessEv(const Event &Ev, const Directx::Event_t &EvDx)
  *  * true: when the Event was processed and a corresponding action was issued
  *  * false: nothing done, standard DX event should be issued 
  */
+#pragma GCC diagnostic push
+// Disable: warning: unused parameter '' [-Wunused-parameter]
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
 static bool f16cProcessEv(const Event &Ev, const Directx::Event_t &EvDx)
 {
   constexpr uint8_t MSG_POS = 5U;
@@ -1225,6 +1237,8 @@ static bool f16cProcessEv(const Event &Ev, const Directx::Event_t &EvDx)
 
   return Processed;
 }
+
+#pragma GCC diagnostic pop
 
 
 /*
