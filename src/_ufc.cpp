@@ -16,10 +16,10 @@
 /*******************/
 
 // Number of iterations processing switches per loop() call
-static const uint16_t SWITCH_LOOP_CNT = 150U;
+constexpr uint16_t SWITCH_LOOP_CNT = 150U;
 
 // EEPROM address where the default mode is stored
-static const int EEPROM_MODE_ADDR PROGMEM = 0;
+constexpr int EEPROM_MODE_ADDR = 0;
 
 
 /** PRO MICRO pin connections **/
@@ -1301,8 +1301,6 @@ static void processInput()
  */
 static void setupWorkMode(uint8_t KeyId)
 {
-  const int EepromAddr = pgm_read_word(&EEPROM_MODE_ADDR);
-
   // Did the user manually selected a mode?
   if (KeyId == SwitchKp::SWITCH_NONE)
   {
@@ -1310,13 +1308,13 @@ static void setupWorkMode(uint8_t KeyId)
     // Note that if the EEPROM is not initialized and an invalid mode is
     // read, the default mode will be selected and the EEPROM will remain
     // not initialized
-    WorkMode.set((Mode::Id_t) EEPROM.read(EepromAddr));
+    WorkMode.set((Mode::Id_t) EEPROM.read(EEPROM_MODE_ADDR));
   }
   else
   {
     // User selected a mode, get it and store it in EEPROM
     WorkMode = Mode(KeyId);
-    EEPROM.update(EepromAddr, WorkMode.get());
+    EEPROM.update(EEPROM_MODE_ADDR, WorkMode.get());
   }
 }
 
