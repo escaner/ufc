@@ -79,6 +79,9 @@ static const char _BIOS_MSG_CRS[] PROGMEM = { 'C', 'R', 'S' };
 static const char _BIOS_ARG_INC_CHAR = '+';
 static const char _BIOS_ARG_DEC_CHAR = '-';
 
+constexpr uint8_t DCS_ACFTNAME_SZ = 24U;
+constexpr unsigned int DCS_ACFTNAME_ADDR = 0x0000;
+
 // A-10C
 constexpr uint8_t A10C_CDUSP_SZ = 24U;
 constexpr unsigned int A10C_CDUSP_ADDR = 0x1298;
@@ -922,6 +925,8 @@ static void modeFa18cInit()
 }
 
 
+/* DCS-BIOS callbacks for M2000C */
+
 /*
  *   Callback to update M2000C PCN left digit display.
  */
@@ -1062,6 +1067,16 @@ static void modeM2000cInit()
 }
 
 
+/* DCS-BIOS callbacks for DEBUG */
+
+/*
+ *   Callback to update M2000C PCN left digit display.
+ */
+static void dcsAcftName(char *szValue)
+{
+  DiPnl.debugShowAcftName(szValue);
+}
+
 /*
  *   Initializes debug mode
  */
@@ -1072,9 +1087,10 @@ static void modeDebugInit()
 
   // Prepare function to display event information
   pModeProcessEv = debugProcessEv;
+
+  // Register callbacks creating DCS-BIOS handlers in heap memory
+  new DcsBios::StringBuffer<DCS_ACFTNAME_SZ>(DCS_ACFTNAME_ADDR, dcsAcftName);
 }
-
-
 
 
 /*

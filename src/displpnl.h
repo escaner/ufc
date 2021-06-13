@@ -118,6 +118,7 @@ public:
 
   void debugStart();
   void debugShowEvent(const Event &Ev, const Directx::Event_t &EvDx);
+  void debugShowAcftName(const char *szValue);
 
 
 protected:

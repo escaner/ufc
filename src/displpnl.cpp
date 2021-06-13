@@ -1367,6 +1367,20 @@ void DisplPnl::debugShowEvent(const Event &Ev, const Directx::Event_t &Dx)
 
 
 /*
+ *   Displays the name of the new module selected in DCS.
+ *  Parameters:
+ *  * szValue: the name of the new module.
+ */
+void DisplPnl::debugShowAcftName(const char *szValue)
+{
+  _Lcd.setCursor(0, _Status.Debug.Line % LCD_ROWS);
+  _Lcd.write(szValue);
+
+  _Status.Debug.Line++;
+}
+
+
+/*
  *   Shows an error message in the display. PROGMEM friendly version.
  *  Parameters:
  *  * pMsg: string with the error message.
