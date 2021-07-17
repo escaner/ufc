@@ -133,11 +133,14 @@ protected:
   static const char _LINE_ENC[] PROGMEM;
 
   static const uint8_t _LCD_CHAR_UPDOWN[] PROGMEM;
+  static const uint8_t _LCD_CHAR_DTRIANGLE[] PROGMEM;
   static const uint8_t _LCD_CHAR_DELTA[] PROGMEM;
   static const uint8_t _LCD_CHAR_RHO[] PROGMEM;
   static const char _LCD_CHAR_UPDOWN_ID = 1;
-  static const char _LCD_CHAR_DELTA_ID = 2;
-  static const char _LCD_CHAR_RHO_ID = 3;
+  static const char _LCD_CHAR_DTRIANGLE_ID = 2;
+  static const char _LCD_CHAR_DELTA_ID = 3;
+  static const char _LCD_CHAR_RHO_ID = 4;
+  static const char _FA18C_CHAR_REPLACEMENT[][2];
   static const char _F16C_CHAR_REPLACEMENT[][2];
 
   static const char _LCD_SEPARATOR_CHAR = '|';
@@ -180,6 +183,8 @@ protected:
     uint8_t Size);
   void _f16DedUpdateScratchpad(uint8_t Line, const char *szDedText);
   void _f16cDedClearArrows(uint8_t Line);
+  void _fa18ComWrite(const char *szValue);
+  char _fa18cReplaceComChar(char ComChar);
   void _fa18cFuelWriteSuffix(bool Down, bool SetCursor);
   inline void _m2000cSetButtonLt(uint8_t LcdRow, uint8_t LcdCol, bool Set);
   inline void _m2000cSetPcnLt(uint8_t LcdRow, uint8_t LcdCol, bool Set,

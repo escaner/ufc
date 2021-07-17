@@ -22,6 +22,19 @@ const uint8_t DisplPnl::_LCD_CHAR_UPDOWN[] PROGMEM =
   0b00100
 };
 
+// Custom character with an empty down triangle
+const uint8_t DisplPnl::_LCD_CHAR_DTRIANGLE[] PROGMEM =
+{
+  0b11111,
+  0b10001,
+  0b10001,
+  0b01010,
+  0b01010,
+  0b00100,
+  0b00100,
+  0b00000
+};
+
 // Custom character with a capital delta letter
 const uint8_t DisplPnl::_LCD_CHAR_DELTA[] PROGMEM =
 {
@@ -46,6 +59,13 @@ const uint8_t DisplPnl::_LCD_CHAR_RHO[] PROGMEM =
   0b10001,
   0b01110,
   0b00000
+};
+
+
+// Some chars from the FA-18C COM need to be replaced for correct visualization
+const char DisplPnl::_FA18C_CHAR_REPLACEMENT[][2] =
+{
+  { 'd', _LCD_CHAR_DTRIANGLE_ID }
 };
 
 // Some chars from the F-16C DED need to be replaced for correct visualization
@@ -886,6 +906,9 @@ void DisplPnl::fa18cStart()
   // Clear the display
   _Lcd.clear();
 
+  // Register custom LCD character
+  _Lcd.createChar(_LCD_CHAR_DTRIANGLE_ID, (PGM_P) _LCD_CHAR_DTRIANGLE);
+
   // Print the field separators
   _writeSeparators(_FA18C_SEPARATORS, Size);
 }
@@ -961,7 +984,7 @@ void DisplPnl::fa18cOptionStr(uint8_t Id, const char *szValue)
 void DisplPnl::fa18cCom1(const char *szValue)
 {
   _Lcd.setCursor(FA18C_COM1_COL, FA18C_COM_ROW);
-  _Lcd.write(szValue);
+  _fa18ComWrite(szValue);
 }
 
 
@@ -973,7 +996,7 @@ void DisplPnl::fa18cCom1(const char *szValue)
 void DisplPnl::fa18cCom2(const char *szValue)
 {
   _Lcd.setCursor(FA18C_COM2_COL, FA18C_COM_ROW);
-  _Lcd.write(szValue);
+  _fa18ComWrite(szValue);
 }
 
 
@@ -1573,6 +1596,51 @@ void DisplPnl::_f16cDedClearArrows(uint8_t Line)
     _Lcd.setCursor(F16C_VHF_COL, F16C_VHFTCN_ROW);
     _Lcd.write(' ');
     break;
+  }
+}
+
+
+/*
+ *   Replaces a special COM character with its corresponding graphic.
+ *  Parameters:
+ *  * cComChar: a maybe encoded COM character.
+ *  Returns: the translated character graphic corresponfing to the cComChar.
+ */
+char DisplPnl::_fa18cReplaceComChar(char ComChar)
+{
+  constexpr uint8_t Size =
+    sizeof _FA18C_CHAR_REPLACEMENT / sizeof _FA18C_CHAR_REPLACEMENT[0];
+  uint8_t Idx;
+
+  // Look for ComChar on the translation table
+  for (Idx = 0U; Idx < Size; Idx++)
+    if (ComChar == _FA18C_CHAR_REPLACEMENT[Idx][0])
+      // Found it! Return its replacemente character
+      return _FA18C_CHAR_REPLACEMENT[Idx][1];
+
+  // Default action: return the same character
+  return ComChar;
+}
+
+
+/*
+ *   Writes a Com string, replacing special characters.
+ *  Paramters:
+ *  * szValue: the string to be written.
+ */
+void DisplPnl::_fa18ComWrite(const char *szValue)
+{
+  const char *pChar;
+  char WriteChar;
+
+  // Copy chars until null char (end of string)
+  for (pChar=szValue; *pChar; pChar++)
+  {
+    // Replace char if matching an special one
+    WriteChar = _fa18cReplaceComChar(*pChar);
+
+    // Wirte current char into LCD
+    _Lcd.write(WriteChar);
   }
 }
 
