@@ -94,7 +94,7 @@ const char DisplPnl::_M2000C_PCNMODE_POS[_M2000C_PCNMODE_NUM_POS]
   [_M2000C_PCNMODE_POS_LN+1] PROGMEM =
   {
     "TR/VS", "D/RLT", "CP/PD", " ALT ", " L/G ", "RD/TD",
-    "\002L/\002G", "\002ALT ", " P/\003 ", " DEC ", "DV/FV"
+    "\003L/\003G", "\003ALT ", " P/\004 ", " DEC ", "DV/FV"
   };
 
 // Where to display separators {row, col} format

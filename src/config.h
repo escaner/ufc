@@ -31,13 +31,13 @@ constexpr uint8_t LCD_COLS = 20U;
 
 // Delay between DirectX events
 constexpr uint8_t DX_DELAY_PR = 5U;  // Delay press -> release (ms)
-constexpr uint8_t DX_DELAY_RP =  5U;  // Delay release -> press (ms)
+constexpr uint8_t DX_DELAY_RP = 5U;  // Delay release -> press (ms)
 // Special delays for other modes
 constexpr uint8_t F16C_ICP_DX_DELAY_PR = 80U;
 //constexpr uint8_t F16C_HDGCRS_DX_DELAY_PR = 50U;
 
-// Debounce time for keypads
-constexpr unsigned long KP_DEBOUNCE_TIME = 300UL;
+// Debounce time for keypads (us)
+constexpr unsigned long KP_DEBOUNCE_TIME = 600UL;
 
 
 #endif  // _CONFIG_H_
