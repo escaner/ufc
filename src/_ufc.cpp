@@ -43,7 +43,7 @@ static const uint8_t PIN_ENCODER[NUM_ENC][ENC_NUM_PINS] =
 static const uint8_t PIN_KP[NUM_KP] = { A1, A2, A3 };
 static const uint8_t PIN_LED[NUM_LED] = { 4, 5, A0 };
 // SDA: D2
-// MCL: D3
+// SCL: D3
 
 
 /** Keypad constants **/
