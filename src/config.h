@@ -37,7 +37,7 @@ constexpr uint8_t F16C_ICP_DX_DELAY_PR = 80U;
 //constexpr uint8_t F16C_HDGCRS_DX_DELAY_PR = 50U;
 
 // Debounce time for keypads (us)
-constexpr unsigned long KP_DEBOUNCE_TIME = 600UL;
+constexpr unsigned long KP_DEBOUNCE_TIME = 800UL;
 
 
 #endif  // _CONFIG_H_
