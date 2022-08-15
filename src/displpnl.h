@@ -170,6 +170,8 @@ protected:
   static const char
     _M2000C_PCNMODE_POS[_M2000C_PCNMODE_NUM_POS][_M2000C_PCNMODE_POS_LN+1]
     PROGMEM;
+  static const char _M2000C_MINUS_PLUS[] PROGMEM;
+  static const char _M2000C_PLUS_MINUS[] PROGMEM;
 
 
   /*********************/

@@ -97,6 +97,10 @@ const char DisplPnl::_M2000C_PCNMODE_POS[_M2000C_PCNMODE_NUM_POS]
     "\003L/\003G", "\003ALT ", " P/\004 ", " DEC ", "DV/FV"
   };
 
+const char DisplPnl::_M2000C_MINUS_PLUS[] PROGMEM = "-+";
+const char DisplPnl::_M2000C_PLUS_MINUS[] PROGMEM = "+-";
+
+
 // Where to display separators {row, col} format
 const uint8_t DisplPnl::_A10C_SEPARATORS[][_CRD_DIM] PROGMEM =
 {
@@ -1115,13 +1119,18 @@ void DisplPnl::m2000cStart()
 
 /*
  *   Updates M2000C PCN Pre-Latitude chars.
+ *  When the string is "+-", swap it to "-+" for better legibility in UFC.
  *  Parameters:
  *  * szValue: string with the new value to display.
  */
 void DisplPnl::m2000cPcnDigLeft(const char *szValue)
 {
   _Lcd.setCursor(M2000C_PCNDIGL_COL, M2000C_PCNLR_ROW);
-  _Lcd.write(szValue);
+  if (!strcmp_P(szValue, _M2000C_PLUS_MINUS))
+    // Swap "+-" to "-+"
+    _Lcd.print((const __FlashStringHelper *) _M2000C_MINUS_PLUS);
+  else
+    _Lcd.write(szValue);
 }
 
 
@@ -1139,13 +1148,20 @@ void DisplPnl::m2000cPcnLeft(const char *szValue)
 
 /*
  *   Updates M2000C PCN Pre-Longitude chars.
+ *  When the string is "+-", swap it to "-+" for better legibility in UFC.
  *  Parameters:
  *  * szValue: string with the new value to display.
  */
 void DisplPnl::m2000cPcnDigRight(const char *szValue)
 {
+  const char *Str;
+
   _Lcd.setCursor(M2000C_PCNDIGR_COL, M2000C_PCNLR_ROW);
-  _Lcd.write(szValue);
+  if (!strcmp_P(szValue, _M2000C_PLUS_MINUS))
+    // Swap "+-" to "-+"
+    _Lcd.print((const __FlashStringHelper *) _M2000C_MINUS_PLUS);
+  else
+    _Lcd.write(szValue);
 }
 
 
