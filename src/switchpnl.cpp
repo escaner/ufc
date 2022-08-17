@@ -9,9 +9,9 @@
 const int16_t SwitchPnl::_KP0_KEY_RNG[KP0_NUM_KEYS][2] =
 {
   { 1018, 1023 },  // 1023 A/P
-  {  924,  934 },  //  929 TCN
-  {  846,  856 },  //  851 ILS
-  {  780,  790 },  //  785 ON
+  {  925,  935 },  //  930 TCN
+  {  847,  857 },  //  852 ILS
+  {  781,  791 },  //  786 ON
   {  669,  679 },  //  674 3
   {  627,  637 },  //  632 6
   {  590,  600 },  //  595 9
@@ -22,8 +22,8 @@ const int16_t SwitchPnl::_KP0_KEY_RNG[KP0_NUM_KEYS][2] =
   {  433,  443 },  //  438 0
   {  396,  406 },  //  401 1
   {  318,  328 },  //  322 4
-  {  265,  275 },  //  270 7
-  {  227,  237 }   //  232 CLR
+  {  264,  274 },  //  269 7
+  {  226,  236 }   //  231 CLR
 };
 
 // KP1: analog value range (min, max) for each button in matrix; range [0, 1023]
@@ -34,7 +34,7 @@ const int16_t SwitchPnl::_KP1_KEY_RNG[KP1_NUM_KEYS][2] =
   {  845,  855 },  //  850 COM1
   {  766,  776 },  //  771 Left LSK2
   {  711,  721 },  //  716 CRS Left
-  {  663,  673 },  //  668 HDG Right
+  {  664,  674 },  //  669 HDG Right
   {  613,  623 },  //  618 Left LSK3
   {  577,  587 },  //  582 COM2
   {  545,  555 },  //  550 HDG Left
@@ -46,17 +46,17 @@ const int16_t SwitchPnl::_KP1_KEY_RNG[KP1_NUM_KEYS][2] =
 const int16_t SwitchPnl::_KP2_KEY_RNG[KP2_NUM_KEYS][2] =
 {
   { 1018, 1023 },  // 1023 Right LSK1
-  {  923,  933 },  //  928 Encoder left (AMPCD OBS RNG)
+  {  924,  934 },  //  929 Encoder left (AMPCD OBS RNG)
   {  845,  855 },  //  850 Encoder right (AMPCD OBS SEQ)
   {  766,  776 },  //  771 Right LSK2
   {  711,  721 },  //  716 Button (AMPCD OBS TCN)
   {  663,  673 },  //  668 Button (AMPCD OBS AUTO)
   {  613,  623 },  //  618 Right LSK3
-  {  577,  587 },  //  582 Button (AMPCD OBS TCN)
+  {  576,  586 },  //  581 Button (AMPCD OBS TCN)
   {  545,  555 },  //  550 Button (AMPCD OBS WPT)
-  {  512,  522 },  //  517 Right LSK4
+  {  511,  521 },  //  516 Right LSK4
   {  486,  496 },  //  491 Button (AMPCD OBS MK)
-  {  464,  474 }   //  469 Button (AMPCD OBS WPDSG)
+  {  463,  473 }   //  468 Button (AMPCD OBS WPDSG)
 };
 
 // Label to access all KP*_NUM_KEYS through indexes
