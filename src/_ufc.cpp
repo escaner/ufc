@@ -133,36 +133,39 @@ constexpr unsigned int A10C_GUNRDYLT_MASK = 0x8000;
 constexpr unsigned char A10C_GUNRDYLT_SHIFT = 15U;
 
 // F-16C
-constexpr unsigned int F16C_DED_SZ = 25U;
-constexpr unsigned int F16C_DEDLINE1_ADDR = 0x44fc;
-constexpr unsigned int F16C_DEDLINE2_ADDR = 0x4516;
-constexpr unsigned int F16C_DEDLINE3_ADDR = 0x4530;
-constexpr unsigned int F16C_DEDLINE4_ADDR = 0x454a;
-constexpr unsigned int F16C_DEDLINE5_ADDR = 0x4564;
+constexpr unsigned int F16C_DED_SZ = 29U;
+constexpr unsigned int F16C_DEDLINE1_ADDR = 0x4500;
+constexpr unsigned int F16C_DEDLINE2_ADDR = 0x451e;
+constexpr unsigned int F16C_DEDLINE3_ADDR = 0x453c;
+constexpr unsigned int F16C_DEDLINE4_ADDR = 0x455a;
+constexpr unsigned int F16C_DEDLINE5_ADDR = 0x4578;
 constexpr unsigned int F16C_FUELQTYKNOB_ADDR = 0x441e;
 constexpr unsigned int F16C_FUELQTYKNOB_MASK = 0x0007;
 constexpr unsigned char F16C_FUELQTYKNOB_SHIFT = 0U;
-constexpr unsigned int F16C_FUELQTYAL_ADDR = 0x44dc;
+constexpr unsigned int F16C_FUELQTYKNOBTST_ADDR = 0x441c;
+constexpr unsigned int F16C_FUELQTYKNOBTST_MASK = 0x4000;
+constexpr unsigned char F16C_FUELQTYKNOBTST_SHIFT = 14U;
+constexpr unsigned int F16C_FUELQTYAL_ADDR = 0x44e0;
 constexpr unsigned int F16C_FUELQTYAL_MASK = 0xffff;
 constexpr unsigned char F16C_FUELQTYAL_SHIFT = 0U;
-constexpr unsigned int F16C_FUELQTYFR_ADDR = 0x44de;
+constexpr unsigned int F16C_FUELQTYFR_ADDR = 0x44e2;
 constexpr unsigned int F16C_FUELQTYFR_MASK = 0xffff;
 constexpr unsigned char F16C_FUELQTYFR_SHIFT = 0U;
-constexpr unsigned int F16C_FUELTOT100_ADDR = 0x44e4;
+constexpr unsigned int F16C_FUELTOT100_ADDR = 0x44e8;
 constexpr unsigned int F16C_FUELTOT100_MASK = 0xffff;
 constexpr unsigned char F16C_FUELTOT100_SHIFT = 0U;
-constexpr unsigned int F16C_FUELTOT1K_ADDR = 0x44e2;
+constexpr unsigned int F16C_FUELTOT1K_ADDR = 0x44e6;
 constexpr unsigned int F16C_FUELTOT1K_MASK = 0xffff;
 constexpr unsigned char F16C_FUELTOT1K_SHIFT = 0U;
-constexpr unsigned int F16C_FUELTOT10K_ADDR = 0x44e0;
+constexpr unsigned int F16C_FUELTOT10K_ADDR = 0x44e4;
 constexpr unsigned int F16C_FUELTOT10K_MASK = 0xffff;
 constexpr unsigned char F16C_FUELTOT10K_SHIFT = 0U;
-constexpr unsigned int F16C_MASTERCAUTLT_ADDR = 0x4472;
-constexpr unsigned int F16C_MASTERCAUTLT_MASK = 0x0800;
-constexpr unsigned char F16C_MASTERCAUTLT_SHIFT = 11U;
+constexpr unsigned int F16C_MASTERCAUTLT_ADDR = 0x4476;
+constexpr unsigned int F16C_MASTERCAUTLT_MASK = 0x0080;
+constexpr unsigned char F16C_MASTERCAUTLT_SHIFT = 7U;
 constexpr unsigned int F16C_MASTERARMSW_ADDR = 0x4424;
-constexpr unsigned int F16C_MASTERARMSW_MASK = 0x0030;
-constexpr unsigned char F16C_MASTERARMSW_SHIFT = 4U;
+constexpr unsigned int F16C_MASTERARMSW_MASK = 0x0060;
+constexpr unsigned char F16C_MASTERARMSW_SHIFT = 5U;
 constexpr unsigned int F16C_STORESCFGSW_ADDR = 0x4400;
 constexpr unsigned int F16C_STORESCFGSW_MASK = 0x0080;
 constexpr unsigned char F16C_STORESCFGSW_SHIFT = 7U;
@@ -558,9 +561,19 @@ static void cbF16cDedLine5(char *szValue)
 }
 
 /*
- *   Callback to update F-16C Fuel quantity selecion knob position.
+ *   Callback to update F-16C Fuel quantity selecion knob position changed in
+ *  standard range.
  */
 static void cbF16cFuelQtySelKnob(unsigned int Value)
+{
+  DiPnl.f16cFuelQtySelKnob((uint8_t) Value + (uint8_t) 1);
+}
+
+/*
+ *   Callback to update F-16C Fuel quantity selecion knob position changed in
+ *  test range.
+ */
+static void cbF16cFuelQtySelKnobTst(unsigned int Value)
 {
   DiPnl.f16cFuelQtySelKnob((uint8_t) Value);
 }
@@ -655,6 +668,8 @@ static void modeF16cInit()
   // Fuel
   new DcsBios::IntegerBuffer(F16C_FUELQTYKNOB_ADDR, F16C_FUELQTYKNOB_MASK,
       F16C_FUELQTYKNOB_SHIFT, cbF16cFuelQtySelKnob);
+  new DcsBios::IntegerBuffer(F16C_FUELQTYKNOBTST_ADDR, F16C_FUELQTYKNOBTST_MASK,
+      F16C_FUELQTYKNOBTST_SHIFT, cbF16cFuelQtySelKnobTst);
   new DcsBios::IntegerBuffer(F16C_FUELQTYAL_ADDR, F16C_FUELQTYAL_MASK,
       F16C_FUELQTYAL_SHIFT, cbF16cFuelQtyIndAl);
   new DcsBios::IntegerBuffer(F16C_FUELQTYFR_ADDR, F16C_FUELQTYFR_MASK,
@@ -1184,7 +1199,7 @@ static bool a10cProcessEv(const Event &Ev, const Directx::Event_t &EvDx)
  *   * EvDx: DirectX event to be sent (not used in this function)
  *  Returns:
  *  * true: when the Event was processed and a corresponding action was issued
- *  * false: nothing done, standard DX event should be issued 
+ *  * false: nothing done, standard DX event should be issued
  */
 #pragma GCC diagnostic push
 // Disable: warning: unused parameter '' [-Wunused-parameter]
@@ -1195,7 +1210,7 @@ static bool f16cProcessEv(const Event &Ev, const Directx::Event_t &EvDx)
   constexpr uint8_t MSG_POS = 5U;
   constexpr uint8_t ARG_POS = 0U;
   static char Msg[] = "EHSI_xxx_SET_KNB";
-  static char Arg[] = "x9";
+  static char Arg[] = "x2184";  // 65535 = 30º
   bool Processed = false;
   bool Send = false;
 

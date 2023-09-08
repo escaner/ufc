@@ -8,7 +8,7 @@
 // KP0: analog value range (min, max) for each button in matrix; range [0, 1023]
 const int16_t SwitchPnl::_KP0_KEY_RNG[KP0_NUM_KEYS][2] =
 {
-  { 1018, 1023 },  // 1023 A/P
+  { 1017, 1023 },  // 1023 A/P
   {  925,  935 },  //  930 TCN
   {  847,  857 },  //  852 ILS
   {  781,  791 },  //  786 ON
@@ -29,7 +29,7 @@ const int16_t SwitchPnl::_KP0_KEY_RNG[KP0_NUM_KEYS][2] =
 // KP1: analog value range (min, max) for each button in matrix; range [0, 1023]
 const int16_t SwitchPnl::_KP1_KEY_RNG[KP1_NUM_KEYS][2] =
 {
-  { 1018, 1023 },  // 1023 Left LSK1
+  { 1017, 1023 },  // 1023 Left LSK1
   {  924,  934 },  //  929 CRS Right 
   {  845,  855 },  //  850 COM1
   {  766,  776 },  //  771 Left LSK2
@@ -45,11 +45,11 @@ const int16_t SwitchPnl::_KP1_KEY_RNG[KP1_NUM_KEYS][2] =
 // KP2: analog value range (min, max) for each button in matrix; range [0, 1023]
 const int16_t SwitchPnl::_KP2_KEY_RNG[KP2_NUM_KEYS][2] =
 {
-  { 1018, 1023 },  // 1023 Right LSK1
-  {  924,  934 },  //  929 Encoder left (AMPCD OBS RNG)
-  {  845,  855 },  //  850 Encoder right (AMPCD OBS SEQ)
-  {  766,  776 },  //  771 Right LSK2
-  {  711,  721 },  //  716 Button (AMPCD OBS TCN)
+  { 1015, 1023 },  // 1023 Right LSK1
+  {  920,  934 },  //  929 Encoder left (AMPCD OBS RNG)
+  {  843,  855 },  //  850 Encoder right (AMPCD OBS SEQ)
+  {  764,  776 },  //  771 Right LSK2
+  {  709,  721 },  //  716 Button (AMPCD OBS TCN)
   {  663,  673 },  //  668 Button (AMPCD OBS AUTO)
   {  613,  623 },  //  618 Right LSK3
   {  576,  586 },  //  581 Button (AMPCD OBS TCN)
