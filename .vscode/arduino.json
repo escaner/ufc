@@ -2,7 +2,7 @@
     "board": "SparkFun:avr:ufc",
     "configuration": "cpu=16MHzatmega32U4",
     "sketch": "src/ufc.ino",
-    "output": "../build-ufc",
+    "output": "../build-ufcfp",
     "port": "/dev/ttyACM0",
     "buildPreferences": [
         [ "compiler.cpp.extra_flags", "-DNDEBUG -D__ASSERT_USE_STDERR" ]

@@ -80,193 +80,191 @@ static const char _BIOS_ARG_INC_CHAR = '+';
 static const char _BIOS_ARG_DEC_CHAR = '-';
 
 constexpr uint8_t DCS_ACFTNAME_SZ = 24U;
-constexpr unsigned int DCS_ACFTNAME_ADDR = 0x0000;
+constexpr unsigned int DCS_ACFTNAME_ADDR = MetadataStart_ACFT_NAME_ADDR;
 
 // A-10C
 constexpr uint8_t A10C_CDUSP_SZ = 24U;
-constexpr unsigned int A10C_CDUSP_ADDR = 0x1298;
+constexpr unsigned int A10C_CDUSP_ADDR = A_10C_CDU_LINE9_ADDR;
 constexpr uint8_t A10C_UHFFREQ_SZ = 7U;
-constexpr unsigned int A10C_UHFFREQ_ADDR = 0x1180;
-constexpr unsigned int A10C_UHFMODE_ADDR = 0x117c;
+constexpr unsigned int A10C_UHFFREQ_ADDR = A_10C_UHF_FREQUENCY_ADDR;
+constexpr unsigned int A10C_UHFMODE_ADDR = A_10C_UHF_MODE_ADDR;
 constexpr unsigned int A10C_UHFMODE_MASK = 0x0003;
 constexpr unsigned int A10C_UHFMODE_SHIFT = 0U;
 constexpr uint8_t A10C_UHFPSET_SZ = 2U;
-constexpr unsigned int A10C_UHFPSET_ADDR = 0x1188;
-constexpr uint8_t A10C_VAMFREQ_SZ = 7U;
-constexpr unsigned int A10C_VAMFREQ_ADDR = 0x12de;
-constexpr unsigned int A10C_VAMMODE_ADDR = 0x1186;
-constexpr unsigned int A10C_VAMMODE_MASK = 0xc00;
-constexpr unsigned int A10C_VAMMODE_SHIFT = 10U;
+constexpr unsigned int A10C_UHFPSET_ADDR = A_10C_UHF_PRESET_ADDR;
+constexpr uint8_t A10C_VAMFREQ_SZ = 7U; // %%%%
+constexpr unsigned int A10C_VAMFREQ_ADDR = A_10C_VHFAM_FREQ1_ADDR; // %%%%
+constexpr unsigned int A10C_VAMMODE_ADDR = A_10C_VHFAM_MODE_ADDR;
+constexpr unsigned int A10C_VAMMODE_MASK = 0x0300;
+constexpr unsigned int A10C_VAMMODE_SHIFT = 8U;
 constexpr uint8_t A10C_VAMPSETSW_SZ = 2U;
-constexpr unsigned int A10C_VAMPSETSW_ADDR = 0x118a;
-constexpr uint8_t A10C_VFMFREQ_SZ = 7U;
-constexpr unsigned int A10C_VFMFREQ_ADDR = 0x12e6;
-constexpr unsigned int A10C_VFMMODE_ADDR = 0x1194;
-constexpr unsigned int A10C_VFMMODE_MASK = 0x0180;
-constexpr unsigned int A10C_VFMMODE_SHIFT = 7U;
+constexpr unsigned int A10C_VAMPSETSW_ADDR = A_10C_VHFAM_PRESET_ADDR;
+constexpr uint8_t A10C_VFMFREQ_SZ = 7U; // %%%%
+constexpr unsigned int A10C_VFMFREQ_ADDR = A_10C_VHFFM_FREQ1_ADDR; // %%%%
+constexpr unsigned int A10C_VFMMODE_ADDR = A_10C_VHFFM_MODE_ADDR;
+constexpr unsigned int A10C_VFMMODE_MASK = 0x0060;
+constexpr unsigned int A10C_VFMMODE_SHIFT = 5U;
 constexpr uint8_t A10C_VFMPSETSW_SZ = 2U;
-constexpr unsigned int A10C_VFMPSETSW_ADDR = 0x1196;
+constexpr unsigned int A10C_VFMPSETSW_ADDR = A_10C_VHFFM_PRESET_ADDR;
 constexpr uint8_t A10C_TCNCHNL_SZ = 4U;
-constexpr unsigned int A10C_TCNCHNL_ADDR = 0x1162;
-constexpr unsigned int A10C_TCNMODE_ADDR = 0x1168;
+constexpr unsigned int A10C_TCNCHNL_ADDR = A_10C_TACAN_CHANNEL_ADDR;
+constexpr unsigned int A10C_TCNMODE_ADDR = A_10C_TACAN_MODE_ADDR;
 constexpr unsigned int A10C_TCNMODE_MASK = 0x000e;
 constexpr unsigned int A10C_TCNMODE_SHIFT = 1U;
 constexpr uint8_t A10C_ILSFREQ_SZ = 6U;
-constexpr unsigned int A10C_ILSFREQ_ADDR = 0x12d8;
-constexpr unsigned int A10C_HSIHDG_ADDR = 0x104c;
+constexpr unsigned int A10C_ILSFREQ_ADDR = A_10C_ILS_FREQUENCY_S_ADDR;
+constexpr unsigned int A10C_HSIHDG_ADDR = A_10C_HSI_HDG_ADDR;
 constexpr unsigned int A10C_HSIHDG_MASK = 0xffff;
 constexpr unsigned char A10C_HSIHDG_SHIFT = 0U;
-constexpr unsigned int A10C_HSIHDGBUG_ADDR = 0x1052;
+constexpr unsigned int A10C_HSIHDGBUG_ADDR = A_10C_HSI_HDG_BUG_ADDR;
 constexpr unsigned int A10C_HSIHDGBUG_MASK = 0xffff;
 constexpr unsigned char A10C_HSIHDGBUG_SHIFT = 0U;
-constexpr unsigned int A10C_HSICRS_ADDR = 0x1054;
+constexpr unsigned int A10C_HSICRS_ADDR = A_10C_HSI_CRS_ADDR;
 constexpr unsigned int A10C_HSICRS_MASK = 0xffff;
 constexpr unsigned char A10C_HSICRS_SHIFT = 0U;
-constexpr unsigned int A10C_MASTERCAUTLT_ADDR = 0x1012;
+constexpr unsigned int A10C_MASTERCAUTLT_ADDR = A_10C_MASTER_CAUTION_ADDR;
 constexpr unsigned int A10C_MASTERCAUTLT_MASK = 0x0800;
 constexpr unsigned char A10C_MASTERCAUTLT_SHIFT = 11U;
-constexpr unsigned int A10C_MASTERARMSW_ADDR = 0x10e8;
+constexpr unsigned int A10C_MASTERARMSW_ADDR = A_10C_AHCP_MASTER_ARM_ADDR;
 constexpr unsigned int A10C_MASTERARMSW_MASK = 0x000c;
 constexpr unsigned char A10C_MASTERARMSW_SHIFT = 2U;
-constexpr unsigned int A10C_GUNRDYLT_ADDR = 0x1026;
+constexpr unsigned int A10C_GUNRDYLT_ADDR = A_10C_GUN_READY_ADDR;
 constexpr unsigned int A10C_GUNRDYLT_MASK = 0x8000;
 constexpr unsigned char A10C_GUNRDYLT_SHIFT = 15U;
 
 // F-16C
 constexpr unsigned int F16C_DED_SZ = 29U;
-constexpr unsigned int F16C_DEDLINE1_ADDR = 0x4500;
-constexpr unsigned int F16C_DEDLINE2_ADDR = 0x451e;
-constexpr unsigned int F16C_DEDLINE3_ADDR = 0x453c;
-constexpr unsigned int F16C_DEDLINE4_ADDR = 0x455a;
-constexpr unsigned int F16C_DEDLINE5_ADDR = 0x4578;
-constexpr unsigned int F16C_FUELQTYKNOB_ADDR = 0x441e;
+constexpr unsigned int F16C_DEDLINE1_ADDR = F_16C_50_DED_LINE_1_ADDR;
+constexpr unsigned int F16C_DEDLINE2_ADDR = F_16C_50_DED_LINE_2_ADDR;
+constexpr unsigned int F16C_DEDLINE3_ADDR = F_16C_50_DED_LINE_3_ADDR;
+constexpr unsigned int F16C_DEDLINE4_ADDR = F_16C_50_DED_LINE_4_ADDR;
+constexpr unsigned int F16C_DEDLINE5_ADDR = F_16C_50_DED_LINE_5_ADDR;
+constexpr unsigned int F16C_FUELQTYKNOB_ADDR = F_16C_50_FUEL_QTY_SEL_KNB_ADDR;
 constexpr unsigned int F16C_FUELQTYKNOB_MASK = 0x0007;
 constexpr unsigned char F16C_FUELQTYKNOB_SHIFT = 0U;
-constexpr unsigned int F16C_FUELQTYKNOBTST_ADDR = 0x441c;
-constexpr unsigned int F16C_FUELQTYKNOBTST_MASK = 0x4000;
-constexpr unsigned char F16C_FUELQTYKNOBTST_SHIFT = 14U;
-constexpr unsigned int F16C_FUELQTYAL_ADDR = 0x44e0;
+constexpr unsigned int F16C_FUELQTYKNOBTST_SZ = 1U;
+constexpr unsigned int F16C_FUELQTYKNOBTST_ADDR = F_16C_50_FUEL_QTY_SEL_T_KNB_ADDR;
+constexpr unsigned int F16C_FUELQTYAL_ADDR = F_16C_50_FUEL_AL_ADDR;
 constexpr unsigned int F16C_FUELQTYAL_MASK = 0xffff;
 constexpr unsigned char F16C_FUELQTYAL_SHIFT = 0U;
-constexpr unsigned int F16C_FUELQTYFR_ADDR = 0x44e2;
+constexpr unsigned int F16C_FUELQTYFR_ADDR = F_16C_50_FUEL_FR_ADDR;
 constexpr unsigned int F16C_FUELQTYFR_MASK = 0xffff;
 constexpr unsigned char F16C_FUELQTYFR_SHIFT = 0U;
-constexpr unsigned int F16C_FUELTOT100_ADDR = 0x44e8;
+constexpr unsigned int F16C_FUELTOT100_ADDR = F_16C_50_FUELTOTALIZER_100_ADDR;
 constexpr unsigned int F16C_FUELTOT100_MASK = 0xffff;
 constexpr unsigned char F16C_FUELTOT100_SHIFT = 0U;
-constexpr unsigned int F16C_FUELTOT1K_ADDR = 0x44e6;
+constexpr unsigned int F16C_FUELTOT1K_ADDR = F_16C_50_FUELTOTALIZER_1K_ADDR;
 constexpr unsigned int F16C_FUELTOT1K_MASK = 0xffff;
 constexpr unsigned char F16C_FUELTOT1K_SHIFT = 0U;
-constexpr unsigned int F16C_FUELTOT10K_ADDR = 0x44e4;
+constexpr unsigned int F16C_FUELTOT10K_ADDR = F_16C_50_FUELTOTALIZER_10K_ADDR;
 constexpr unsigned int F16C_FUELTOT10K_MASK = 0xffff;
 constexpr unsigned char F16C_FUELTOT10K_SHIFT = 0U;
-constexpr unsigned int F16C_MASTERCAUTLT_ADDR = 0x4476;
-constexpr unsigned int F16C_MASTERCAUTLT_MASK = 0x0080;
-constexpr unsigned char F16C_MASTERCAUTLT_SHIFT = 7U;
-constexpr unsigned int F16C_MASTERARMSW_ADDR = 0x4424;
-constexpr unsigned int F16C_MASTERARMSW_MASK = 0x0060;
-constexpr unsigned char F16C_MASTERARMSW_SHIFT = 5U;
-constexpr unsigned int F16C_STORESCFGSW_ADDR = 0x4400;
+constexpr unsigned int F16C_MASTERCAUTLT_ADDR = F_16C_50_LIGHT_MASTER_CAUTION_ADDR;
+constexpr unsigned int F16C_MASTERCAUTLT_MASK = 0x0001;
+constexpr unsigned char F16C_MASTERCAUTLT_SHIFT = 0U;
+constexpr unsigned int F16C_MASTERARMSW_ADDR = F_16C_50_MASTER_ARM_SW_ADDR;
+constexpr unsigned int F16C_MASTERARMSW_MASK = 0xc000;
+constexpr unsigned char F16C_MASTERARMSW_SHIFT = 14U;
+constexpr unsigned int F16C_STORESCFGSW_ADDR = F_16C_50_STORES_CONFIG_SW_ADDR;
 constexpr unsigned int F16C_STORESCFGSW_MASK = 0x0080;
 constexpr unsigned char F16C_STORESCFGSW_SHIFT = 7U;
 
 // F/A-18C
 constexpr uint8_t FA18C_UFCSPSTR_SZ = 2U;
 constexpr uint8_t FA18C_UFCSPNUM_SZ = 8U;
-constexpr unsigned int FA18C_UFCSPSTR1_ADDR = 0x744e;
-constexpr unsigned int FA18C_UFCSPSTR2_ADDR = 0x7450;
-constexpr unsigned int FA18C_UFCSPNUM_ADDR = 0x7446;
+constexpr unsigned int FA18C_UFCSPSTR1_ADDR = FA_18C_hornet_UFC_SCRATCHPAD_STRING_1_DISPLAY_ADDR;
+constexpr unsigned int FA18C_UFCSPSTR2_ADDR = FA_18C_hornet_UFC_SCRATCHPAD_STRING_2_DISPLAY_ADDR;
+constexpr unsigned int FA18C_UFCSPNUM_ADDR = FA_18C_hornet_UFC_SCRATCHPAD_NUMBER_DISPLAY_ADDR;
 constexpr uint8_t FA18C_UFCOPCUE_SZ = 1U;
-constexpr unsigned int FA18C_UFCOPCUE1_ADDR = 0x7428;
-constexpr unsigned int FA18C_UFCOPCUE2_ADDR = 0x742a;
-constexpr unsigned int FA18C_UFCOPCUE3_ADDR = 0x742c;
-constexpr unsigned int FA18C_UFCOPCUE4_ADDR = 0x742e;
-constexpr unsigned int FA18C_UFCOPCUE5_ADDR = 0x7430;
+constexpr unsigned int FA18C_UFCOPCUE1_ADDR = FA_18C_hornet_UFC_OPTION_CUEING_1_ADDR;
+constexpr unsigned int FA18C_UFCOPCUE2_ADDR = FA_18C_hornet_UFC_OPTION_CUEING_2_ADDR;
+constexpr unsigned int FA18C_UFCOPCUE3_ADDR = FA_18C_hornet_UFC_OPTION_CUEING_3_ADDR;
+constexpr unsigned int FA18C_UFCOPCUE4_ADDR = FA_18C_hornet_UFC_OPTION_CUEING_4_ADDR;
+constexpr unsigned int FA18C_UFCOPCUE5_ADDR = FA_18C_hornet_UFC_OPTION_CUEING_5_ADDR;
 constexpr uint8_t FA18C_UFCOPSTR_SZ = 4U;
-constexpr unsigned int FA18C_UFCOPSTR1_ADDR = 0x7432;
-constexpr unsigned int FA18C_UFCOPSTR2_ADDR = 0x7436;
-constexpr unsigned int FA18C_UFCOPSTR3_ADDR = 0x743a;
-constexpr unsigned int FA18C_UFCOPSTR4_ADDR = 0x743e;
-constexpr unsigned int FA18C_UFCOPSTR5_ADDR = 0x7442;
+constexpr unsigned int FA18C_UFCOPSTR1_ADDR = FA_18C_hornet_UFC_OPTION_DISPLAY_1_ADDR;
+constexpr unsigned int FA18C_UFCOPSTR2_ADDR = FA_18C_hornet_UFC_OPTION_DISPLAY_2_ADDR;
+constexpr unsigned int FA18C_UFCOPSTR3_ADDR = FA_18C_hornet_UFC_OPTION_DISPLAY_3_ADDR;
+constexpr unsigned int FA18C_UFCOPSTR4_ADDR = FA_18C_hornet_UFC_OPTION_DISPLAY_4_ADDR;
+constexpr unsigned int FA18C_UFCOPSTR5_ADDR = FA_18C_hornet_UFC_OPTION_DISPLAY_5_ADDR;
 constexpr uint8_t FA18C_UFCCOM_SZ = 2U;
-constexpr unsigned int FA18C_UFCCOM1_ADDR = 0x7424;
-constexpr unsigned int FA18C_UFCCOM2_ADDR = 0x7426;
+constexpr unsigned int FA18C_UFCCOM1_ADDR = FA_18C_hornet_UFC_COMM1_DISPLAY_ADDR;
+constexpr unsigned int FA18C_UFCCOM2_ADDR = FA_18C_hornet_UFC_COMM2_DISPLAY_ADDR;
 constexpr uint8_t FA18C_IFEIFUEL_SZ = 6U;
-constexpr unsigned int FA18C_IFEIFUELUP_ADDR = 0x748a;
-constexpr unsigned int FA18C_IFEIFUELDN_ADDR = 0x7484;
+constexpr unsigned int FA18C_IFEIFUELUP_ADDR = FA_18C_hornet_IFEI_FUEL_UP_ADDR;
+constexpr unsigned int FA18C_IFEIFUELDN_ADDR = FA_18C_hornet_IFEI_FUEL_DOWN_ADDR;
 constexpr uint8_t FA18C_IFEIBINGO_SZ = 5U;
-constexpr unsigned int FA18C_IFEIBINGO_ADDR = 0x7462;
+constexpr unsigned int FA18C_IFEIBINGO_ADDR = FA_18C_hornet_IFEI_BINGO_ADDR;
 constexpr uint8_t FA18C_IFEIBINGOT_SZ = 1U;
-constexpr unsigned int FA18C_IFEIBINGOT_ADDR = 0x74b6;
-constexpr unsigned int FA18C_MASTERCAUTLT_ADDR = 0x7408;
+constexpr unsigned int FA18C_IFEIBINGOT_ADDR = FA_18C_hornet_IFEI_BINGO_TEXTURE_ADDR;
+constexpr unsigned int FA18C_MASTERCAUTLT_ADDR = FA_18C_hornet_MASTER_CAUTION_LT_ADDR;
 constexpr unsigned int FA18C_MASTERCAUTLT_MASK = 0x0200;
 constexpr unsigned char FA18C_MASTERCAUTLT_SHIFT = 9U;
-constexpr unsigned int FA18C_MASTERARMSW_ADDR = 0x740c;
+constexpr unsigned int FA18C_MASTERARMSW_ADDR = FA_18C_hornet_MASTER_ARM_SW_ADDR;
 constexpr unsigned int FA18C_MASTERARMSW_MASK = 0x2000;
 constexpr unsigned char FA18C_MASTERARMSW_SHIFT = 13U;
-constexpr unsigned int FA18C_LTDRSW_ADDR = 0x74c4;
-constexpr unsigned int FA18C_LTDRSW_MASK = 0x0100;
-constexpr unsigned char FA18C_LTDRSW_SHIFT = 8U;
+constexpr unsigned int FA18C_LTDRSW_ADDR = FA_18C_hornet_LTD_R_SW_ADDR;
+constexpr unsigned int FA18C_LTDRSW_MASK = 0x4000;
+constexpr unsigned char FA18C_LTDRSW_SHIFT = 14U;
 
 // M2000C
-
-constexpr unsigned int M2000C_PCNLEFT_ADDR = 0x72ec;
-constexpr uint8_t M2000C_PCNLEFT_SZ = 8U;
-constexpr unsigned int M2000C_PCNRIGHT_ADDR = 0x72f6;
-constexpr uint8_t M2000C_PCNRIGHT_SZ = 9U;
-constexpr unsigned int M2000C_PCNDLEFT_ADDR = 0x7304;
-constexpr uint8_t M2000C_PCNDLEFT_SZ = 2U;
-constexpr unsigned int M2000C_PCNDRIGHT_ADDR = 0x7306;
-constexpr uint8_t M2000C_PCNDRIGHT_SZ = 2U;
-constexpr unsigned int M2000C_PCNDISPPREP_ADDR = 0x72f4;
-constexpr uint8_t M2000C_PCNDISPPREP_SZ = 2U;
-constexpr unsigned int M2000C_PCNDISPDEST_ADDR = 0x72ea;
-constexpr uint8_t M2000C_PCNDISPDEST_SZ = 2U;
-constexpr unsigned int M2000C_PCNMODEROT_ADDR = 0x72ea;
-constexpr unsigned int M2000C_PCNSELROT_ADDR = 0x72c4;
-constexpr unsigned int M2000C_PCNSELROT_MASK = 0xf000;
-constexpr unsigned int M2000C_PCNSELROT_SHIFT = 12U;
-constexpr unsigned int M2000C_PCNBTNLT_ADDR = 0x72d4;
-constexpr unsigned int M2000C_PCNPREPBTNLT_MASK = 0x0100;
-constexpr unsigned int M2000C_PCNDESTBTNLT_MASK = 0x0200;
-constexpr unsigned int M2000C_PCNBADBTNLT_MASK = 0x0400;
-constexpr unsigned int M2000C_PCNRECBTNLT_MASK = 0x0800;
-constexpr unsigned int M2000C_PCNEFFBTNLT_MASK = 0x1000;
-constexpr unsigned int M2000C_PCNINSBTNLT_MASK = 0x2000;
-constexpr unsigned int M2000C_PCNVALBTNLT_MASK = 0x4000;
-constexpr unsigned int M2000C_PCNMRCBTNLT_MASK = 0x8000;
-constexpr unsigned char M2000C_PCNPREPBTNLT_SHIFT = 8U;
-constexpr unsigned char M2000C_PCNDESTBTNLT_SHIFT = 9U;
-constexpr unsigned char M2000C_PCNBADBTNLT_SHIFT = 10U;
-constexpr unsigned char M2000C_PCNRECBTNLT_SHIFT = 11U;
-constexpr unsigned char M2000C_PCNEFFBTNLT_SHIFT = 12U;
-constexpr unsigned char M2000C_PCNINSBTNLT_SHIFT = 13U;
-constexpr unsigned char M2000C_PCNVALBTNLT_SHIFT = 14U;
-constexpr unsigned char M2000C_PCNMRCBTNLT_SHIFT = 15U;
-constexpr unsigned int M2000C_PCNPANLT_ADDR = 0x72d0;
-constexpr unsigned int M2000C_PCNPRETPANLT_MASK = 0x0400;
-constexpr unsigned int M2000C_PCNALNPANLT_MASK = 0x0800;
-constexpr unsigned int M2000C_PCNMIPPANLT_MASK = 0x1000;
-constexpr unsigned int M2000C_PCNNDEGPANLT_MASK = 0x2000;
-constexpr unsigned int M2000C_PCNSECPANLT_MASK = 0x4000;
-constexpr unsigned int M2000C_PCNUNIPANLT_MASK = 0x8000;
-constexpr unsigned char M2000C_PCNPRETPANLT_SHIFT = 10U;
-constexpr unsigned char M2000C_PCNALNPANLT_SHIFT = 11U;
-constexpr unsigned char M2000C_PCNMIPPANLT_SHIFT = 12U;
-constexpr unsigned char M2000C_PCNNDEGPANLT_SHIFT = 13U;
-constexpr unsigned char M2000C_PCNSECPANLT_SHIFT = 14U;
-constexpr unsigned char M2000C_PCNUNIPANLT_SHIFT = 15U;
-constexpr unsigned int M2000C_PCNMEMLT_ADDR = 0x72d8;
-constexpr unsigned int M2000C_PCNM91MEMLT_MASK = 0x0200;
-constexpr unsigned int M2000C_PCNM92MEMLT_MASK = 0x0400;
-constexpr unsigned int M2000C_PCNM93MEMLT_MASK = 0x0800;
-constexpr unsigned char M2000C_PCNM91MEMLT_SHIFT = 9U;
-constexpr unsigned char M2000C_PCNM92MEMLT_SHIFT = 10U;
-constexpr unsigned char M2000C_PCNM93MEMLT_SHIFT = 11U;
-constexpr unsigned int M2000C_PANNELT_ADDR = 0x72aa;
-constexpr unsigned char M2000C_PANNELT_SHIFT = 11U;
-constexpr unsigned int M2000C_PANNEAMBERLT_MASK = 0x0800;
-constexpr unsigned int M2000C_PANNEREDLT_MASK = 0x1000;
+constexpr unsigned int M2000C_PCNLEFT_ADDR = M_2000C_PCN_DISP_L_ADDR;//0x72ec;
+constexpr uint8_t M2000C_PCNLEFT_SZ = 8U;//%%%% no aparece en json
+constexpr unsigned int M2000C_PCNRIGHT_ADDR = M_2000C_PCN_DISP_R_ADDR; //0x72f6;
+constexpr uint8_t M2000C_PCNRIGHT_SZ = 9U;//%%%% no aparece en json
+constexpr unsigned int M2000C_PCNDLEFT_ADDR = M_2000C_PCN_DIS_2DL_ADDR;
+constexpr uint8_t M2000C_PCNDLEFT_SZ = 2U;//
+constexpr unsigned int M2000C_PCNDRIGHT_ADDR = M_2000C_PCN_DIS_2DR_ADDR;
+constexpr uint8_t M2000C_PCNDRIGHT_SZ = 2U;//
+constexpr unsigned int M2000C_PCNDISPPREP_ADDR = M_2000C_PCN_DISP_PREP_ADDR;//0x72f4;
+constexpr uint8_t M2000C_PCNDISPPREP_SZ = 2U;// %%%% no aparece en json
+constexpr unsigned int M2000C_PCNDISPDEST_ADDR = M_2000C_PCN_DISP_DEST_ADDR;//0x72ea;
+constexpr uint8_t M2000C_PCNDISPDEST_SZ = 2U;// %%%% no aparece en json
+constexpr unsigned int M2000C_PCNSELROT_ADDR = M_2000C_INS_PARAM_SEL_ADDR;//0x72c4;
+constexpr unsigned int M2000C_PCNSELROT_MASK = 0x0078; //
+constexpr unsigned int M2000C_PCNSELROT_SHIFT = 3U;//
+constexpr unsigned int M2000C_PCNBTNLT_ADDR = M_2000C_INS_DEST_SW_LIGHT_ADDR;
+constexpr unsigned int M2000C_PCNUNIPANLT_MASK = 0x0100;
+constexpr unsigned int M2000C_PCNPREPBTNLT_MASK = 0x0200;
+constexpr unsigned int M2000C_PCNDESTBTNLT_MASK = 0x0400;
+constexpr unsigned int M2000C_PCNEFFBTNLT_MASK = 0x2000;
+constexpr unsigned int M2000C_PCNINSBTNLT_MASK = 0x4000;
+constexpr unsigned char M2000C_PCNUNIPANLT_SHIFT = 8U;
+constexpr unsigned char M2000C_PCNPREPBTNLT_SHIFT = 9U;
+constexpr unsigned char M2000C_PCNDESTBTNLT_SHIFT = 10U;
+constexpr unsigned char M2000C_PCNEFFBTNLT_SHIFT = 13U;
+constexpr unsigned char M2000C_PCNINSBTNLT_SHIFT = 14U;
+constexpr unsigned int M2000C_PCNBTNLT2_ADDR = M_2000C_PCN_BAD_SW_LIGHT2_ADDR;
+constexpr unsigned int M2000C_PCNBADBTNLT_MASK = 0x0800;
+constexpr unsigned int M2000C_PCNRECBTNLT_MASK = 0x1000;
+constexpr unsigned int M2000C_PCNVALBTNLT_MASK = 0x2000;
+constexpr unsigned int M2000C_PCNMRCBTNLT_MASK = 0x4000;
+constexpr unsigned char M2000C_PCNBADBTNLT_SHIFT = 11U;
+constexpr unsigned char M2000C_PCNRECBTNLT_SHIFT = 12U;
+constexpr unsigned char M2000C_PCNVALBTNLT_SHIFT = 13U;
+constexpr unsigned char M2000C_PCNMRCBTNLT_SHIFT = 14U;
+constexpr unsigned int M2000C_PCNPANLT_ADDR = M_2000C_PCN_ALN_ADDR;
+constexpr unsigned int M2000C_PCNPRETPANLT_MASK = 0x0800;
+constexpr unsigned int M2000C_PCNALNPANLT_MASK = 0x1000;
+constexpr unsigned int M2000C_PCNMIPPANLT_MASK = 0x2000;
+constexpr unsigned int M2000C_PCNNDEGPANLT_MASK = 0x4000;
+constexpr unsigned int M2000C_PCNSECPANLT_MASK = 0x8000;
+constexpr unsigned char M2000C_PCNPRETPANLT_SHIFT = 11U;
+constexpr unsigned char M2000C_PCNALNPANLT_SHIFT = 12U;
+constexpr unsigned char M2000C_PCNMIPPANLT_SHIFT = 13U;
+constexpr unsigned char M2000C_PCNNDEGPANLT_SHIFT = 14U;
+constexpr unsigned char M2000C_PCNSECPANLT_SHIFT = 15U;
+constexpr unsigned int M2000C_PCNMEMLT_ADDR = M_2000C_PCN_M91_LIGHT_ADDR;
+constexpr unsigned int M2000C_PCNM91MEMLT_MASK = 0x0400;
+constexpr unsigned int M2000C_PCNM92MEMLT_MASK = 0x0800;
+constexpr unsigned int M2000C_PCNM93MEMLT_MASK = 0x1000;
+constexpr unsigned char M2000C_PCNM91MEMLT_SHIFT = 10U;
+constexpr unsigned char M2000C_PCNM92MEMLT_SHIFT = 11U;
+constexpr unsigned char M2000C_PCNM93MEMLT_SHIFT = 12U;
+constexpr unsigned int M2000C_PANNELT_ADDR = M_2000C_MC_AMBRE_ADDR;
+constexpr unsigned char M2000C_PANNELT_SHIFT = 0U;
+constexpr unsigned int M2000C_PANNEAMBERLT_MASK = 0x0001;
+constexpr unsigned int M2000C_PANNEREDLT_MASK = 0x0002;
 
 
 /*************/
@@ -572,10 +570,18 @@ static void cbF16cFuelQtySelKnob(unsigned int Value)
 /*
  *   Callback to update F-16C Fuel quantity selecion knob position changed in
  *  test range.
+ *  Parameters:
+ *  * szValue: null terminated string with "0" for NORMAL and "1" for TEST.
  */
-static void cbF16cFuelQtySelKnobTst(unsigned int Value)
+static void cbF16cFuelQtySelKnobTst(char *szValue)
 {
-  DiPnl.f16cFuelQtySelKnob((uint8_t) Value);
+  uint8_t Test;  // 0: Normal, 1 Test
+
+  // Convert szValue from char to integer
+  Test = szValue[0] - '0';
+
+  // We need to invert the result value as the new parameter: 0 <-> 1
+  DiPnl.f16cFuelQtySelKnob(!Test);
 }
 
 /*
@@ -668,8 +674,8 @@ static void modeF16cInit()
   // Fuel
   new DcsBios::IntegerBuffer(F16C_FUELQTYKNOB_ADDR, F16C_FUELQTYKNOB_MASK,
       F16C_FUELQTYKNOB_SHIFT, cbF16cFuelQtySelKnob);
-  new DcsBios::IntegerBuffer(F16C_FUELQTYKNOBTST_ADDR, F16C_FUELQTYKNOBTST_MASK,
-      F16C_FUELQTYKNOBTST_SHIFT, cbF16cFuelQtySelKnobTst);
+  new DcsBios::StringBuffer<F16C_FUELQTYKNOBTST_SZ>(F16C_FUELQTYKNOBTST_ADDR,
+      cbF16cFuelQtySelKnobTst);
   new DcsBios::IntegerBuffer(F16C_FUELQTYAL_ADDR, F16C_FUELQTYAL_MASK,
       F16C_FUELQTYAL_SHIFT, cbF16cFuelQtyIndAl);
   new DcsBios::IntegerBuffer(F16C_FUELQTYFR_ADDR, F16C_FUELQTYFR_MASK,
@@ -1007,6 +1013,14 @@ static void cbM2000cPcnBtnLt(unsigned int Value)
 }
 
 /*
+ *   Callback on change of more M2000C UNC button lights.
+ */
+static void cbM2000cPcnBtnLt2(unsigned int Value)
+{
+  DiPnl.m2000cPcnButtonLt2(highByte(Value));
+}
+
+/*
  *   Callback on change of M2000C UNC panne lights.
  */
 static void cbM2000cPcnPanLt(unsigned int Value)
@@ -1061,14 +1075,17 @@ static void modeM2000cInit()
   // PCN lights
   new DcsBios::IntegerBuffer(M2000C_PCNBTNLT_ADDR,
       M2000C_PCNPREPBTNLT_MASK | M2000C_PCNDESTBTNLT_MASK |
-      M2000C_PCNBADBTNLT_MASK | M2000C_PCNRECBTNLT_MASK |
       M2000C_PCNEFFBTNLT_MASK | M2000C_PCNINSBTNLT_MASK |
-      M2000C_PCNVALBTNLT_MASK | M2000C_PCNMRCBTNLT_MASK,
+      M2000C_PCNUNIPANLT_MASK,
       (unsigned char) 0U, cbM2000cPcnBtnLt);
+  new DcsBios::IntegerBuffer(M2000C_PCNBTNLT2_ADDR,
+      M2000C_PCNBADBTNLT_MASK | M2000C_PCNRECBTNLT_MASK |
+      M2000C_PCNVALBTNLT_MASK | M2000C_PCNMRCBTNLT_MASK,
+      (unsigned char) 0U, cbM2000cPcnBtnLt2);
   new DcsBios::IntegerBuffer(M2000C_PCNPANLT_ADDR,
       M2000C_PCNPRETPANLT_MASK | M2000C_PCNALNPANLT_MASK |
       M2000C_PCNMIPPANLT_MASK | M2000C_PCNNDEGPANLT_MASK |
-      M2000C_PCNSECPANLT_MASK | M2000C_PCNUNIPANLT_MASK,
+      M2000C_PCNSECPANLT_MASK,
       (unsigned char) 0U, cbM2000cPcnPanLt);
   new DcsBios::IntegerBuffer(M2000C_PCNMEMLT_ADDR,
       M2000C_PCNM91MEMLT_MASK | M2000C_PCNM92MEMLT_MASK |

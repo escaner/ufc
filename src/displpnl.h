@@ -112,6 +112,7 @@ public:
   void m2000cPcnDest(const char *szValue);
   void m2000cPcnMode(uint8_t Value);
   void m2000cPcnButtonLt(uint8_t Value);
+  void m2000cPcnButtonLt2(uint8_t Value);
   void m2000cPcnPanneLt(uint8_t Value);
   void m2000cPcnMemLt(uint8_t Value);
   void m2000cPanneLt(uint8_t Value);
@@ -235,6 +236,7 @@ protected:
     struct
     {
       uint8_t BtnLt;    // PCN Button lights
+      uint8_t BtnLt2;   // More PCN Button lights
       uint8_t PanneLt;  // PCN caution & warning lights
       uint8_t MemLt;    // PCN M lights
     } M2000c;

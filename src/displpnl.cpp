@@ -244,23 +244,23 @@ constexpr uint8_t M2000C_M91LT_COL = 7U;
 constexpr uint8_t M2000C_M92LT_COL = 11U;
 constexpr uint8_t M2000C_M93LT_COL = 15U;
 
-constexpr uint8_t M2000C_BTNLT_PREP_BIT = 0b00000001;
-constexpr uint8_t M2000C_BTNLT_DEST_BIT = 0b00000010;
-constexpr uint8_t M2000C_BTNLT_BAD_BIT =  0b00000100;
-constexpr uint8_t M2000C_BTNLT_REC_BIT =  0b00001000;
-constexpr uint8_t M2000C_BTNLT_EFF_BIT =  0b00010000;
-constexpr uint8_t M2000C_BTNLT_INS_BIT =  0b00100000;
-constexpr uint8_t M2000C_BTNLT_VAL_BIT =  0b01000000;
-constexpr uint8_t M2000C_BTNLT_MRC_BIT =  0b10000000;
-constexpr uint8_t M2000C_PANLT_PRET_BIT = 0b00000100;
-constexpr uint8_t M2000C_PANLT_ALN_BIT =  0b00001000;
-constexpr uint8_t M2000C_PANLT_MIP_BIT =  0b00010000;
-constexpr uint8_t M2000C_PANLT_NDEG_BIT = 0b00100000;
-constexpr uint8_t M2000C_PANLT_SEC_BIT =  0b01000000;
-constexpr uint8_t M2000C_PANLT_UNI_BIT =  0b10000000;
-constexpr uint8_t M2000C_MEMLT_M91_BIT = 0b00000010;
-constexpr uint8_t M2000C_MEMLT_M92_BIT = 0b00000100;
-constexpr uint8_t M2000C_MEMLT_M93_BIT = 0b00001000;
+constexpr uint8_t M2000C_PANLT_UNI_BIT =  0b00000001;
+constexpr uint8_t M2000C_BTNLT_PREP_BIT = 0b00000010;
+constexpr uint8_t M2000C_BTNLT_DEST_BIT = 0b00000100;
+constexpr uint8_t M2000C_BTNLT_EFF_BIT =  0b00100000;
+constexpr uint8_t M2000C_BTNLT_INS_BIT =  0b01000000;
+constexpr uint8_t M2000C_BTNLT_BAD_BIT =  0b00001000;
+constexpr uint8_t M2000C_BTNLT_REC_BIT =  0b00010000;
+constexpr uint8_t M2000C_BTNLT_VAL_BIT =  0b00100000;
+constexpr uint8_t M2000C_BTNLT_MRC_BIT =  0b01000000;
+constexpr uint8_t M2000C_PANLT_PRET_BIT = 0b00001000;
+constexpr uint8_t M2000C_PANLT_ALN_BIT =  0b00010000;
+constexpr uint8_t M2000C_PANLT_MIP_BIT =  0b00100000;
+constexpr uint8_t M2000C_PANLT_NDEG_BIT = 0b01000000;
+constexpr uint8_t M2000C_PANLT_SEC_BIT =  0b10000000;
+constexpr uint8_t M2000C_MEMLT_M91_BIT =  0b00000100;
+constexpr uint8_t M2000C_MEMLT_M92_BIT =  0b00001000;
+constexpr uint8_t M2000C_MEMLT_M93_BIT =  0b00010000;
 
 /***********/
 /* Methods */
@@ -1258,13 +1258,48 @@ void DisplPnl::m2000cPcnButtonLt(uint8_t Value)
       (_Status.M2000c.BtnLt & M2000C_BTNLT_VAL_BIT))
     _m2000cSetButtonLt(M2000C_VALMRCLT_ROW, M2000C_VALLT_COL, Set);
 
-  // MRC
-  if ((Set = Value & M2000C_BTNLT_MRC_BIT) !=
-      (_Status.M2000c.BtnLt & M2000C_BTNLT_MRC_BIT))
-    _m2000cSetButtonLt(M2000C_VALMRCLT_ROW, M2000C_MRCLT_COL, Set);
+  // UNI
+  if ((Set = Value & M2000C_PANLT_UNI_BIT) !=
+      (_Status.M2000c.BtnLt & M2000C_PANLT_UNI_BIT))
+    _m2000cSetPcnLt(M2000C_REDLT_ROW, M2000C_UNILT_COL, Set, PSTR("UNI"));
 
   // Save the new status
   _Status.M2000c.BtnLt = Value;
+}
+
+
+/*
+ *   Updates more M2000C PCN button lights.
+ *   More than one light can change in a single call, so check them all.
+ *  Parameters:
+ *  * Value: bit map with the lights state
+ */
+void DisplPnl::m2000cPcnButtonLt2(uint8_t Value)
+{
+  uint8_t Set;
+
+  // BAD
+  if ((Set = Value & M2000C_BTNLT_BAD_BIT) !=
+      (_Status.M2000c.BtnLt2 & M2000C_BTNLT_BAD_BIT))
+    _m2000cSetButtonLt(M2000C_BADRECLT_ROW, M2000C_BADLT_COL, Set);
+
+  // REC
+  if ((Set = Value & M2000C_BTNLT_REC_BIT) !=
+      (_Status.M2000c.BtnLt2 & M2000C_BTNLT_REC_BIT))
+    _m2000cSetButtonLt(M2000C_BADRECLT_ROW, M2000C_RECLT_COL, Set);
+
+  // VAL
+  if ((Set = Value & M2000C_BTNLT_VAL_BIT) !=
+      (_Status.M2000c.BtnLt2 & M2000C_BTNLT_VAL_BIT))
+    _m2000cSetButtonLt(M2000C_VALMRCLT_ROW, M2000C_VALLT_COL, Set);
+
+  // MRC
+  if ((Set = Value & M2000C_BTNLT_MRC_BIT) !=
+      (_Status.M2000c.BtnLt2 & M2000C_BTNLT_MRC_BIT))
+    _m2000cSetButtonLt(M2000C_VALMRCLT_ROW, M2000C_MRCLT_COL, Set);
+
+  // Save the new status
+  _Status.M2000c.BtnLt2 = Value;
 }
 
 
@@ -1302,11 +1337,6 @@ void DisplPnl::m2000cPcnPanneLt(uint8_t Value)
   if ((Set = Value & M2000C_PANLT_SEC_BIT) !=
       (_Status.M2000c.PanneLt & M2000C_PANLT_SEC_BIT))
     _m2000cSetPcnLt(M2000C_AMBERLT_ROW, M2000C_SECLT_COL, Set, PSTR("SEC"));
-
-  // UNI
-  if ((Set = Value & M2000C_PANLT_UNI_BIT) !=
-      (_Status.M2000c.PanneLt & M2000C_PANLT_UNI_BIT))
-    _m2000cSetPcnLt(M2000C_REDLT_ROW, M2000C_UNILT_COL, Set, PSTR("UNI"));
 
   // Save the new status
   _Status.M2000c.PanneLt = Value;
