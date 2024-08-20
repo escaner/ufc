@@ -4,6 +4,10 @@ UFC is an Arduino project to interface a button box made of button switches
 and rotary encoders, LCD and LEDs, with a computer and identify itself as
 a game controller sending DirectX events and communicating also via DCS-BIOS.
 
+Git branches:
+* master: for original DCS-BIOS.
+* flightpanels: for DCS FlightPanels branch of DCS-BIOS.
+
 The core of the system is a Sparkfun Pro Micro or clone (small Arduino
 Micro/Leonardo compatible). The switches are attached directly to the Arduino
 analog input grids with resistors, while the encoders are directly attached
