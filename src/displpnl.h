@@ -47,6 +47,29 @@ public:
     t_backlightPol Pol;
   };
 
+  // Digit identifier for the LCD numbers
+  enum DigitId_t: uint8_t
+  {
+    Digit0 = 0,
+    Digit1,  // Max for PREP & DEST
+    Digit2,
+    Digit3,
+    Digit4,  // Max for left display
+    Digit5   // Max for right display
+  };
+
+  // Segment identifiers for the digit 7 segment + period LEDs
+  enum SegmentId_t: uint8_t
+  {
+    Segment0 = 0,  // Bottom left
+    Segment1,      // Top left
+    Segment2,      // Top
+    Segment3,      // Top right
+    Segment4,      // Bottom right
+    Segment5,      // Bottom
+    Segment6,      // Center
+    Segment7       // Period
+  };
 
   /******************/
   /* Public methods */
@@ -108,8 +131,8 @@ public:
   void m2000cPcnLeft(const char *szValue);
   void m2000cPcnDigRight(const char *szValue);
   void m2000cPcnRight(const char *szValue);
-  void m2000cPcnPrep(const char *szValue);
-  void m2000cPcnDest(const char *szValue);
+  void m2000cPcnPrep(DigitId_t Digit, SegmentId_t Segment, uint8_t Value);
+  void m2000cPcnDest(DigitId_t Digit, SegmentId_t Segment, uint8_t Value);
   void m2000cPcnMode(uint8_t Value);
   void m2000cPcnButtonLt(uint8_t Value);
   void m2000cPcnButtonLt2(uint8_t Value);
@@ -124,14 +147,23 @@ public:
 
 protected:
 
+  struct Segments2Char_t
+  {
+    uint8_t Segments;  // 7 segment character representation
+    char Char;         // Represented character
+  };
+
   /******************************/
   /* Protected static constants */
   /******************************/
 
   static const uint8_t _CRD_DIM = 2U; // Dimensions of the LCD coordinates
+  static const char _UNKNOWN_CHAR = '*';
 
   static const char _LINE_KEY[] PROGMEM;
   static const char _LINE_ENC[] PROGMEM;
+
+  static const Segments2Char_t _SEGMENTS2CHAR[] PROGMEM;
 
   static const uint8_t _LCD_CHAR_UPDOWN[] PROGMEM;
   static const uint8_t _LCD_CHAR_DTRIANGLE[] PROGMEM;
@@ -165,6 +197,9 @@ protected:
   static const uint16_t _STATUS_F16C_FUELALFR_NONE = UINT16_MAX;
   static const uint8_t _STATUS_F16C_FUELT_NONE = UINT8_MAX;
 
+  static const uint8_t _M2000C_PCNDISPPREPDES_NUM_DIG = 2U; // #digits PREP/DES
+  static const uint8_t _M2000C_PCNDISPLEFT_NUM_DIG = 5U;  // #digits displ left
+  static const uint8_t _M2000C_PCNDISPRIGHT_NUM_DIG = 6U; // #digits displ right
   static const char _M2000C_LIGHT_CHAR = '\xff';  // Full block
   static const uint8_t _M2000C_PCNMODE_NUM_POS = 11U;
   static const uint8_t _M2000C_PCNMODE_POS_LN = 5U;
@@ -197,6 +232,7 @@ protected:
   void _lcdWritePadded(const char *szText, uint8_t Size, char PadChar=' ');
   inline void _setLed(LedId_t Led, uint8_t Value) const;
   static void _unpad(char *szDst, const char *szSrc, uint8_t Discard = 0U);
+  static char _segments2Char(uint8_t Segments);
 
 
   /***************/
@@ -239,6 +275,10 @@ protected:
       uint8_t BtnLt2;   // More PCN Button lights
       uint8_t PanneLt;  // PCN caution & warning lights
       uint8_t MemLt;    // PCN M lights
+      uint8_t DispPrep[_M2000C_PCNDISPPREPDES_NUM_DIG];  // Display for PREP
+      uint8_t DispDest[_M2000C_PCNDISPPREPDES_NUM_DIG];  // Display for DEST
+      uint8_t DispLeft[_M2000C_PCNDISPLEFT_NUM_DIG];     // Display for Left
+      uint8_t DispRight[_M2000C_PCNDISPRIGHT_NUM_DIG];   // Display for Right
     } M2000c;
   
     // Debug

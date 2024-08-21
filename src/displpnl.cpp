@@ -9,6 +9,21 @@
 /* Constants */
 /*************/
 
+// Given a 7 segment LCD configuration, which character represents
+const DisplPnl::Segments2Char_t DisplPnl::_SEGMENTS2CHAR[] PROGMEM =
+{
+  { 0b00111111, '0' },
+  { 0b00011000, '1' },
+  { 0b01101101, '2' },
+  { 0b01111100, '3' },
+  { 0b01011010, '4' },
+  { 0b01110110, '5' },
+  { 0b01110111, '6' },
+  { 0b01101101, '7' },
+  { 0b01111111, '8' },
+  { 0b01111110, '9' },
+};
+
 // Custom character with a double triangle up & down
 const uint8_t DisplPnl::_LCD_CHAR_UPDOWN[] PROGMEM =
 {
@@ -1142,7 +1157,8 @@ void DisplPnl::m2000cPcnDigLeft(const char *szValue)
 void DisplPnl::m2000cPcnLeft(const char *szValue)
 {
   _Lcd.setCursor(M2000C_PCNL_COL, M2000C_PCNLR_ROW);
-  _Lcd.write(szValue + 3);
+//  _Lcd.write(szValue + 3);
+  _Lcd.write("NO");
 }
 
 
@@ -1173,31 +1189,58 @@ void DisplPnl::m2000cPcnDigRight(const char *szValue)
 void DisplPnl::m2000cPcnRight(const char *szValue)
 {
   _Lcd.setCursor(M2000C_PCNR_COL, M2000C_PCNLR_ROW);
-  _Lcd.write(szValue + 3);
+//  _Lcd.write(szValue + 3);
+  _Lcd.write("NO");
 }
 
 
 /*
  *   Updates M2000C PCN Prep.
  *  Parameters:
- *  * szValue: string with the new value to display.
+ *  * Digit: in which digit happened the change.
+ *  * Segment: in which segment of the digit happened the change.
+ *  * Value: intensity of the segment (0-3; 0 is off).
  */
-void DisplPnl::m2000cPcnPrep(const char *szValue)
+void DisplPnl::m2000cPcnPrep(DigitId_t Digit, SegmentId_t Segment,
+  uint8_t Value)
 {
-  _Lcd.setCursor(M2000C_PCNPREP_COL, M2000C_PREPDEST_ROW);
-  _Lcd.write(szValue);
+  uint8_t SegmentPtrn;
+  char Char;
+
+  // Update the segment pattern for Digit
+  SegmentPtrn = _Status.M2000c.DispPrep[Digit];
+  bitWrite(SegmentPtrn, Segment, Value);
+  _Status.M2000c.DispPrep[Digit] = SegmentPtrn;
+
+  // Translate 7-segment pattern to actual character and write it in the LCD
+  Char = _segments2Char(SegmentPtrn);
+  _Lcd.setCursor(M2000C_PCNPREP_COL + Digit, M2000C_PREPDEST_ROW);
+  _Lcd.write(Char);
 }
 
 
 /*
  *   Updates M2000C PCN Dest.
  *  Parameters:
- *  * szValue: string with the new value to display.
+ *  * Digit: in which digit happened the change.
+ *  * Segment: in which segment of the digit happened the change.
+ *  * Value: intensity of the segment (0-3; 0 is off).
  */
-void DisplPnl::m2000cPcnDest(const char *szValue)
+void DisplPnl::m2000cPcnDest(DigitId_t Digit, SegmentId_t Segment,
+  uint8_t Value)
 {
-  _Lcd.setCursor(M2000C_PCNDEST_COL, M2000C_PREPDEST_ROW);
-  _Lcd.write(szValue);
+  uint8_t SegmentPtrn;
+  char Char;
+
+  // Update the segment pattern for Digit
+  SegmentPtrn = _Status.M2000c.DispDest[Digit];
+  bitWrite(SegmentPtrn, Segment, Value);
+  _Status.M2000c.DispDest[Digit] = SegmentPtrn;
+
+  // Translate 7-segment pattern to actual character and write it in the LCD
+  Char = _segments2Char(SegmentPtrn);
+  _Lcd.setCursor(M2000C_PCNDEST_COL + Digit, M2000C_PREPDEST_ROW);
+  _Lcd.write(Char);
 }
 
 
@@ -1824,4 +1867,31 @@ void DisplPnl::_unpad(char *szDst, const char *szSrc, uint8_t Discard)
 
   // End destination string
   *(szDst - Discard) = '\0';
+}
+
+
+/*
+ *   Given a 7 segment character configuration, translates it to the represented
+ *  character.
+ *  Parameters:
+ *  * Segments: 7 segment representation in the lowest 7 bits
+ *  Returns: the character represented by Segments or _UNKNOWN_CHAR
+ *  when none is.
+ */
+char DisplPnl::_segments2Char(uint8_t Segments)
+{
+  const Segments2Char_t *pEntry;
+  const uint8_t NumEntries = sizeof _SEGMENTS2CHAR / sizeof (Segments2Char_t);
+  
+  // Traverse all entries in the array looking for the matching configuration
+  for (pEntry = _SEGMENTS2CHAR; pEntry != _SEGMENTS2CHAR + NumEntries; pEntry++)
+  {
+    // If this the segment pattern we are looking for?
+    if (Segments == pEntry->Segments)
+      // Fount it!
+      return pEntry->Char;
+  }
+
+  // We did not found a matching pattern
+  return _UNKNOWN_CHAR;
 }
