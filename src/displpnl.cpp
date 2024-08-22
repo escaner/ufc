@@ -12,6 +12,7 @@
 // Given a 7 segment LCD configuration, which character represents
 const DisplPnl::Segments2Char_t DisplPnl::_SEGMENTS2CHAR[] PROGMEM =
 {
+  { 0b00000000, ' ' },
   { 0b00111111, '0' },
   { 0b00011000, '1' },
   { 0b01101101, '2' },
@@ -19,7 +20,7 @@ const DisplPnl::Segments2Char_t DisplPnl::_SEGMENTS2CHAR[] PROGMEM =
   { 0b01011010, '4' },
   { 0b01110110, '5' },
   { 0b01110111, '6' },
-  { 0b01101101, '7' },
+  { 0b00011100, '7' },
   { 0b01111111, '8' },
   { 0b01111110, '9' },
 };
@@ -266,8 +267,8 @@ constexpr uint8_t M2000C_BTNLT_EFF_BIT =  0b00100000;
 constexpr uint8_t M2000C_BTNLT_INS_BIT =  0b01000000;
 constexpr uint8_t M2000C_BTNLT_BAD_BIT =  0b00001000;
 constexpr uint8_t M2000C_BTNLT_REC_BIT =  0b00010000;
-constexpr uint8_t M2000C_BTNLT_VAL_BIT =  0b00100000;
-constexpr uint8_t M2000C_BTNLT_MRC_BIT =  0b01000000;
+constexpr uint8_t M2000C_BTNLT_MRC_BIT =  0b00100000;
+constexpr uint8_t M2000C_BTNLT_VAL_BIT =  0b01000000;
 constexpr uint8_t M2000C_PANLT_PRET_BIT = 0b00001000;
 constexpr uint8_t M2000C_PANLT_ALN_BIT =  0b00010000;
 constexpr uint8_t M2000C_PANLT_MIP_BIT =  0b00100000;
@@ -1887,9 +1888,9 @@ char DisplPnl::_segments2Char(uint8_t Segments)
   for (pEntry = _SEGMENTS2CHAR; pEntry != _SEGMENTS2CHAR + NumEntries; pEntry++)
   {
     // If this the segment pattern we are looking for?
-    if (Segments == pEntry->Segments)
+    if (Segments == pgm_read_byte(&pEntry->Segments))
       // Fount it!
-      return pEntry->Char;
+      return pgm_read_byte(&pEntry->Char);
   }
 
   // We did not found a matching pattern

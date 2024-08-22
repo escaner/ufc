@@ -60,7 +60,7 @@ $ dmesg | grep Joystick
 $ jstest /dev/input/js1
 
 
-Copyright (C) 2021-2022, Óscar Laborda
+Copyright (C) 2021-2024, Óscar Laborda
 
 This file is part of UFC software.
 
