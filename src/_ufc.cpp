@@ -1371,11 +1371,11 @@ static void modeM2000cInit()
 
   // Register callbacks creating DCS-BIOS handlers in heap memory
   // PCN
-  /*
   new DcsBios::StringBuffer<M2000C_PCNDLEFT_SZ>(
       M2000C_PCNDLEFT_ADDR, m2000cPcnDigLeft);
   new DcsBios::StringBuffer<M2000C_PCNDRIGHT_SZ>(
       M2000C_PCNDRIGHT_ADDR, m2000cPcnDigRight);
+  /*
   new DcsBios::StringBuffer<M2000C_PCNRIGHT_SZ>(
       M2000C_PCNRIGHT_ADDR, m2000cPcnRight);
 */
