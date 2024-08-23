@@ -1153,13 +1153,28 @@ void DisplPnl::m2000cPcnDigLeft(const char *szValue)
 /*
  *   Updates M2000C PCN Latitude.
  *  Parameters:
- *  * szValue: string with the new value to display.
+ *  * Digit: in which digit happened the change.
+ *  * Segment: in which segment of the digit happened the change.
+ *  * Value: intensity of the segment (0-3; 0 is off).
  */
-void DisplPnl::m2000cPcnLeft(const char *szValue)
+void DisplPnl::m2000cPcnLeft(DigitId_t Digit, SegmentId_t Segment,
+  uint8_t Value)
 {
-  _Lcd.setCursor(M2000C_PCNL_COL, M2000C_PCNLR_ROW);
-//  _Lcd.write(szValue + 3);
-  _Lcd.write("NO");
+  uint8_t SegmentPtrn;
+  char Char;
+
+  // Update the segment pattern for Digit
+  SegmentPtrn = _Status.M2000c.DispLeft[Digit];
+  bitWrite(SegmentPtrn, Segment, Value);
+  _Status.M2000c.DispLeft[Digit] = SegmentPtrn;
+
+  // Translate 7-segment pattern to actual character and write it in the LCD
+  Char = _segments2Char(SegmentPtrn);
+  if (Char != _UNKNOWN_CHAR)
+  {
+    _Lcd.setCursor(M2000C_PCNL_COL + Digit, M2000C_PCNLR_ROW);
+    _Lcd.write(Char);
+  }
 }
 
 
@@ -1185,13 +1200,28 @@ void DisplPnl::m2000cPcnDigRight(const char *szValue)
 /*
  *   Updates M2000C PCN Longitude.
  *  Parameters:
- *  * szValue: string with the new value to display.
+ *  * Digit: in which digit happened the change.
+ *  * Segment: in which segment of the digit happened the change.
+ *  * Value: intensity of the segment (0-3; 0 is off).
  */
-void DisplPnl::m2000cPcnRight(const char *szValue)
+void DisplPnl::m2000cPcnRight(DigitId_t Digit, SegmentId_t Segment,
+  uint8_t Value)
 {
-  _Lcd.setCursor(M2000C_PCNR_COL, M2000C_PCNLR_ROW);
-//  _Lcd.write(szValue + 3);
-  _Lcd.write("NO");
+  uint8_t SegmentPtrn;
+  char Char;
+
+  // Update the segment pattern for Digit
+  SegmentPtrn = _Status.M2000c.DispRight[Digit];
+  bitWrite(SegmentPtrn, Segment, Value);
+  _Status.M2000c.DispRight[Digit] = SegmentPtrn;
+
+  // Translate 7-segment pattern to actual character and write it in the LCD
+  Char = _segments2Char(SegmentPtrn);
+  if (Char != _UNKNOWN_CHAR)
+  {
+    _Lcd.setCursor(M2000C_PCNR_COL + Digit, M2000C_PCNLR_ROW);
+    _Lcd.write(Char);
+  }
 }
 
 
@@ -1215,8 +1245,11 @@ void DisplPnl::m2000cPcnPrep(DigitId_t Digit, SegmentId_t Segment,
 
   // Translate 7-segment pattern to actual character and write it in the LCD
   Char = _segments2Char(SegmentPtrn);
-  _Lcd.setCursor(M2000C_PCNPREP_COL + Digit, M2000C_PREPDEST_ROW);
-  _Lcd.write(Char);
+  if (Char != _UNKNOWN_CHAR)
+  {
+    _Lcd.setCursor(M2000C_PCNPREP_COL + Digit, M2000C_PREPDEST_ROW);
+    _Lcd.write(Char);
+  }
 }
 
 
@@ -1240,8 +1273,11 @@ void DisplPnl::m2000cPcnDest(DigitId_t Digit, SegmentId_t Segment,
 
   // Translate 7-segment pattern to actual character and write it in the LCD
   Char = _segments2Char(SegmentPtrn);
-  _Lcd.setCursor(M2000C_PCNDEST_COL + Digit, M2000C_PREPDEST_ROW);
-  _Lcd.write(Char);
+  if (Char != _UNKNOWN_CHAR)
+  {
+    _Lcd.setCursor(M2000C_PCNDEST_COL + Digit, M2000C_PREPDEST_ROW);
+    _Lcd.write(Char);
+  }
 }
 
 

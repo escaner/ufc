@@ -128,9 +128,9 @@ public:
 
   void m2000cStart();
   void m2000cPcnDigLeft(const char *szValue);
-  void m2000cPcnLeft(const char *szValue);
+  void m2000cPcnLeft(DigitId_t Digit, SegmentId_t Segment, uint8_t Value);
   void m2000cPcnDigRight(const char *szValue);
-  void m2000cPcnRight(const char *szValue);
+  void m2000cPcnRight(DigitId_t Digit, SegmentId_t Segment, uint8_t Value);
   void m2000cPcnPrep(DigitId_t Digit, SegmentId_t Segment, uint8_t Value);
   void m2000cPcnDest(DigitId_t Digit, SegmentId_t Segment, uint8_t Value);
   void m2000cPcnMode(uint8_t Value);

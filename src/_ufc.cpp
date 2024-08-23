@@ -208,14 +208,274 @@ constexpr unsigned int FA18C_LTDRSW_MASK = 0x4000;
 constexpr unsigned char FA18C_LTDRSW_SHIFT = 14U;
 
 // M2000C
-constexpr unsigned int M2000C_PCNLEFT_ADDR = M_2000C_PCN_DISP_L_ADDR;//0x72ec;
-constexpr uint8_t M2000C_PCNLEFT_SZ = 8U;//%%%% no aparece en json
-constexpr unsigned int M2000C_PCNRIGHT_ADDR = M_2000C_PCN_DISP_R_ADDR; //0x72f6;
-constexpr uint8_t M2000C_PCNRIGHT_SZ = 9U;//%%%% no aparece en json
-constexpr unsigned int M2000C_PCNDLEFT_ADDR = M_2000C_PCN_DIS_2DL_ADDR;
-constexpr uint8_t M2000C_PCNDLEFT_SZ = 2U;//
-constexpr unsigned int M2000C_PCNDRIGHT_ADDR = M_2000C_PCN_DIS_2DR_ADDR;
-constexpr uint8_t M2000C_PCNDRIGHT_SZ = 2U;//
+constexpr unsigned int M2000C_PCNDISPLEFTD1S0_ADDR = 0x7380;
+constexpr unsigned int M2000C_PCNDISPLEFTD1S1_ADDR = 0x7380;
+constexpr unsigned int M2000C_PCNDISPLEFTD1S2_ADDR = 0x7380;
+constexpr unsigned int M2000C_PCNDISPLEFTD1S3_ADDR = 0x7380;
+constexpr unsigned int M2000C_PCNDISPLEFTD1S4_ADDR = 0x7380;
+constexpr unsigned int M2000C_PCNDISPLEFTD1S5_ADDR = 0x7380;
+constexpr unsigned int M2000C_PCNDISPLEFTD1S6_ADDR = 0x7380;
+constexpr unsigned int M2000C_PCNDISPLEFTD1S7_ADDR = 0x7390;
+constexpr unsigned int M2000C_PCNDISPLEFTD1S0_MASK = 0x000c;
+constexpr unsigned int M2000C_PCNDISPLEFTD1S1_MASK = 0x0030;
+constexpr unsigned int M2000C_PCNDISPLEFTD1S2_MASK = 0x00c0;
+constexpr unsigned int M2000C_PCNDISPLEFTD1S3_MASK = 0x0300;
+constexpr unsigned int M2000C_PCNDISPLEFTD1S4_MASK = 0x0c00;
+constexpr unsigned int M2000C_PCNDISPLEFTD1S5_MASK = 0x3000;
+constexpr unsigned int M2000C_PCNDISPLEFTD1S6_MASK = 0xc000;
+constexpr unsigned int M2000C_PCNDISPLEFTD1S7_MASK = 0x0300;
+constexpr uint8_t M2000C_PCNDISPLEFTD1S0_SHIFT = 2U;
+constexpr uint8_t M2000C_PCNDISPLEFTD1S1_SHIFT = 4U;
+constexpr uint8_t M2000C_PCNDISPLEFTD1S2_SHIFT = 6U;
+constexpr uint8_t M2000C_PCNDISPLEFTD1S3_SHIFT = 8U;
+constexpr uint8_t M2000C_PCNDISPLEFTD1S4_SHIFT = 10U;
+constexpr uint8_t M2000C_PCNDISPLEFTD1S5_SHIFT = 12U;
+constexpr uint8_t M2000C_PCNDISPLEFTD1S6_SHIFT = 14U;
+constexpr uint8_t M2000C_PCNDISPLEFTD1S7_SHIFT = 8U;
+constexpr unsigned int M2000C_PCNDISPLEFTD2S0_ADDR = 0x7390;
+constexpr unsigned int M2000C_PCNDISPLEFTD2S1_ADDR = 0x7390;
+constexpr unsigned int M2000C_PCNDISPLEFTD2S2_ADDR = 0x7390;
+constexpr unsigned int M2000C_PCNDISPLEFTD2S3_ADDR = 0x7398;
+constexpr unsigned int M2000C_PCNDISPLEFTD2S4_ADDR = 0x7398;
+constexpr unsigned int M2000C_PCNDISPLEFTD2S5_ADDR = 0x7398;
+constexpr unsigned int M2000C_PCNDISPLEFTD2S6_ADDR = 0x7398;
+constexpr unsigned int M2000C_PCNDISPLEFTD2S7_ADDR = 0x739a;
+constexpr unsigned int M2000C_PCNDISPLEFTD2S0_MASK = 0x0c00;
+constexpr unsigned int M2000C_PCNDISPLEFTD2S1_MASK = 0x3000;
+constexpr unsigned int M2000C_PCNDISPLEFTD2S2_MASK = 0xc000;
+constexpr unsigned int M2000C_PCNDISPLEFTD2S3_MASK = 0x0300;
+constexpr unsigned int M2000C_PCNDISPLEFTD2S4_MASK = 0x0c00;
+constexpr unsigned int M2000C_PCNDISPLEFTD2S5_MASK = 0x3000;
+constexpr unsigned int M2000C_PCNDISPLEFTD2S6_MASK = 0xc000;
+constexpr unsigned int M2000C_PCNDISPLEFTD2S7_MASK = 0x0003;
+constexpr uint8_t M2000C_PCNDISPLEFTD2S0_SHIFT = 10U;
+constexpr uint8_t M2000C_PCNDISPLEFTD2S1_SHIFT = 12U;
+constexpr uint8_t M2000C_PCNDISPLEFTD2S2_SHIFT = 14U;
+constexpr uint8_t M2000C_PCNDISPLEFTD2S3_SHIFT = 8U;
+constexpr uint8_t M2000C_PCNDISPLEFTD2S4_SHIFT = 10U;
+constexpr uint8_t M2000C_PCNDISPLEFTD2S5_SHIFT = 12U;
+constexpr uint8_t M2000C_PCNDISPLEFTD2S6_SHIFT = 14U;
+constexpr uint8_t M2000C_PCNDISPLEFTD2S7_SHIFT = 0U;
+constexpr unsigned int M2000C_PCNDISPLEFTD3S0_ADDR = 0x739a;
+constexpr unsigned int M2000C_PCNDISPLEFTD3S1_ADDR = 0x739a;
+constexpr unsigned int M2000C_PCNDISPLEFTD3S2_ADDR = 0x739a;
+constexpr unsigned int M2000C_PCNDISPLEFTD3S3_ADDR = 0x739a;
+constexpr unsigned int M2000C_PCNDISPLEFTD3S4_ADDR = 0x739a;
+constexpr unsigned int M2000C_PCNDISPLEFTD3S5_ADDR = 0x739a;
+constexpr unsigned int M2000C_PCNDISPLEFTD3S6_ADDR = 0x739a;
+constexpr unsigned int M2000C_PCNDISPLEFTD3S7_ADDR = 0x739c;
+constexpr unsigned int M2000C_PCNDISPLEFTD3S0_MASK = 0x000c;
+constexpr unsigned int M2000C_PCNDISPLEFTD3S1_MASK = 0x0030;
+constexpr unsigned int M2000C_PCNDISPLEFTD3S2_MASK = 0x00c0;
+constexpr unsigned int M2000C_PCNDISPLEFTD3S3_MASK = 0x0300;
+constexpr unsigned int M2000C_PCNDISPLEFTD3S4_MASK = 0x0c00;
+constexpr unsigned int M2000C_PCNDISPLEFTD3S5_MASK = 0x3000;
+constexpr unsigned int M2000C_PCNDISPLEFTD3S6_MASK = 0xc000;
+constexpr unsigned int M2000C_PCNDISPLEFTD3S7_MASK = 0x0003;
+constexpr uint8_t M2000C_PCNDISPLEFTD3S0_SHIFT = 2U;
+constexpr uint8_t M2000C_PCNDISPLEFTD3S1_SHIFT = 4U;
+constexpr uint8_t M2000C_PCNDISPLEFTD3S2_SHIFT = 6U;
+constexpr uint8_t M2000C_PCNDISPLEFTD3S3_SHIFT = 8U;
+constexpr uint8_t M2000C_PCNDISPLEFTD3S4_SHIFT = 10U;
+constexpr uint8_t M2000C_PCNDISPLEFTD3S5_SHIFT = 12U;
+constexpr uint8_t M2000C_PCNDISPLEFTD3S6_SHIFT = 14U;
+constexpr uint8_t M2000C_PCNDISPLEFTD3S7_SHIFT = 0U;
+constexpr unsigned int M2000C_PCNDISPLEFTD4S0_ADDR = 0x739c;
+constexpr unsigned int M2000C_PCNDISPLEFTD4S1_ADDR = 0x739c;
+constexpr unsigned int M2000C_PCNDISPLEFTD4S2_ADDR = 0x739c;
+constexpr unsigned int M2000C_PCNDISPLEFTD4S3_ADDR = 0x739c;
+constexpr unsigned int M2000C_PCNDISPLEFTD4S4_ADDR = 0x739c;
+constexpr unsigned int M2000C_PCNDISPLEFTD4S5_ADDR = 0x739c;
+constexpr unsigned int M2000C_PCNDISPLEFTD4S6_ADDR = 0x739c;
+constexpr unsigned int M2000C_PCNDISPLEFTD4S7_ADDR = 0x739e;
+constexpr unsigned int M2000C_PCNDISPLEFTD4S0_MASK = 0x000c;
+constexpr unsigned int M2000C_PCNDISPLEFTD4S1_MASK = 0x0030;
+constexpr unsigned int M2000C_PCNDISPLEFTD4S2_MASK = 0x00c0;
+constexpr unsigned int M2000C_PCNDISPLEFTD4S3_MASK = 0x0300;
+constexpr unsigned int M2000C_PCNDISPLEFTD4S4_MASK = 0x0c00;
+constexpr unsigned int M2000C_PCNDISPLEFTD4S5_MASK = 0x3000;
+constexpr unsigned int M2000C_PCNDISPLEFTD4S6_MASK = 0xc000;
+constexpr unsigned int M2000C_PCNDISPLEFTD4S7_MASK = 0x0003;
+constexpr uint8_t M2000C_PCNDISPLEFTD4S0_SHIFT = 2U;
+constexpr uint8_t M2000C_PCNDISPLEFTD4S1_SHIFT = 4U;
+constexpr uint8_t M2000C_PCNDISPLEFTD4S2_SHIFT = 6U;
+constexpr uint8_t M2000C_PCNDISPLEFTD4S3_SHIFT = 8U;
+constexpr uint8_t M2000C_PCNDISPLEFTD4S4_SHIFT = 10U;
+constexpr uint8_t M2000C_PCNDISPLEFTD4S5_SHIFT = 12U;
+constexpr uint8_t M2000C_PCNDISPLEFTD4S6_SHIFT = 14U;
+constexpr uint8_t M2000C_PCNDISPLEFTD4S7_SHIFT = 0U;
+constexpr unsigned int M2000C_PCNDISPLEFTD5S0_ADDR = 0x739e;
+constexpr unsigned int M2000C_PCNDISPLEFTD5S1_ADDR = 0x739e;
+constexpr unsigned int M2000C_PCNDISPLEFTD5S2_ADDR = 0x739e;
+constexpr unsigned int M2000C_PCNDISPLEFTD5S3_ADDR = 0x739e;
+constexpr unsigned int M2000C_PCNDISPLEFTD5S4_ADDR = 0x739e;
+constexpr unsigned int M2000C_PCNDISPLEFTD5S5_ADDR = 0x739e;
+constexpr unsigned int M2000C_PCNDISPLEFTD5S6_ADDR = 0x739e;
+constexpr unsigned int M2000C_PCNDISPLEFTD5S7_ADDR = 0x73a4;
+constexpr unsigned int M2000C_PCNDISPLEFTD5S0_MASK = 0x000c;
+constexpr unsigned int M2000C_PCNDISPLEFTD5S1_MASK = 0x0030;
+constexpr unsigned int M2000C_PCNDISPLEFTD5S2_MASK = 0x00c0;
+constexpr unsigned int M2000C_PCNDISPLEFTD5S3_MASK = 0x0300;
+constexpr unsigned int M2000C_PCNDISPLEFTD5S4_MASK = 0x0c00;
+constexpr unsigned int M2000C_PCNDISPLEFTD5S5_MASK = 0x3000;
+constexpr unsigned int M2000C_PCNDISPLEFTD5S6_MASK = 0xc000;
+constexpr unsigned int M2000C_PCNDISPLEFTD5S7_MASK = 0x0003;
+constexpr uint8_t M2000C_PCNDISPLEFTD5S0_SHIFT = 2U;
+constexpr uint8_t M2000C_PCNDISPLEFTD5S1_SHIFT = 4U;
+constexpr uint8_t M2000C_PCNDISPLEFTD5S2_SHIFT = 6U;
+constexpr uint8_t M2000C_PCNDISPLEFTD5S3_SHIFT = 8U;
+constexpr uint8_t M2000C_PCNDISPLEFTD5S4_SHIFT = 10U;
+constexpr uint8_t M2000C_PCNDISPLEFTD5S5_SHIFT = 12U;
+constexpr uint8_t M2000C_PCNDISPLEFTD5S6_SHIFT = 14U;
+constexpr uint8_t M2000C_PCNDISPLEFTD5S7_SHIFT = 0U;
+constexpr unsigned int M2000C_PCNDISPRIGHTD1S0_ADDR = 0x73a4;
+constexpr unsigned int M2000C_PCNDISPRIGHTD1S1_ADDR = 0x73a4;
+constexpr unsigned int M2000C_PCNDISPRIGHTD1S2_ADDR = 0x73a4;
+constexpr unsigned int M2000C_PCNDISPRIGHTD1S3_ADDR = 0x73a4;
+constexpr unsigned int M2000C_PCNDISPRIGHTD1S4_ADDR = 0x73a4;
+constexpr unsigned int M2000C_PCNDISPRIGHTD1S5_ADDR = 0x73a4;
+constexpr unsigned int M2000C_PCNDISPRIGHTD1S6_ADDR = 0x73a4;
+constexpr unsigned int M2000C_PCNDISPRIGHTD1S7_ADDR = 0x73a4;
+constexpr unsigned int M2000C_PCNDISPRIGHTD1S0_MASK = 0x000c;
+constexpr unsigned int M2000C_PCNDISPRIGHTD1S1_MASK = 0x0030;
+constexpr unsigned int M2000C_PCNDISPRIGHTD1S2_MASK = 0x00c0;
+constexpr unsigned int M2000C_PCNDISPRIGHTD1S3_MASK = 0x0300;
+constexpr unsigned int M2000C_PCNDISPRIGHTD1S4_MASK = 0x0c00;
+constexpr unsigned int M2000C_PCNDISPRIGHTD1S5_MASK = 0x3000;
+constexpr unsigned int M2000C_PCNDISPRIGHTD1S6_MASK = 0xc000;
+constexpr unsigned int M2000C_PCNDISPRIGHTD1S7_MASK = 0x0003;
+constexpr uint8_t M2000C_PCNDISPRIGHTD1S0_SHIFT = 2U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD1S1_SHIFT = 4U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD1S2_SHIFT = 6U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD1S3_SHIFT = 8U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD1S4_SHIFT = 10U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD1S5_SHIFT = 12U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD1S6_SHIFT = 14U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD1S7_SHIFT = 0U;
+constexpr unsigned int M2000C_PCNDISPRIGHTD2S0_ADDR = 0x73a4;
+constexpr unsigned int M2000C_PCNDISPRIGHTD2S1_ADDR = 0x73a4;
+constexpr unsigned int M2000C_PCNDISPRIGHTD2S2_ADDR = 0x73a4;
+constexpr unsigned int M2000C_PCNDISPRIGHTD2S3_ADDR = 0x73a4;
+constexpr unsigned int M2000C_PCNDISPRIGHTD2S4_ADDR = 0x73a4;
+constexpr unsigned int M2000C_PCNDISPRIGHTD2S5_ADDR = 0x73a4;
+constexpr unsigned int M2000C_PCNDISPRIGHTD2S6_ADDR = 0x73a4;
+constexpr unsigned int M2000C_PCNDISPRIGHTD2S7_ADDR = 0x73a4;
+constexpr unsigned int M2000C_PCNDISPRIGHTD2S0_MASK = 0x000c;
+constexpr unsigned int M2000C_PCNDISPRIGHTD2S1_MASK = 0x0030;
+constexpr unsigned int M2000C_PCNDISPRIGHTD2S2_MASK = 0x00c0;
+constexpr unsigned int M2000C_PCNDISPRIGHTD2S3_MASK = 0x0300;
+constexpr unsigned int M2000C_PCNDISPRIGHTD2S4_MASK = 0x0c00;
+constexpr unsigned int M2000C_PCNDISPRIGHTD2S5_MASK = 0x3000;
+constexpr unsigned int M2000C_PCNDISPRIGHTD2S6_MASK = 0xc000;
+constexpr unsigned int M2000C_PCNDISPRIGHTD2S7_MASK = 0x0003;
+constexpr uint8_t M2000C_PCNDISPRIGHTD2S0_SHIFT = 2U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD2S1_SHIFT = 4U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD2S2_SHIFT = 6U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD2S3_SHIFT = 8U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD2S4_SHIFT = 10U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD2S5_SHIFT = 12U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD2S6_SHIFT = 14U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD2S7_SHIFT = 0U;
+constexpr unsigned int M2000C_PCNDISPRIGHTD3S0_ADDR = 0x73a4;
+constexpr unsigned int M2000C_PCNDISPRIGHTD3S1_ADDR = 0x73a4;
+constexpr unsigned int M2000C_PCNDISPRIGHTD3S2_ADDR = 0x73a4;
+constexpr unsigned int M2000C_PCNDISPRIGHTD3S3_ADDR = 0x73a4;
+constexpr unsigned int M2000C_PCNDISPRIGHTD3S4_ADDR = 0x73a4;
+constexpr unsigned int M2000C_PCNDISPRIGHTD3S5_ADDR = 0x73a4;
+constexpr unsigned int M2000C_PCNDISPRIGHTD3S6_ADDR = 0x73a4;
+constexpr unsigned int M2000C_PCNDISPRIGHTD3S7_ADDR = 0x73a6;
+constexpr unsigned int M2000C_PCNDISPRIGHTD3S0_MASK = 0x000c;
+constexpr unsigned int M2000C_PCNDISPRIGHTD3S1_MASK = 0x0030;
+constexpr unsigned int M2000C_PCNDISPRIGHTD3S2_MASK = 0x00c0;
+constexpr unsigned int M2000C_PCNDISPRIGHTD3S3_MASK = 0x0300;
+constexpr unsigned int M2000C_PCNDISPRIGHTD3S4_MASK = 0x0c00;
+constexpr unsigned int M2000C_PCNDISPRIGHTD3S5_MASK = 0x3000;
+constexpr unsigned int M2000C_PCNDISPRIGHTD3S6_MASK = 0xc000;
+constexpr unsigned int M2000C_PCNDISPRIGHTD3S7_MASK = 0x0003;
+constexpr uint8_t M2000C_PCNDISPRIGHTD3S0_SHIFT = 2U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD3S1_SHIFT = 4U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD3S2_SHIFT = 6U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD3S3_SHIFT = 8U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD3S4_SHIFT = 10U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD3S5_SHIFT = 12U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD3S6_SHIFT = 14U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD3S7_SHIFT = 0U;
+constexpr unsigned int M2000C_PCNDISPRIGHTD4S0_ADDR = 0x73a6;
+constexpr unsigned int M2000C_PCNDISPRIGHTD4S1_ADDR = 0x73a6;
+constexpr unsigned int M2000C_PCNDISPRIGHTD4S2_ADDR = 0x73a6;
+constexpr unsigned int M2000C_PCNDISPRIGHTD4S3_ADDR = 0x73a6;
+constexpr unsigned int M2000C_PCNDISPRIGHTD4S4_ADDR = 0x73a6;
+constexpr unsigned int M2000C_PCNDISPRIGHTD4S5_ADDR = 0x73a6;
+constexpr unsigned int M2000C_PCNDISPRIGHTD4S6_ADDR = 0x73a6;
+constexpr unsigned int M2000C_PCNDISPRIGHTD4S7_ADDR = 0x73a8;
+constexpr unsigned int M2000C_PCNDISPRIGHTD4S0_MASK = 0x000c;
+constexpr unsigned int M2000C_PCNDISPRIGHTD4S1_MASK = 0x0030;
+constexpr unsigned int M2000C_PCNDISPRIGHTD4S2_MASK = 0x00c0;
+constexpr unsigned int M2000C_PCNDISPRIGHTD4S3_MASK = 0x0300;
+constexpr unsigned int M2000C_PCNDISPRIGHTD4S4_MASK = 0x0c00;
+constexpr unsigned int M2000C_PCNDISPRIGHTD4S5_MASK = 0x3000;
+constexpr unsigned int M2000C_PCNDISPRIGHTD4S6_MASK = 0xc000;
+constexpr unsigned int M2000C_PCNDISPRIGHTD4S7_MASK = 0x0003;
+constexpr uint8_t M2000C_PCNDISPRIGHTD4S0_SHIFT = 2U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD4S1_SHIFT = 4U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD4S2_SHIFT = 6U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD4S3_SHIFT = 8U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD4S4_SHIFT = 10U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD4S5_SHIFT = 12U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD4S6_SHIFT = 14U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD4S7_SHIFT = 0U;
+constexpr unsigned int M2000C_PCNDISPRIGHTD5S0_ADDR = 0x73a8;
+constexpr unsigned int M2000C_PCNDISPRIGHTD5S1_ADDR = 0x73a8;
+constexpr unsigned int M2000C_PCNDISPRIGHTD5S2_ADDR = 0x73a8;
+constexpr unsigned int M2000C_PCNDISPRIGHTD5S3_ADDR = 0x73a8;
+constexpr unsigned int M2000C_PCNDISPRIGHTD5S4_ADDR = 0x73a8;
+constexpr unsigned int M2000C_PCNDISPRIGHTD5S5_ADDR = 0x73a8;
+constexpr unsigned int M2000C_PCNDISPRIGHTD5S6_ADDR = 0x73a8;
+constexpr unsigned int M2000C_PCNDISPRIGHTD5S7_ADDR = 0x73aa;
+constexpr unsigned int M2000C_PCNDISPRIGHTD5S0_MASK = 0x000c;
+constexpr unsigned int M2000C_PCNDISPRIGHTD5S1_MASK = 0x0030;
+constexpr unsigned int M2000C_PCNDISPRIGHTD5S2_MASK = 0x00c0;
+constexpr unsigned int M2000C_PCNDISPRIGHTD5S3_MASK = 0x0300;
+constexpr unsigned int M2000C_PCNDISPRIGHTD5S4_MASK = 0x0c00;
+constexpr unsigned int M2000C_PCNDISPRIGHTD5S5_MASK = 0x3000;
+constexpr unsigned int M2000C_PCNDISPRIGHTD5S6_MASK = 0xc000;
+constexpr unsigned int M2000C_PCNDISPRIGHTD5S7_MASK = 0x0003;
+constexpr uint8_t M2000C_PCNDISPRIGHTD5S0_SHIFT = 2U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD5S1_SHIFT = 4U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD5S2_SHIFT = 6U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD5S3_SHIFT = 8U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD5S4_SHIFT = 10U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD5S5_SHIFT = 12U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD5S6_SHIFT = 14U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD5S7_SHIFT = 0U;
+constexpr unsigned int M2000C_PCNDISPRIGHTD6S0_ADDR = 0x73aa;
+constexpr unsigned int M2000C_PCNDISPRIGHTD6S1_ADDR = 0x73aa;
+constexpr unsigned int M2000C_PCNDISPRIGHTD6S2_ADDR = 0x73aa;
+constexpr unsigned int M2000C_PCNDISPRIGHTD6S3_ADDR = 0x73aa;
+constexpr unsigned int M2000C_PCNDISPRIGHTD6S4_ADDR = 0x73aa;
+constexpr unsigned int M2000C_PCNDISPRIGHTD6S5_ADDR = 0x73aa;
+constexpr unsigned int M2000C_PCNDISPRIGHTD6S6_ADDR = 0x73aa;
+constexpr unsigned int M2000C_PCNDISPRIGHTD6S7_ADDR = 0x73ac;
+constexpr unsigned int M2000C_PCNDISPRIGHTD6S0_MASK = 0x000c;
+constexpr unsigned int M2000C_PCNDISPRIGHTD6S1_MASK = 0x0030;
+constexpr unsigned int M2000C_PCNDISPRIGHTD6S2_MASK = 0x00c0;
+constexpr unsigned int M2000C_PCNDISPRIGHTD6S3_MASK = 0x0300;
+constexpr unsigned int M2000C_PCNDISPRIGHTD6S4_MASK = 0x0c00;
+constexpr unsigned int M2000C_PCNDISPRIGHTD6S5_MASK = 0x3000;
+constexpr unsigned int M2000C_PCNDISPRIGHTD6S6_MASK = 0xc000;
+constexpr unsigned int M2000C_PCNDISPRIGHTD6S7_MASK = 0x0003;
+constexpr uint8_t M2000C_PCNDISPRIGHTD6S0_SHIFT = 2U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD6S1_SHIFT = 4U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD6S2_SHIFT = 6U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD6S3_SHIFT = 8U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD6S4_SHIFT = 10U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD6S5_SHIFT = 12U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD6S6_SHIFT = 14U;
+constexpr uint8_t M2000C_PCNDISPRIGHTD6S7_SHIFT = 0U;
+constexpr unsigned int M2000C_PCNDISPDLEFT_ADDR = M_2000C_PCN_DIS_2DL_ADDR;
+constexpr uint8_t M2000C_PCNDISPDLEFT_SZ = 2U;
+constexpr unsigned int M2000C_PCNDISPDRIGHT_ADDR = M_2000C_PCN_DIS_2DR_ADDR;
+constexpr uint8_t M2000C_PCNDISPDRIGHT_SZ = 2U;
 constexpr unsigned int M2000C_PCNDISPPREPD1S0_ADDR = 0x73ac;
 constexpr unsigned int M2000C_PCNDISPPREPD1S1_ADDR = 0x73ac;
 constexpr unsigned int M2000C_PCNDISPPREPD1S2_ADDR = 0x73ac;
@@ -1031,7 +1291,7 @@ static void modeFa18cInit()
 /*
  *   Callback to update M2000C PCN left digit display.
  */
-static void m2000cPcnDigLeft(char *szValue)
+static void m2000cPcnDispDigLeft(char *szValue)
 {
   DiPnl.m2000cPcnDigLeft(szValue);
 }
@@ -1039,25 +1299,702 @@ static void m2000cPcnDigLeft(char *szValue)
 /*
  *   Callback to update M2000C PCN right digit display.
  */
-static void m2000cPcnDigRight(char *szValue)
+static void m2000cPcnDispDigRight(char *szValue)
 {
   DiPnl.m2000cPcnDigRight(szValue);
 }
 
 /*
- *   Callback to update M2000C PCN left display.
+ *   Callback to update M2000C PCN Left display digit 1, segment 0.
+ *  Digits renamed to start in 0.
  */
-static void m2000cPcnLeft(char *szValue)
+static void cbM2000cPcnDispLeftD1S0(unsigned int Value)
 {
-  DiPnl.m2000cPcnLeft(szValue);
+  DiPnl.m2000cPcnLeft(DiPnl.Digit0, DiPnl.Segment0, (uint8_t) Value);
 }
 
 /*
- *   Callback to update M2000C PCN right display.
+ *   Callback to update M2000C PCN Left display digit 1, segment 1.
+ *  Digits renamed to start in 0.
  */
-static void m2000cPcnRight(char *szValue)
+static void cbM2000cPcnDispLeftD1S1(unsigned int Value)
 {
-  DiPnl.m2000cPcnRight(szValue);
+  DiPnl.m2000cPcnLeft(DiPnl.Digit0, DiPnl.Segment1, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 1, segment 2.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD1S2(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit0, DiPnl.Segment2, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 1, segment 3.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD1S3(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit0, DiPnl.Segment3, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 1, segment 4.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD1S4(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit0, DiPnl.Segment4, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 1, segment 5.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD1S5(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit0, DiPnl.Segment5, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 1, segment 6.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD1S6(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit0, DiPnl.Segment6, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 2, segment 0.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD2S0(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit1, DiPnl.Segment0, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 2, segment 1.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD2S1(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit1, DiPnl.Segment1, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 2, segment 2.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD2S2(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit1, DiPnl.Segment2, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 2, segment 3.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD2S3(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit1, DiPnl.Segment3, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 2, segment 4.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD2S4(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit1, DiPnl.Segment4, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 2, segment 5.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD2S5(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit1, DiPnl.Segment5, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 2, segment 6.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD2S6(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit1, DiPnl.Segment6, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 3, segment 0.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD3S0(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit2, DiPnl.Segment0, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 3, segment 1.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD3S1(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit2, DiPnl.Segment1, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 3, segment 2.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD3S2(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit2, DiPnl.Segment2, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 3, segment 3.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD3S3(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit2, DiPnl.Segment3, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 3, segment 4.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD3S4(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit2, DiPnl.Segment4, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 3, segment 5.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD3S5(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit2, DiPnl.Segment5, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 3, segment 6.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD3S6(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit2, DiPnl.Segment6, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 4, segment 0.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD4S0(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit3, DiPnl.Segment0, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 4, segment 1.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD4S1(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit3, DiPnl.Segment1, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 4, segment 2.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD4S2(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit3, DiPnl.Segment2, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 4, segment 3.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD4S3(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit3, DiPnl.Segment3, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 4, segment 4.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD4S4(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit3, DiPnl.Segment4, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 4, segment 5.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD4S5(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit3, DiPnl.Segment5, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 4, segment 6.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD4S6(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit3, DiPnl.Segment6, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 5, segment 0.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD5S0(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit4, DiPnl.Segment0, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 5, segment 1.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD5S1(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit4, DiPnl.Segment1, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 5, segment 2.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD5S2(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit4, DiPnl.Segment2, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 5, segment 3.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD5S3(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit4, DiPnl.Segment3, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 5, segment 4.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD5S4(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit4, DiPnl.Segment4, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 5, segment 5.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD5S5(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit4, DiPnl.Segment5, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Left display digit 5, segment 6.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispLeftD5S6(unsigned int Value)
+{
+  DiPnl.m2000cPcnLeft(DiPnl.Digit4, DiPnl.Segment6, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 1, segment 0.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD1S0(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit0, DiPnl.Segment0, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 1, segment 1.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD1S1(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit0, DiPnl.Segment1, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 1, segment 2.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD1S2(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit0, DiPnl.Segment2, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 1, segment 3.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD1S3(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit0, DiPnl.Segment3, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 1, segment 4.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD1S4(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit0, DiPnl.Segment4, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 1, segment 5.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD1S5(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit0, DiPnl.Segment5, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 1, segment 6.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD1S6(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit0, DiPnl.Segment6, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 2, segment 0.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD2S0(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit1, DiPnl.Segment0, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 2, segment 1.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD2S1(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit1, DiPnl.Segment1, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 2, segment 2.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD2S2(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit1, DiPnl.Segment2, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 2, segment 3.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD2S3(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit1, DiPnl.Segment3, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 2, segment 4.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD2S4(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit1, DiPnl.Segment4, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 2, segment 5.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD2S5(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit1, DiPnl.Segment5, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 2, segment 6.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD2S6(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit1, DiPnl.Segment6, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 3, segment 0.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD3S0(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit2, DiPnl.Segment0, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 3, segment 1.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD3S1(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit2, DiPnl.Segment1, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 3, segment 2.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD3S2(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit2, DiPnl.Segment2, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 3, segment 3.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD3S3(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit2, DiPnl.Segment3, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 3, segment 4.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD3S4(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit2, DiPnl.Segment4, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 3, segment 5.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD3S5(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit2, DiPnl.Segment5, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 3, segment 6.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD3S6(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit2, DiPnl.Segment6, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 4, segment 0.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD4S0(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit3, DiPnl.Segment0, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 4, segment 1.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD4S1(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit3, DiPnl.Segment1, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 4, segment 2.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD4S2(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit3, DiPnl.Segment2, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 4, segment 3.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD4S3(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit3, DiPnl.Segment3, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 4, segment 4.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD4S4(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit3, DiPnl.Segment4, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 4, segment 5.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD4S5(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit3, DiPnl.Segment5, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 4, segment 6.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD4S6(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit3, DiPnl.Segment6, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 5, segment 0.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD5S0(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit4, DiPnl.Segment0, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 5, segment 1.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD5S1(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit4, DiPnl.Segment1, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 5, segment 2.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD5S2(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit4, DiPnl.Segment2, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 5, segment 3.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD5S3(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit4, DiPnl.Segment3, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 5, segment 4.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD5S4(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit4, DiPnl.Segment4, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 5, segment 5.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD5S5(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit4, DiPnl.Segment5, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 5, segment 6.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD5S6(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit4, DiPnl.Segment6, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 6, segment 0.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD6S0(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit5, DiPnl.Segment0, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 6, segment 1.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD6S1(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit5, DiPnl.Segment1, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 6, segment 2.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD6S2(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit5, DiPnl.Segment2, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 6, segment 3.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD6S3(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit5, DiPnl.Segment3, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 6, segment 4.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD6S4(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit5, DiPnl.Segment4, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 6, segment 5.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD6S5(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit5, DiPnl.Segment5, (uint8_t) Value);
+}
+
+/*
+ *   Callback to update M2000C PCN Right display digit 6, segment 6.
+ *  Digits renamed to start in 0.
+ */
+static void cbM2000cPcnDispRightD6S6(unsigned int Value)
+{
+  DiPnl.m2000cPcnRight(DiPnl.Digit5, DiPnl.Segment6, (uint8_t) Value);
 }
 
 /*
@@ -1115,7 +2052,7 @@ static void cbM2000cPcnDispPrepD1S5(unsigned int Value)
 }
 
 /*
- *   Callback to update M2000C PCN Prep display digit 2, segment 6.
+ *   Callback to update M2000C PCN Prep display digit 1, segment 6.
  *  Digits renamed to start in 0.
  */
 static void cbM2000cPcnDispPrepD1S6(unsigned int Value)
@@ -1241,7 +2178,7 @@ static void cbM2000cPcnDispDestD1S5(unsigned int Value)
 }
 
 /*
- *   Callback to update M2000C PCN Dest display digit 2, segment 6.
+ *   Callback to update M2000C PCN Dest display digit 1, segment 6.
  *  Digits renamed to start in 0.
  */
 static void cbM2000cPcnDispDestD1S6(unsigned int Value)
@@ -1370,16 +2307,249 @@ static void modeM2000cInit()
   DiPnl.m2000cStart();
 
   // Register callbacks creating DCS-BIOS handlers in heap memory
-  // PCN
-  new DcsBios::StringBuffer<M2000C_PCNDLEFT_SZ>(
-      M2000C_PCNDLEFT_ADDR, m2000cPcnDigLeft);
-  new DcsBios::StringBuffer<M2000C_PCNDRIGHT_SZ>(
-      M2000C_PCNDRIGHT_ADDR, m2000cPcnDigRight);
-  /*
-  new DcsBios::StringBuffer<M2000C_PCNRIGHT_SZ>(
-      M2000C_PCNRIGHT_ADDR, m2000cPcnRight);
-*/
-  // PCN PREP
+
+  // PCN Display
+  new DcsBios::StringBuffer<M2000C_PCNDISPDLEFT_SZ>(
+      M2000C_PCNDISPDLEFT_ADDR, m2000cPcnDispDigLeft);
+  new DcsBios::StringBuffer<M2000C_PCNDISPDRIGHT_SZ>(
+      M2000C_PCNDISPDRIGHT_ADDR, m2000cPcnDispDigRight);
+
+  // PCN Display Left
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD1S0_ADDR,
+      M2000C_PCNDISPLEFTD1S0_MASK, M2000C_PCNDISPLEFTD1S0_SHIFT,
+      cbM2000cPcnDispLeftD1S0);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD1S1_ADDR,
+      M2000C_PCNDISPLEFTD1S1_MASK, M2000C_PCNDISPLEFTD1S1_SHIFT,
+      cbM2000cPcnDispLeftD1S1);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD1S2_ADDR,
+      M2000C_PCNDISPLEFTD1S2_MASK, M2000C_PCNDISPLEFTD1S2_SHIFT,
+      cbM2000cPcnDispLeftD1S2);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD1S3_ADDR,
+      M2000C_PCNDISPLEFTD1S3_MASK, M2000C_PCNDISPLEFTD1S3_SHIFT,
+      cbM2000cPcnDispLeftD1S3);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD1S4_ADDR,
+      M2000C_PCNDISPLEFTD1S4_MASK, M2000C_PCNDISPLEFTD1S4_SHIFT,
+      cbM2000cPcnDispLeftD1S4);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD1S5_ADDR,
+      M2000C_PCNDISPLEFTD1S5_MASK, M2000C_PCNDISPLEFTD1S5_SHIFT,
+      cbM2000cPcnDispLeftD1S5);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD1S6_ADDR,
+      M2000C_PCNDISPLEFTD1S6_MASK, M2000C_PCNDISPLEFTD1S6_SHIFT,
+      cbM2000cPcnDispLeftD1S6);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD2S0_ADDR,
+      M2000C_PCNDISPLEFTD2S0_MASK, M2000C_PCNDISPLEFTD2S0_SHIFT,
+      cbM2000cPcnDispLeftD2S0);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD2S1_ADDR,
+      M2000C_PCNDISPLEFTD2S1_MASK, M2000C_PCNDISPLEFTD2S1_SHIFT,
+      cbM2000cPcnDispLeftD2S1);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD2S2_ADDR,
+      M2000C_PCNDISPLEFTD2S2_MASK, M2000C_PCNDISPLEFTD2S2_SHIFT,
+      cbM2000cPcnDispLeftD2S2);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD2S3_ADDR,
+      M2000C_PCNDISPLEFTD2S3_MASK, M2000C_PCNDISPLEFTD2S3_SHIFT,
+      cbM2000cPcnDispLeftD2S3);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD2S4_ADDR,
+      M2000C_PCNDISPLEFTD2S4_MASK, M2000C_PCNDISPLEFTD2S4_SHIFT,
+      cbM2000cPcnDispLeftD2S4);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD2S5_ADDR,
+      M2000C_PCNDISPLEFTD2S5_MASK, M2000C_PCNDISPLEFTD2S5_SHIFT,
+      cbM2000cPcnDispLeftD2S5);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD2S6_ADDR,
+      M2000C_PCNDISPLEFTD2S6_MASK, M2000C_PCNDISPLEFTD2S6_SHIFT,
+      cbM2000cPcnDispLeftD2S6);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD3S0_ADDR,
+      M2000C_PCNDISPLEFTD3S0_MASK, M2000C_PCNDISPLEFTD3S0_SHIFT,
+      cbM2000cPcnDispLeftD3S0);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD3S1_ADDR,
+      M2000C_PCNDISPLEFTD3S1_MASK, M2000C_PCNDISPLEFTD3S1_SHIFT,
+      cbM2000cPcnDispLeftD3S1);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD3S2_ADDR,
+      M2000C_PCNDISPLEFTD3S2_MASK, M2000C_PCNDISPLEFTD3S2_SHIFT,
+      cbM2000cPcnDispLeftD3S2);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD3S3_ADDR,
+      M2000C_PCNDISPLEFTD3S3_MASK, M2000C_PCNDISPLEFTD3S3_SHIFT,
+      cbM2000cPcnDispLeftD3S3);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD3S4_ADDR,
+      M2000C_PCNDISPLEFTD3S4_MASK, M2000C_PCNDISPLEFTD3S4_SHIFT,
+      cbM2000cPcnDispLeftD3S4);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD3S5_ADDR,
+      M2000C_PCNDISPLEFTD3S5_MASK, M2000C_PCNDISPLEFTD3S5_SHIFT,
+      cbM2000cPcnDispLeftD3S5);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD3S6_ADDR,
+      M2000C_PCNDISPLEFTD3S6_MASK, M2000C_PCNDISPLEFTD3S6_SHIFT,
+      cbM2000cPcnDispLeftD3S6);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD4S0_ADDR,
+      M2000C_PCNDISPLEFTD4S0_MASK, M2000C_PCNDISPLEFTD4S0_SHIFT,
+      cbM2000cPcnDispLeftD4S0);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD4S1_ADDR,
+      M2000C_PCNDISPLEFTD4S1_MASK, M2000C_PCNDISPLEFTD4S1_SHIFT,
+      cbM2000cPcnDispLeftD4S1);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD4S2_ADDR,
+      M2000C_PCNDISPLEFTD4S2_MASK, M2000C_PCNDISPLEFTD4S2_SHIFT,
+      cbM2000cPcnDispLeftD4S2);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD4S3_ADDR,
+      M2000C_PCNDISPLEFTD4S3_MASK, M2000C_PCNDISPLEFTD4S3_SHIFT,
+      cbM2000cPcnDispLeftD4S3);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD4S4_ADDR,
+      M2000C_PCNDISPLEFTD4S4_MASK, M2000C_PCNDISPLEFTD4S4_SHIFT,
+      cbM2000cPcnDispLeftD4S4);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD4S5_ADDR,
+      M2000C_PCNDISPLEFTD4S5_MASK, M2000C_PCNDISPLEFTD4S5_SHIFT,
+      cbM2000cPcnDispLeftD4S5);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD4S6_ADDR,
+      M2000C_PCNDISPLEFTD4S6_MASK, M2000C_PCNDISPLEFTD4S6_SHIFT,
+      cbM2000cPcnDispLeftD4S6);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD5S0_ADDR,
+      M2000C_PCNDISPLEFTD5S0_MASK, M2000C_PCNDISPLEFTD5S0_SHIFT,
+      cbM2000cPcnDispLeftD5S0);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD5S1_ADDR,
+      M2000C_PCNDISPLEFTD5S1_MASK, M2000C_PCNDISPLEFTD5S1_SHIFT,
+      cbM2000cPcnDispLeftD5S1);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD5S2_ADDR,
+      M2000C_PCNDISPLEFTD5S2_MASK, M2000C_PCNDISPLEFTD5S2_SHIFT,
+      cbM2000cPcnDispLeftD5S2);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD5S3_ADDR,
+      M2000C_PCNDISPLEFTD5S3_MASK, M2000C_PCNDISPLEFTD5S3_SHIFT,
+      cbM2000cPcnDispLeftD5S3);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD5S4_ADDR,
+      M2000C_PCNDISPLEFTD5S4_MASK, M2000C_PCNDISPLEFTD5S4_SHIFT,
+      cbM2000cPcnDispLeftD5S4);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD5S5_ADDR,
+      M2000C_PCNDISPLEFTD5S5_MASK, M2000C_PCNDISPLEFTD5S5_SHIFT,
+      cbM2000cPcnDispLeftD5S5);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPLEFTD5S6_ADDR,
+      M2000C_PCNDISPLEFTD5S6_MASK, M2000C_PCNDISPLEFTD5S6_SHIFT,
+      cbM2000cPcnDispLeftD5S6);
+
+  // PCN Display Right
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD1S0_ADDR,
+      M2000C_PCNDISPRIGHTD1S0_MASK, M2000C_PCNDISPRIGHTD1S0_SHIFT,
+      cbM2000cPcnDispRightD1S0);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD1S1_ADDR,
+      M2000C_PCNDISPRIGHTD1S1_MASK, M2000C_PCNDISPRIGHTD1S1_SHIFT,
+      cbM2000cPcnDispRightD1S1);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD1S2_ADDR,
+      M2000C_PCNDISPRIGHTD1S2_MASK, M2000C_PCNDISPRIGHTD1S2_SHIFT,
+      cbM2000cPcnDispRightD1S2);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD1S3_ADDR,
+      M2000C_PCNDISPRIGHTD1S3_MASK, M2000C_PCNDISPRIGHTD1S3_SHIFT,
+      cbM2000cPcnDispRightD1S3);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD1S4_ADDR,
+      M2000C_PCNDISPRIGHTD1S4_MASK, M2000C_PCNDISPRIGHTD1S4_SHIFT,
+      cbM2000cPcnDispRightD1S4);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD1S5_ADDR,
+      M2000C_PCNDISPRIGHTD1S5_MASK, M2000C_PCNDISPRIGHTD1S5_SHIFT,
+      cbM2000cPcnDispRightD1S5);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD1S6_ADDR,
+      M2000C_PCNDISPRIGHTD1S6_MASK, M2000C_PCNDISPRIGHTD1S6_SHIFT,
+      cbM2000cPcnDispRightD1S6);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD2S0_ADDR,
+      M2000C_PCNDISPRIGHTD2S0_MASK, M2000C_PCNDISPRIGHTD2S0_SHIFT,
+      cbM2000cPcnDispRightD2S0);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD2S1_ADDR,
+      M2000C_PCNDISPRIGHTD2S1_MASK, M2000C_PCNDISPRIGHTD2S1_SHIFT,
+      cbM2000cPcnDispRightD2S1);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD2S2_ADDR,
+      M2000C_PCNDISPRIGHTD2S2_MASK, M2000C_PCNDISPRIGHTD2S2_SHIFT,
+      cbM2000cPcnDispRightD2S2);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD2S3_ADDR,
+      M2000C_PCNDISPRIGHTD2S3_MASK, M2000C_PCNDISPRIGHTD2S3_SHIFT,
+      cbM2000cPcnDispRightD2S3);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD2S4_ADDR,
+      M2000C_PCNDISPRIGHTD2S4_MASK, M2000C_PCNDISPRIGHTD2S4_SHIFT,
+      cbM2000cPcnDispRightD2S4);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD2S5_ADDR,
+      M2000C_PCNDISPRIGHTD2S5_MASK, M2000C_PCNDISPRIGHTD2S5_SHIFT,
+      cbM2000cPcnDispRightD2S5);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD2S6_ADDR,
+      M2000C_PCNDISPRIGHTD2S6_MASK, M2000C_PCNDISPRIGHTD2S6_SHIFT,
+      cbM2000cPcnDispRightD2S6);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD3S0_ADDR,
+      M2000C_PCNDISPRIGHTD3S0_MASK, M2000C_PCNDISPRIGHTD3S0_SHIFT,
+      cbM2000cPcnDispRightD3S0);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD3S1_ADDR,
+      M2000C_PCNDISPRIGHTD3S1_MASK, M2000C_PCNDISPRIGHTD3S1_SHIFT,
+      cbM2000cPcnDispRightD3S1);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD3S2_ADDR,
+      M2000C_PCNDISPRIGHTD3S2_MASK, M2000C_PCNDISPRIGHTD3S2_SHIFT,
+      cbM2000cPcnDispRightD3S2);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD3S3_ADDR,
+      M2000C_PCNDISPRIGHTD3S3_MASK, M2000C_PCNDISPRIGHTD3S3_SHIFT,
+      cbM2000cPcnDispRightD3S3);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD3S4_ADDR,
+      M2000C_PCNDISPRIGHTD3S4_MASK, M2000C_PCNDISPRIGHTD3S4_SHIFT,
+      cbM2000cPcnDispRightD3S4);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD3S5_ADDR,
+      M2000C_PCNDISPRIGHTD3S5_MASK, M2000C_PCNDISPRIGHTD3S5_SHIFT,
+      cbM2000cPcnDispRightD3S5);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD3S6_ADDR,
+      M2000C_PCNDISPRIGHTD3S6_MASK, M2000C_PCNDISPRIGHTD3S6_SHIFT,
+      cbM2000cPcnDispRightD3S6);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD4S0_ADDR,
+      M2000C_PCNDISPRIGHTD4S0_MASK, M2000C_PCNDISPRIGHTD4S0_SHIFT,
+      cbM2000cPcnDispRightD4S0);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD4S1_ADDR,
+      M2000C_PCNDISPRIGHTD4S1_MASK, M2000C_PCNDISPRIGHTD4S1_SHIFT,
+      cbM2000cPcnDispRightD4S1);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD4S2_ADDR,
+      M2000C_PCNDISPRIGHTD4S2_MASK, M2000C_PCNDISPRIGHTD4S2_SHIFT,
+      cbM2000cPcnDispRightD4S2);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD4S3_ADDR,
+      M2000C_PCNDISPRIGHTD4S3_MASK, M2000C_PCNDISPRIGHTD4S3_SHIFT,
+      cbM2000cPcnDispRightD4S3);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD4S4_ADDR,
+      M2000C_PCNDISPRIGHTD4S4_MASK, M2000C_PCNDISPRIGHTD4S4_SHIFT,
+      cbM2000cPcnDispRightD4S4);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD4S5_ADDR,
+      M2000C_PCNDISPRIGHTD4S5_MASK, M2000C_PCNDISPRIGHTD4S5_SHIFT,
+      cbM2000cPcnDispRightD4S5);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD4S6_ADDR,
+      M2000C_PCNDISPRIGHTD4S6_MASK, M2000C_PCNDISPRIGHTD4S6_SHIFT,
+      cbM2000cPcnDispRightD4S6);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD5S0_ADDR,
+      M2000C_PCNDISPRIGHTD5S0_MASK, M2000C_PCNDISPRIGHTD5S0_SHIFT,
+      cbM2000cPcnDispRightD5S0);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD5S1_ADDR,
+      M2000C_PCNDISPRIGHTD5S1_MASK, M2000C_PCNDISPRIGHTD5S1_SHIFT,
+      cbM2000cPcnDispRightD5S1);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD5S2_ADDR,
+      M2000C_PCNDISPRIGHTD5S2_MASK, M2000C_PCNDISPRIGHTD5S2_SHIFT,
+      cbM2000cPcnDispRightD5S2);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD5S3_ADDR,
+      M2000C_PCNDISPRIGHTD5S3_MASK, M2000C_PCNDISPRIGHTD5S3_SHIFT,
+      cbM2000cPcnDispRightD5S3);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD5S4_ADDR,
+      M2000C_PCNDISPRIGHTD5S4_MASK, M2000C_PCNDISPRIGHTD5S4_SHIFT,
+      cbM2000cPcnDispRightD5S4);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD5S5_ADDR,
+      M2000C_PCNDISPRIGHTD5S5_MASK, M2000C_PCNDISPRIGHTD5S5_SHIFT,
+      cbM2000cPcnDispRightD5S5);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD5S6_ADDR,
+      M2000C_PCNDISPRIGHTD5S6_MASK, M2000C_PCNDISPRIGHTD5S6_SHIFT,
+      cbM2000cPcnDispRightD5S6);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD6S0_ADDR,
+      M2000C_PCNDISPRIGHTD6S0_MASK, M2000C_PCNDISPRIGHTD6S0_SHIFT,
+      cbM2000cPcnDispRightD6S0);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD6S1_ADDR,
+      M2000C_PCNDISPRIGHTD6S1_MASK, M2000C_PCNDISPRIGHTD6S1_SHIFT,
+      cbM2000cPcnDispRightD6S1);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD6S2_ADDR,
+      M2000C_PCNDISPRIGHTD6S2_MASK, M2000C_PCNDISPRIGHTD6S2_SHIFT,
+      cbM2000cPcnDispRightD6S2);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD6S3_ADDR,
+      M2000C_PCNDISPRIGHTD6S3_MASK, M2000C_PCNDISPRIGHTD6S3_SHIFT,
+      cbM2000cPcnDispRightD6S3);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD6S4_ADDR,
+      M2000C_PCNDISPRIGHTD6S4_MASK, M2000C_PCNDISPRIGHTD6S4_SHIFT,
+      cbM2000cPcnDispRightD6S4);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD6S5_ADDR,
+      M2000C_PCNDISPRIGHTD6S5_MASK, M2000C_PCNDISPRIGHTD6S5_SHIFT,
+      cbM2000cPcnDispRightD6S5);
+  new DcsBios::IntegerBuffer(M2000C_PCNDISPRIGHTD6S6_ADDR,
+      M2000C_PCNDISPRIGHTD6S6_MASK, M2000C_PCNDISPRIGHTD6S6_SHIFT,
+      cbM2000cPcnDispRightD6S6);
+
+  // PCN Display PREP
   new DcsBios::IntegerBuffer(M2000C_PCNDISPPREPD1S0_ADDR,
       M2000C_PCNDISPPREPD1S0_MASK, M2000C_PCNDISPPREPD1S0_SHIFT,
       cbM2000cPcnDispPrepD1S0);
@@ -1423,7 +2593,7 @@ static void modeM2000cInit()
       M2000C_PCNDISPPREPD2S6_MASK, M2000C_PCNDISPPREPD2S6_SHIFT,
       cbM2000cPcnDispPrepD2S6);
 
-  // PCN DEST
+  // PCN Display DEST
   new DcsBios::IntegerBuffer(M2000C_PCNDISPDESTD1S0_ADDR,
       M2000C_PCNDISPDESTD1S0_MASK, M2000C_PCNDISPDESTD1S0_SHIFT,
       cbM2000cPcnDispDestD1S0);
