@@ -1929,6 +1929,6 @@ char DisplPnl::_segments2Char(uint8_t Segments)
       return pgm_read_byte(&pEntry->Char);
   }
 
-  // We did not found a matching pattern
+  // We did not find a matching pattern
   return _UNKNOWN_CHAR;
 }
