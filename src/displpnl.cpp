@@ -1923,7 +1923,7 @@ char DisplPnl::_segments2Char(uint8_t Segments)
   // Traverse all entries in the array looking for the matching configuration
   for (pEntry = _SEGMENTS2CHAR; pEntry != _SEGMENTS2CHAR + NumEntries; pEntry++)
   {
-    // If this the segment pattern we are looking for?
+    // Is this the segment pattern we are looking for?
     if (Segments == pgm_read_byte(&pEntry->Segments))
       // Fount it!
       return pgm_read_byte(&pEntry->Char);
