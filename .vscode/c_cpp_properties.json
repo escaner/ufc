@@ -13,7 +13,9 @@
                 "${env:HOME}/.arduino15/packages/arduino/hardware/avr/**",
                 "${env:HOME}/.arduino15/packages/arduino/tools/avr-gcc/**",
                 "${workspaceFolder}/**",
-                "${env:HOME}/Arduino/libraries/**"
+                "${env:HOME}/Arduino/libraries/**",
+                "${env:HOME}/Arduino/libraries/DcsBios",
+                "${env:HOME}/.arduino15/libraries/*/src"
             ],
             "forcedInclude": [],
             "cStandard": "gnu11",

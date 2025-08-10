@@ -9,22 +9,6 @@
 /* Constants */
 /*************/
 
-// Given a 7 segment LCD configuration, which character represents
-const DisplPnl::Segments2Char_t DisplPnl::_SEGMENTS2CHAR[] PROGMEM =
-{
-  { 0b00000000, ' ' },
-  { 0b00111111, '0' },
-  { 0b00011000, '1' },
-  { 0b01101101, '2' },
-  { 0b01111100, '3' },
-  { 0b01011010, '4' },
-  { 0b01110110, '5' },
-  { 0b01110111, '6' },
-  { 0b00011100, '7' },
-  { 0b01111111, '8' },
-  { 0b01111110, '9' },
-};
-
 // Custom character with a double triangle up & down
 const uint8_t DisplPnl::_LCD_CHAR_UPDOWN[] PROGMEM =
 {
@@ -277,6 +261,7 @@ constexpr uint8_t M2000C_PANLT_SEC_BIT =  0b10000000;
 constexpr uint8_t M2000C_MEMLT_M91_BIT =  0b00000100;
 constexpr uint8_t M2000C_MEMLT_M92_BIT =  0b00001000;
 constexpr uint8_t M2000C_MEMLT_M93_BIT =  0b00010000;
+
 
 /***********/
 /* Methods */
@@ -1139,7 +1124,7 @@ void DisplPnl::m2000cStart()
  *  Parameters:
  *  * szValue: string with the new value to display.
  */
-void DisplPnl::m2000cPcnDigLeft(const char *szValue)
+void DisplPnl::m2000cPcnDispDigLeft(const char *szValue)
 {
   _Lcd.setCursor(M2000C_PCNDIGL_COL, M2000C_PCNLR_ROW);
   if (!strcmp_P(szValue, _M2000C_PLUS_MINUS))
@@ -1153,28 +1138,12 @@ void DisplPnl::m2000cPcnDigLeft(const char *szValue)
 /*
  *   Updates M2000C PCN Latitude.
  *  Parameters:
- *  * Digit: in which digit happened the change.
- *  * Segment: in which segment of the digit happened the change.
- *  * Value: intensity of the segment (0-3; 0 is off).
+ *  * szValue: string with the new value to display.
  */
-void DisplPnl::m2000cPcnLeft(DigitId_t Digit, SegmentId_t Segment,
-  uint8_t Value)
+void DisplPnl::m2000cPcnDispLeft(const char *szValue)
 {
-  uint8_t SegmentPtrn;
-  char Char;
-
-  // Update the segment pattern for Digit
-  SegmentPtrn = _Status.M2000c.DispLeft[Digit];
-  bitWrite(SegmentPtrn, Segment, Value);
-  _Status.M2000c.DispLeft[Digit] = SegmentPtrn;
-
-  // Translate 7-segment pattern to actual character and write it in the LCD
-  Char = _segments2Char(SegmentPtrn);
-  if (Char != _UNKNOWN_CHAR)
-  {
-    _Lcd.setCursor(M2000C_PCNL_COL + Digit, M2000C_PCNLR_ROW);
-    _Lcd.write(Char);
-  }
+  _Lcd.setCursor(M2000C_PCNL_COL, M2000C_PCNLR_ROW);
+  _Lcd.write(szValue + 1);
 }
 
 
@@ -1186,8 +1155,6 @@ void DisplPnl::m2000cPcnLeft(DigitId_t Digit, SegmentId_t Segment,
  */
 void DisplPnl::m2000cPcnDigRight(const char *szValue)
 {
-  const char *Str;
-
   _Lcd.setCursor(M2000C_PCNDIGR_COL, M2000C_PCNLR_ROW);
   if (!strcmp_P(szValue, _M2000C_PLUS_MINUS))
     // Swap "+-" to "-+"
@@ -1200,84 +1167,36 @@ void DisplPnl::m2000cPcnDigRight(const char *szValue)
 /*
  *   Updates M2000C PCN Longitude.
  *  Parameters:
- *  * Digit: in which digit happened the change.
- *  * Segment: in which segment of the digit happened the change.
- *  * Value: intensity of the segment (0-3; 0 is off).
+ *  * szValue: string with the new value to display.
  */
-void DisplPnl::m2000cPcnRight(DigitId_t Digit, SegmentId_t Segment,
-  uint8_t Value)
+void DisplPnl::m2000cPcnDispRight(const char *szValue)
 {
-  uint8_t SegmentPtrn;
-  char Char;
-
-  // Update the segment pattern for Digit
-  SegmentPtrn = _Status.M2000c.DispRight[Digit];
-  bitWrite(SegmentPtrn, Segment, Value);
-  _Status.M2000c.DispRight[Digit] = SegmentPtrn;
-
-  // Translate 7-segment pattern to actual character and write it in the LCD
-  Char = _segments2Char(SegmentPtrn);
-  if (Char != _UNKNOWN_CHAR)
-  {
-    _Lcd.setCursor(M2000C_PCNR_COL + Digit, M2000C_PCNLR_ROW);
-    _Lcd.write(Char);
-  }
+  _Lcd.setCursor(M2000C_PCNR_COL, M2000C_PCNLR_ROW);
+  _Lcd.write(szValue + 1);
 }
 
 
 /*
  *   Updates M2000C PCN Prep.
  *  Parameters:
- *  * Digit: in which digit happened the change.
- *  * Segment: in which segment of the digit happened the change.
- *  * Value: intensity of the segment (0-3; 0 is off).
+ *  * szValue: string with the new value to display.
  */
-void DisplPnl::m2000cPcnPrep(DigitId_t Digit, SegmentId_t Segment,
-  uint8_t Value)
+void DisplPnl::m2000cPcnDispPrep(const char *szValue)
 {
-  uint8_t SegmentPtrn;
-  char Char;
-
-  // Update the segment pattern for Digit
-  SegmentPtrn = _Status.M2000c.DispPrep[Digit];
-  bitWrite(SegmentPtrn, Segment, Value);
-  _Status.M2000c.DispPrep[Digit] = SegmentPtrn;
-
-  // Translate 7-segment pattern to actual character and write it in the LCD
-  Char = _segments2Char(SegmentPtrn);
-  if (Char != _UNKNOWN_CHAR)
-  {
-    _Lcd.setCursor(M2000C_PCNPREP_COL + Digit, M2000C_PREPDEST_ROW);
-    _Lcd.write(Char);
-  }
+  _Lcd.setCursor(M2000C_PCNPREP_COL, M2000C_PREPDEST_ROW);
+  _Lcd.write(szValue);
 }
 
 
 /*
  *   Updates M2000C PCN Dest.
  *  Parameters:
- *  * Digit: in which digit happened the change.
- *  * Segment: in which segment of the digit happened the change.
- *  * Value: intensity of the segment (0-3; 0 is off).
+ *  * szValue: string with the new value to display.
  */
-void DisplPnl::m2000cPcnDest(DigitId_t Digit, SegmentId_t Segment,
-  uint8_t Value)
+void DisplPnl::m2000cPcnDispDest(const char *szValue)
 {
-  uint8_t SegmentPtrn;
-  char Char;
-
-  // Update the segment pattern for Digit
-  SegmentPtrn = _Status.M2000c.DispDest[Digit];
-  bitWrite(SegmentPtrn, Segment, Value);
-  _Status.M2000c.DispDest[Digit] = SegmentPtrn;
-
-  // Translate 7-segment pattern to actual character and write it in the LCD
-  Char = _segments2Char(SegmentPtrn);
-  if (Char != _UNKNOWN_CHAR)
-  {
-    _Lcd.setCursor(M2000C_PCNDEST_COL + Digit, M2000C_PREPDEST_ROW);
-    _Lcd.write(Char);
-  }
+  _Lcd.setCursor(M2000C_PCNDEST_COL, M2000C_PREPDEST_ROW);
+  _Lcd.write(szValue);
 }
 
 
@@ -1294,92 +1213,77 @@ void DisplPnl::m2000cPcnMode(uint8_t Value)
 
 
 /*
- *   Updates M2000C PCN button lights.
+ *   Updates M2000C PCN button lights (set 0).
  *   More than one light can change in a single call, so check them all.
  *  Parameters:
  *  * Value: bit map with the lights state
  */
-void DisplPnl::m2000cPcnButtonLt(uint8_t Value)
+void DisplPnl::m2000cPcnButtonLt0(uint8_t Value)
 {
   uint8_t Set;
 
+  // UNI
+  if ((Set = Value & M2000C_PANLT_UNI_BIT) !=
+      (_Status.M2000c.BtnLt0 & M2000C_PANLT_UNI_BIT))
+    _m2000cSetPcnLt(M2000C_REDLT_ROW, M2000C_UNILT_COL, Set, PSTR("UNI"));
+
   // PREP
   if ((Set = Value & M2000C_BTNLT_PREP_BIT) !=
-      (_Status.M2000c.BtnLt & M2000C_BTNLT_PREP_BIT))
+      (_Status.M2000c.BtnLt0 & M2000C_BTNLT_PREP_BIT))
     _m2000cSetButtonLt(M2000C_PREPDEST_ROW, M2000C_PREPLT_COL, Set);
 
   // DEST
   if ((Set = Value & M2000C_BTNLT_DEST_BIT) !=
-      (_Status.M2000c.BtnLt & M2000C_BTNLT_DEST_BIT))
+      (_Status.M2000c.BtnLt0 & M2000C_BTNLT_DEST_BIT))
     _m2000cSetButtonLt(M2000C_PREPDEST_ROW, M2000C_DESTLT_COL, Set);
-
-  // BAD
-  if ((Set = Value & M2000C_BTNLT_BAD_BIT) !=
-      (_Status.M2000c.BtnLt & M2000C_BTNLT_BAD_BIT))
-    _m2000cSetButtonLt(M2000C_BADRECLT_ROW, M2000C_BADLT_COL, Set);
-
-  // REC
-  if ((Set = Value & M2000C_BTNLT_REC_BIT) !=
-      (_Status.M2000c.BtnLt & M2000C_BTNLT_REC_BIT))
-    _m2000cSetButtonLt(M2000C_BADRECLT_ROW, M2000C_RECLT_COL, Set);
 
   // EFF
   if ((Set = Value & M2000C_BTNLT_EFF_BIT) !=
-      (_Status.M2000c.BtnLt & M2000C_BTNLT_EFF_BIT))
+      (_Status.M2000c.BtnLt0 & M2000C_BTNLT_EFF_BIT))
     _setLed(LedClr, Set);
 
   // INS
   if ((Set = Value & M2000C_BTNLT_INS_BIT) !=
-      (_Status.M2000c.BtnLt & M2000C_BTNLT_INS_BIT))
+      (_Status.M2000c.BtnLt0 & M2000C_BTNLT_INS_BIT))
     _setLed(LedEnt, Set);
 
-  // VAL
-  if ((Set = Value & M2000C_BTNLT_VAL_BIT) !=
-      (_Status.M2000c.BtnLt & M2000C_BTNLT_VAL_BIT))
-    _m2000cSetButtonLt(M2000C_VALMRCLT_ROW, M2000C_VALLT_COL, Set);
-
-  // UNI
-  if ((Set = Value & M2000C_PANLT_UNI_BIT) !=
-      (_Status.M2000c.BtnLt & M2000C_PANLT_UNI_BIT))
-    _m2000cSetPcnLt(M2000C_REDLT_ROW, M2000C_UNILT_COL, Set, PSTR("UNI"));
-
   // Save the new status
-  _Status.M2000c.BtnLt = Value;
+  _Status.M2000c.BtnLt0 = Value;
 }
 
 
 /*
- *   Updates more M2000C PCN button lights.
+ *   Updates more M2000C PCN button lights (set 1).
  *   More than one light can change in a single call, so check them all.
  *  Parameters:
  *  * Value: bit map with the lights state
  */
-void DisplPnl::m2000cPcnButtonLt2(uint8_t Value)
+void DisplPnl::m2000cPcnButtonLt1(uint8_t Value)
 {
   uint8_t Set;
 
   // BAD
   if ((Set = Value & M2000C_BTNLT_BAD_BIT) !=
-      (_Status.M2000c.BtnLt2 & M2000C_BTNLT_BAD_BIT))
+      (_Status.M2000c.BtnLt1 & M2000C_BTNLT_BAD_BIT))
     _m2000cSetButtonLt(M2000C_BADRECLT_ROW, M2000C_BADLT_COL, Set);
 
   // REC
   if ((Set = Value & M2000C_BTNLT_REC_BIT) !=
-      (_Status.M2000c.BtnLt2 & M2000C_BTNLT_REC_BIT))
+      (_Status.M2000c.BtnLt1 & M2000C_BTNLT_REC_BIT))
     _m2000cSetButtonLt(M2000C_BADRECLT_ROW, M2000C_RECLT_COL, Set);
 
   // VAL
   if ((Set = Value & M2000C_BTNLT_VAL_BIT) !=
-      (_Status.M2000c.BtnLt2 & M2000C_BTNLT_VAL_BIT))
+      (_Status.M2000c.BtnLt1 & M2000C_BTNLT_VAL_BIT))
     _m2000cSetButtonLt(M2000C_VALMRCLT_ROW, M2000C_VALLT_COL, Set);
 
   // MRC
   if ((Set = Value & M2000C_BTNLT_MRC_BIT) !=
-      (_Status.M2000c.BtnLt2 & M2000C_BTNLT_MRC_BIT))
+      (_Status.M2000c.BtnLt1 & M2000C_BTNLT_MRC_BIT))
     _m2000cSetButtonLt(M2000C_VALMRCLT_ROW, M2000C_MRCLT_COL, Set);
 
   // Save the new status
-  _Status.M2000c.BtnLt2 = Value;
+  _Status.M2000c.BtnLt1 = Value;
 }
 
 
@@ -1904,31 +1808,4 @@ void DisplPnl::_unpad(char *szDst, const char *szSrc, uint8_t Discard)
 
   // End destination string
   *(szDst - Discard) = '\0';
-}
-
-
-/*
- *   Given a 7 segment character configuration, translates it to the represented
- *  character.
- *  Parameters:
- *  * Segments: 7 segment representation in the lowest 7 bits
- *  Returns: the character represented by Segments or _UNKNOWN_CHAR
- *  when none is.
- */
-char DisplPnl::_segments2Char(uint8_t Segments)
-{
-  const Segments2Char_t *pEntry;
-  const uint8_t NumEntries = sizeof _SEGMENTS2CHAR / sizeof (Segments2Char_t);
-  
-  // Traverse all entries in the array looking for the matching configuration
-  for (pEntry = _SEGMENTS2CHAR; pEntry != _SEGMENTS2CHAR + NumEntries; pEntry++)
-  {
-    // Is this the segment pattern we are looking for?
-    if (Segments == pgm_read_byte(&pEntry->Segments))
-      // Fount it!
-      return pgm_read_byte(&pEntry->Char);
-  }
-
-  // We did not find a matching pattern
-  return _UNKNOWN_CHAR;
 }

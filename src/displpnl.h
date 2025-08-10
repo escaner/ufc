@@ -47,29 +47,6 @@ public:
     t_backlightPol Pol;
   };
 
-  // Digit identifier for the LCD numbers
-  enum DigitId_t: uint8_t
-  {
-    Digit0 = 0,
-    Digit1,  // Max for PREP & DEST
-    Digit2,
-    Digit3,
-    Digit4,  // Max for left display
-    Digit5   // Max for right display
-  };
-
-  // Segment identifiers for the digit 7 segment + period LEDs
-  enum SegmentId_t: uint8_t
-  {
-    Segment0 = 0,  // Bottom left
-    Segment1,      // Top left
-    Segment2,      // Top
-    Segment3,      // Top right
-    Segment4,      // Bottom right
-    Segment5,      // Bottom
-    Segment6,      // Center
-    Segment7       // Period
-  };
 
   /******************/
   /* Public methods */
@@ -127,15 +104,15 @@ public:
   void fa18cLtdr(uint8_t Value);
 
   void m2000cStart();
-  void m2000cPcnDigLeft(const char *szValue);
-  void m2000cPcnLeft(DigitId_t Digit, SegmentId_t Segment, uint8_t Value);
+  void m2000cPcnDispDigLeft(const char *szValue);
+  void m2000cPcnDispLeft(const char *szValue);
   void m2000cPcnDigRight(const char *szValue);
-  void m2000cPcnRight(DigitId_t Digit, SegmentId_t Segment, uint8_t Value);
-  void m2000cPcnPrep(DigitId_t Digit, SegmentId_t Segment, uint8_t Value);
-  void m2000cPcnDest(DigitId_t Digit, SegmentId_t Segment, uint8_t Value);
+  void m2000cPcnDispRight(const char *szValue);
+  void m2000cPcnDispPrep(const char *szValue);
+  void m2000cPcnDispDest(const char *szValue);
   void m2000cPcnMode(uint8_t Value);
-  void m2000cPcnButtonLt(uint8_t Value);
-  void m2000cPcnButtonLt2(uint8_t Value);
+  void m2000cPcnButtonLt0(uint8_t Value);
+  void m2000cPcnButtonLt1(uint8_t Value);
   void m2000cPcnPanneLt(uint8_t Value);
   void m2000cPcnMemLt(uint8_t Value);
   void m2000cPanneLt(uint8_t Value);
@@ -147,12 +124,6 @@ public:
 
 protected:
 
-  struct Segments2Char_t
-  {
-    uint8_t Segments;  // 7 segment character representation
-    char Char;         // Represented character
-  };
-
   /******************************/
   /* Protected static constants */
   /******************************/
@@ -162,8 +133,6 @@ protected:
 
   static const char _LINE_KEY[] PROGMEM;
   static const char _LINE_ENC[] PROGMEM;
-
-  static const Segments2Char_t _SEGMENTS2CHAR[] PROGMEM;
 
   static const uint8_t _LCD_CHAR_UPDOWN[] PROGMEM;
   static const uint8_t _LCD_CHAR_DTRIANGLE[] PROGMEM;
@@ -271,14 +240,10 @@ protected:
     // Mirage 2000C
     struct
     {
-      uint8_t BtnLt;    // PCN Button lights
-      uint8_t BtnLt2;   // More PCN Button lights
+      uint8_t BtnLt0;   // PCN Button lights (set 0)
+      uint8_t BtnLt1;   // PCN Button lights (set 1)
       uint8_t PanneLt;  // PCN caution & warning lights
       uint8_t MemLt;    // PCN M lights
-      uint8_t DispPrep[_M2000C_PCNDISPPREPDES_NUM_DIG];  // Display for PREP
-      uint8_t DispDest[_M2000C_PCNDISPPREPDES_NUM_DIG];  // Display for DEST
-      uint8_t DispLeft[_M2000C_PCNDISPLEFT_NUM_DIG];     // Display for Left
-      uint8_t DispRight[_M2000C_PCNDISPRIGHT_NUM_DIG];   // Display for Right
     } M2000c;
   
     // Debug
