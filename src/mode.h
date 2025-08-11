@@ -14,8 +14,9 @@ public:
   // Define all the available modes of operation
   enum Id_t: uint8_t
   {
-    M_DIRECTX = 0,
-    M_A10C,
+    M_DIRECTX = 0U,
+//    M_A10C,  // __A10C_OLD__
+    M_A10C2,
     M_F16C,
     M_FA18C,
     M_M2000C,
@@ -46,7 +47,11 @@ protected:
 
   static const int8_t _KEY[M_NUM_MODES] PROGMEM;
   static const char _TXT_DIRECTX[] PROGMEM;
+  /*
+  // __A10C_OLD__
   static const char _TXT_A10C[] PROGMEM;
+  */
+  static const char _TXT_A10C2[] PROGMEM;
   static const char _TXT_F16C[] PROGMEM;
   static const char _TXT_FA18C[] PROGMEM;
   static const char _TXT_M2000C[] PROGMEM;

@@ -15,7 +15,8 @@
                 "${workspaceFolder}/**",
                 "${env:HOME}/Arduino/libraries/**",
                 "${env:HOME}/Arduino/libraries/DcsBios",
-                "${env:HOME}/.arduino15/libraries/*/src"
+                "${env:HOME}/.arduino15/libraries/*/src",
+                "${env:HOME}/.arduino15/libraries/**"
             ],
             "forcedInclude": [],
             "cStandard": "gnu11",

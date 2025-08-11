@@ -92,20 +92,27 @@ constexpr unsigned int A10C_UHFMODE_MASK = 0x0003;
 constexpr unsigned int A10C_UHFMODE_SHIFT = 0U;
 constexpr uint8_t A10C_UHFPSET_SZ = 2U;
 constexpr unsigned int A10C_UHFPSET_ADDR = A_10C_UHF_PRESET_A;
-constexpr uint8_t A10C_VAMFREQ_SZ = 7U; // %%%%
-constexpr unsigned int A10C_VAMFREQ_ADDR = A_10C_VHFAM_FREQ1_A; // %%%%
+constexpr uint8_t A10C_VAMFREQ_SZ = 7U;
+constexpr unsigned int A10C_VAMFREQ_ADDR = A_10C_VHF_AM_FREQUENCY_S_A;
 constexpr unsigned int A10C_VAMMODE_ADDR = 0x1186;
 constexpr unsigned int A10C_VAMMODE_MASK = 0x0300;
 constexpr unsigned int A10C_VAMMODE_SHIFT = 8U;
 constexpr uint8_t A10C_VAMPSETSW_SZ = 2U;
 constexpr unsigned int A10C_VAMPSETSW_ADDR = A_10C_VHFAM_PRESET_A;
-constexpr uint8_t A10C_VFMFREQ_SZ = 7U; // %%%%
-constexpr unsigned int A10C_VFMFREQ_ADDR = A_10C_VHFFM_FREQ1_A; // %%%%
+constexpr uint8_t A10C_VFMFREQ_SZ = 7U;
+constexpr unsigned int A10C_VFMFREQ_ADDR = A_10C_VHF_FM_FREQUENCY_S_A;
 constexpr unsigned int A10C_VFMMODE_ADDR = 0x1194;
-constexpr unsigned int A10C_VFMMODE_MASK = 0x0060;
-constexpr unsigned int A10C_VFMMODE_SHIFT = 5U;
+constexpr unsigned int A10C_VFMMODE_MASK = 0x0180;
+constexpr unsigned int A10C_VFMMODE_SHIFT = 7U;
 constexpr uint8_t A10C_VFMPSETSW_SZ = 2U;
 constexpr unsigned int A10C_VFMPSETSW_ADDR = A_10C_VHFFM_PRESET_A;
+constexpr uint8_t A10C_ARC210FREQ_SZ = 7U;
+constexpr unsigned int A10C_ARC210FREQ_ADDR = A_10C_ARC210_FREQUENCY_A;
+constexpr uint8_t A10C_ARC210PSETSW_SZ = 2U;
+constexpr unsigned int A10C_ARC210PSET_ADDR = A_10C_ARC210_ACTIVE_CHANNEL_A;
+constexpr unsigned int A10C_ARC210MODE_ADDR = 0x1322;
+constexpr unsigned int A10C_ARC210MODE_MASK = 0xe000;
+constexpr unsigned int A10C_ARC210MODE_SHIFT = 13U;
 constexpr uint8_t A10C_TCNCHNL_SZ = 4U;
 constexpr unsigned int A10C_TCNCHNL_ADDR = A_10C_TACAN_CHANNEL_A;
 constexpr unsigned int A10C_TCNMODE_ADDR = 0x1168;
@@ -329,9 +336,10 @@ static void cbA10cUhfPset(char *szValue)
   DiPnl.a10cUhfPreset(szValue);
 }
 
+// __A10C_OLD__
 /*
  *   Callback to update A-10C VHF AM radio frequency.
- */
+ *
 static void cbA10cVamFreq(char *szValue)
 {
   DiPnl.a10cVamFreq(szValue);
@@ -339,7 +347,7 @@ static void cbA10cVamFreq(char *szValue)
 
 /*
  *   Callback to update A-10C VHF AM radio mode.
- */
+ *
 static void cbA10cVamMode(unsigned int Value)
 {
   DiPnl.a10cVamMode(Value);
@@ -347,12 +355,12 @@ static void cbA10cVamMode(unsigned int Value)
 
 /*
  *   Callback to update A-10C VHF AM radio preset channel.
- */
+ *
 static void cbA10cVamPset(char *szValue)
 {
   DiPnl.a10cVamPreset(szValue);
 }
-
+*/
 
 /*
  *   Callback to update A-10C VHF FM radio frequency.
@@ -376,6 +384,30 @@ static void cbA10cVfmMode(unsigned int Value)
 static void cbA10cVfmPset(char *szValue)
 {
   DiPnl.a10cVfmPreset(szValue);
+}
+
+/*
+ *   Callback to update A-10C ARC210 radio frequency.
+ */
+static void cbA10cArc210Freq(char *szValue)
+{
+  DiPnl.a10cArc210Freq(szValue);
+}
+
+/*
+ *   Callback to update A-10C ARC210 radio mode.
+ */
+static void cbA10cArc210Mode(unsigned int Value)
+{
+  DiPnl.a10cArc210Mode(Value);
+}
+
+/*
+ *   Callback to update A-10C ARC210 radio preset channel.
+ */
+static void cbA10cArc210Pset(char *szValue)
+{
+  DiPnl.a10cArc210Preset(szValue);
 }
 
 /*
@@ -457,9 +489,11 @@ static void cbA10cGunReadyLt(unsigned int Value)
 }
 
 /*
- *   Initializes A-10C mode.
+ *   Initializes A-10C / A-10C2 mode.
+ *  Parameters:
+ *  * Mode: module mode. Only Mode::M_A10C and Mode::M_A10C2 are valid.
  */
-static void modeA10cInit()
+static void modeA10cInit(Mode::Id_t Mode)
 {
   // Initializes display
   DiPnl.a10cStart();
@@ -479,12 +513,35 @@ static void modeA10cInit()
       A10C_UHFMODE_SHIFT, cbA10cUhfMode);
   new DcsBios::StringBuffer<A10C_UHFPSET_SZ>(
       A10C_UHFPSET_ADDR, cbA10cUhfPset);
-  new DcsBios::StringBuffer<A10C_VAMFREQ_SZ>(
-      A10C_VAMFREQ_ADDR, cbA10cVamFreq);
-  new DcsBios::IntegerBuffer(A10C_VAMMODE_ADDR, A10C_VAMMODE_MASK,
-      A10C_VAMMODE_SHIFT, cbA10cVamMode);
-  new DcsBios::StringBuffer<A10C_VAMPSETSW_SZ>(
-      A10C_VAMPSETSW_ADDR, cbA10cVamPset);
+
+#pragma GCC diagnostic push
+// Disable: warning: enumeration value '' not handled in switch
+#pragma GCC diagnostic ignored "-Wswitch"
+
+  switch (Mode)
+  {
+  /*
+  case Mode::M_A10C:
+    new DcsBios::StringBuffer<A10C_VAMFREQ_SZ>(
+        A10C_VAMFREQ_ADDR, cbA10cVamFreq);
+    new DcsBios::IntegerBuffer(A10C_VAMMODE_ADDR, A10C_VAMMODE_MASK,
+        A10C_VAMMODE_SHIFT, cbA10cVamMode);
+    new DcsBios::StringBuffer<A10C_VAMPSETSW_SZ>(
+        A10C_VAMPSETSW_ADDR, cbA10cVamPset);
+    break;
+*/
+  case Mode::M_A10C2:
+    new DcsBios::StringBuffer<A10C_ARC210FREQ_SZ>(
+        A10C_ARC210FREQ_ADDR, cbA10cArc210Freq);
+    new DcsBios::IntegerBuffer(A10C_ARC210MODE_ADDR, A10C_ARC210MODE_MASK,
+        A10C_ARC210MODE_SHIFT, cbA10cArc210Mode);
+    new DcsBios::StringBuffer<A10C_ARC210PSETSW_SZ>(
+        A10C_ARC210PSET_ADDR, cbA10cArc210Pset);
+    break;
+  }
+
+#pragma GCC diagnostic pop
+
   new DcsBios::StringBuffer<A10C_VFMFREQ_SZ>(
       A10C_VFMFREQ_ADDR, cbA10cVfmFreq);
   new DcsBios::IntegerBuffer(A10C_VFMMODE_ADDR, A10C_VFMMODE_MASK,
@@ -1376,6 +1433,7 @@ static void setupWorkMode(uint8_t KeyId)
 void setup()
 {
   uint8_t ModeKeyId;
+  Mode::Id_t workMode;
 
   // Initialize display panel
   DiPnl.init();
@@ -1398,10 +1456,16 @@ void setup()
 #pragma GCC diagnostic ignored "-Wswitch"
 
   // Initialize mode stuff
-  switch (WorkMode.get())
+  switch (workMode = WorkMode.get())
   {
+/*
+ * __A10C_OLD__
   case Mode::M_A10C:
-    modeA10cInit();
+    modeA10cInit(workMode);
+    break;
+*/
+  case Mode::M_A10C2:
+    modeA10cInit(workMode);
     break;
   case Mode::M_F16C:
     modeF16cInit();

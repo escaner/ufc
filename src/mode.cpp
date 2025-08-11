@@ -10,7 +10,8 @@
 const int8_t Mode::_KEY[M_NUM_MODES] PROGMEM =
 {
   15, // M_DIRECTX -> CLR
-  11, // M_A10C -> 0
+//  7, // M_A10C -> ENT // __A10C_OLD__
+   11, // M_A10C2 -> 0
    5, // M_F16C -> 6
   10, // M_FA18C -> 8
    8, // M_M2000C -> 2
@@ -19,7 +20,11 @@ const int8_t Mode::_KEY[M_NUM_MODES] PROGMEM =
 
 // Strings with the names of the modes
 const char Mode::_TXT_DIRECTX[] PROGMEM = "DIRECTX";
+/*
+// __A10C_OLD__
 const char Mode::_TXT_A10C[] PROGMEM = "A-10C";
+*/
+const char Mode::_TXT_A10C2[] PROGMEM = "A-10C II";
 const char Mode::_TXT_F16C[] PROGMEM = "F-16C";
 const char Mode::_TXT_FA18C[] PROGMEM = "F/A-18C";
 const char Mode::_TXT_M2000C[] PROGMEM = "MIRAGE 2000C";
@@ -27,7 +32,8 @@ const char Mode::_TXT_DEBUG[] PROGMEM = "DEBUG";
 const char * const Mode::_MODE_TXT[M_NUM_MODES] PROGMEM =
 {
   _TXT_DIRECTX,
-  _TXT_A10C,
+//  _TXT_A10C,  // __A10C_OLD__
+  _TXT_A10C2,
   _TXT_F16C,
   _TXT_FA18C,
   _TXT_M2000C,

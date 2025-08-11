@@ -68,6 +68,9 @@ public:
   void a10cVfmFreq(const char *szValue);
   void a10cVfmMode(uint16_t Value);
   void a10cVfmPreset(const char *szValue);
+  void a10cArc210Freq(const char *szValue);
+  void a10cArc210Mode(uint16_t Value);
+  void a10cArc210Preset(const char *szValue);
   void a10cTcnChannel(const char *szValue);
   void a10cTcnMode(uint16_t Value);
   void a10cIlsFreq(const char *szValue);
@@ -151,10 +154,12 @@ protected:
 
   static const uint8_t _A10C_VHF_NUM_MODES = 4U;
   static const uint8_t _A10C_UHF_NUM_MODES = 3U;
+  static const uint8_t _A10C_ARC210_NUM_MODES = 7U;
   static const uint8_t _A10C_TCN_NUM_MODES = 5U;
   static const uint8_t _A10C_TCN_MODES_LN = 3U;
   static const char _A10C_VHF_MODES[_A10C_VHF_NUM_MODES] PROGMEM;
   static const char _A10C_UHF_MODES[_A10C_UHF_NUM_MODES] PROGMEM;
+  static const char _A10C_ARC210_MODES[_A10C_ARC210_NUM_MODES] PROGMEM;
   static const char _A10C_TCN_MODES[_A10C_TCN_NUM_MODES][_A10C_TCN_MODES_LN+1]
     PROGMEM;
 

@@ -84,6 +84,8 @@ const char DisplPnl::_A10C_VHF_MODES[_A10C_VHF_NUM_MODES] PROGMEM =
   { 'F', 'A', 'M', 'P' };
 const char DisplPnl::_A10C_UHF_MODES[_A10C_UHF_NUM_MODES] PROGMEM =
   { 'M', 'P', 'G' };
+const char DisplPnl::_A10C_ARC210_MODES[_A10C_ARC210_NUM_MODES] PROGMEM =
+  { 'E', 'E', 'P', 'M', 'S', 'U', 'V' };
 const char DisplPnl::_A10C_TCN_MODES[_A10C_TCN_NUM_MODES][_A10C_TCN_MODES_LN+1]
   PROGMEM = { "OFF", "RCV", "T/R", "A-R", "A-T" };
 
@@ -149,21 +151,30 @@ constexpr uint8_t A10C_CRS_LBL_COL = 14U;
 constexpr uint8_t A10C_HDGCRS_ROW = 3U;
 constexpr uint8_t A10C_MASTERARM_ARM_SW = 2U;
 constexpr uint8_t A10C_UHFFREQ_COL = 0U;
+constexpr uint8_t A10C_UHFFREQ_SZ = 7U;
 constexpr uint8_t A10C_UHFMODE_COL = 6U;
 constexpr uint8_t A10C_UHFPSET_COL = 7U;
 constexpr uint8_t A10C_UHF_ROW = 2U;
+/*
+// __A10C_OLD__
 constexpr uint8_t A10C_VAMFREQ_COL = 0U;
 constexpr uint8_t A10C_VAMFREQ_SZ = 7U;
 constexpr uint8_t A10C_VAMMODE_COL = 6U;
 constexpr uint8_t A10C_VAMPSET_COL = 7U;
-constexpr uint8_t A10C_VAMPSET_SZ = 2U;
 constexpr uint8_t A10C_VAM_ROW = 1U;
+*/
 constexpr uint8_t A10C_VHFPSET_SZ = 2U;
 constexpr uint8_t A10C_VFMFREQ_COL = 14U;
 constexpr uint8_t A10C_VFMFREQ_SZ = 7U;
 constexpr uint8_t A10C_VFMMODE_COL = 13U;
 constexpr uint8_t A10C_VFMPSET_COL = 11U;
 constexpr uint8_t A10C_VFM_ROW = 1U;
+constexpr uint8_t A10C_ARC210FREQ_COL = 0U;
+constexpr uint8_t A10C_ARC210FREQ_SZ = 7U;
+constexpr uint8_t A10C_ARC210MODE_COL = 6U;
+constexpr uint8_t A10C_ARC210PSET_COL = 7U;
+constexpr uint8_t A10C_ARC210PSET_SZ = 2U;
+constexpr uint8_t A10C_ARC210_ROW = 1U;
 constexpr uint8_t A10C_TCNFREQ_COL = 16U;
 constexpr uint8_t A10C_TCNMODE_COL = 12U;
 constexpr uint8_t A10C_TCN_ROW = 2U;
@@ -362,7 +373,7 @@ void DisplPnl::a10cUhfFreq(const char *szValue)
 {
   _Lcd.setCursor(A10C_UHFFREQ_COL, A10C_UHF_ROW);
   // Discard non significant last character in 25kHz separation frequency
-  _Lcd.write(szValue, A10C_VAMFREQ_SZ - 1U);
+  _Lcd.write(szValue, A10C_UHFFREQ_SZ - 1U);
 }
 
 
@@ -390,11 +401,12 @@ void DisplPnl::a10cUhfPreset(const char *szValue)
 }
 
 
+// __A10C_OLD__
 /*
  *   Updates A-10C VHF AM radio frequency in LCD.
  *  Parameters:
  *  * szValue: string with the new value to display.
- */
+ *
 void DisplPnl::a10cVamFreq(const char *szValue)
 {
   char Unpadded[A10C_VAMFREQ_SZ + 1U];
@@ -411,7 +423,7 @@ void DisplPnl::a10cVamFreq(const char *szValue)
  *   Updates A-10C VHF AM radio mode in LCD.
  *  Parameters:
  *  * Value: mode identifier.
- */
+ *
 void DisplPnl::a10cVamMode(uint16_t Value)
 {
   _Lcd.setCursor(A10C_VAMMODE_COL, A10C_VAM_ROW);
@@ -423,7 +435,7 @@ void DisplPnl::a10cVamMode(uint16_t Value)
  *   Updates A-10C VHF AM radio preset channel in LCD.
  *  Parameters:
  *  * szValue: string with the new value to display.
- */
+ *
 void DisplPnl::a10cVamPreset(const char *szValue)
 {
   char Unpadded[A10C_VHFPSET_SZ + 1U];
@@ -432,9 +444,9 @@ void DisplPnl::a10cVamPreset(const char *szValue)
   // Remove left blank padding
   _unpad(Unpadded, szValue);
   // Repad with zeroes to the left
-  _lcdWritePadded(Unpadded, A10C_VAMPSET_SZ, '0');
+  _lcdWritePadded(Unpadded, A10C_VHFPSET_SZ, '0');
 }
-
+*/
 
 /*
  *   Updates A-10C VHF FM radio frequency in LCD.
@@ -479,6 +491,52 @@ void DisplPnl::a10cVfmPreset(const char *szValue)
   _unpad(Unpadded, szValue);
   // Repad with zeroes to the left
   _lcdWritePadded(Unpadded, A10C_VHFPSET_SZ, '0');
+}
+
+
+/*
+ *   Updates A-10C ARC210 radio frequency in LCD.
+ *  Parameters:
+ *  * szValue: string with the new value to display.
+ */
+void DisplPnl::a10cArc210Freq(const char *szValue)
+{
+  char Unpadded[A10C_ARC210FREQ_SZ + 1U];
+
+  _Lcd.setCursor(A10C_ARC210FREQ_COL, A10C_ARC210_ROW);
+  // Remove right padding and discard last character in 25kHz separation freq
+  _unpad(Unpadded, szValue, 1U);
+  // Repad with blanks to the left
+  _lcdWritePadded(Unpadded, A10C_ARC210FREQ_SZ - 1U);
+}
+
+
+/*
+ *   Updates A-10C ARC210 radio mode in LCD.
+ *  Parameters:
+ *  * Value: mode identifier.
+ */
+void DisplPnl::a10cArc210Mode(uint16_t Value)
+{
+  _Lcd.setCursor(A10C_ARC210MODE_COL, A10C_ARC210_ROW);
+  _Lcd.write(pgm_read_byte(_A10C_ARC210_MODES + Value));
+}
+
+
+/*
+ *   Updates A-10C VHF AM radio preset channel in LCD.
+ *  Parameters:
+ *  * szValue: string with the new value to display.
+ */
+void DisplPnl::a10cArc210Preset(const char *szValue)
+{
+  char Unpadded[A10C_ARC210PSET_SZ + 1U];
+
+  _Lcd.setCursor(A10C_ARC210PSET_COL, A10C_ARC210_ROW);
+  // Remove left blank padding
+  _unpad(Unpadded, szValue);
+  // Repad with blanks to the left
+  _lcdWritePadded(Unpadded, A10C_ARC210PSET_SZ);
 }
 
 
@@ -1757,7 +1815,7 @@ void DisplPnl::_error()
 
 
 /*
- *   Given a string and a field Size, writes the sting into the current
+ *   Given a string and a field Size, writes the string into the current
  *  position in the _Lcd with left white padding to adjust to the field size.
  *   If the string is longer than Size, the result is undefined.
  *   Parameters:
@@ -1792,7 +1850,7 @@ inline void DisplPnl::_setLed(LedId_t LedId, uint8_t Value) const
 
 /*
  *   Removes padding from a string copying to another buffer and possibly
- *  discarding the last Discard significant chars in the string.
+ *  discarding the last chars in the string.
  *  Parameters:
  *  * szDst: destination string (unpadded)
  *  * szSrc: source string (possibly padded)
