@@ -14,7 +14,7 @@ public:
   // Define all the available modes of operation
   enum Id_t: uint8_t
   {
-    M_DIRECTX = 0U,
+    M_DIRECTX = 0,
 //    M_A10C,  // __A10C_OLD__
     M_A10C2,
     M_F16C,
